@@ -105,9 +105,9 @@ cartoon illustration style
 
 Intensity SHOULD be classified as:
 
-- Low: easy, relaxed, calm
+- Low: easy, relaxed, calm, soft
 - Medium: steady, focused
-- High: intense, demanding, powerful
+- High: intense, demanding, powerful, strong, exhausting
 
 Intensity MAY be derived from:
 - heart rate
@@ -115,10 +115,8 @@ Intensity MAY be derived from:
 - elevation gain
 - duration
 
-If intensity cannot be determined:
+IF intensity cannot be determined:
 - Default to `medium`
-
----
 
 ### By Elevation
 
@@ -126,20 +124,16 @@ If intensity cannot be determined:
 - `elevation_gain ≤ 300` → flat or rolling terrain
 - Missing data → neutral outdoor landscape
 
----
-
 ### By Time of Day
 
 If `time_of_day` is available:
 - morning → soft natural light
 - day → neutral daylight
 - evening → warm light
-- night → low light, calm or dramatic atmosphere
+- night → dark, low light, maybe with moon and/or stars in the sky, calm or dramatic atmosphere
 
-If unknown:
+IF unknown:
 - Use neutral daylight
-
----
 
 ## Style Selection
 
@@ -157,8 +151,6 @@ Rules:
 
 Style selection MUST be deterministic.
 
----
-
 ## Mood Selection
 
 Mood descriptors MUST be:
@@ -172,27 +164,20 @@ Allowed examples:
 - intense
 - peaceful
 - determined
+- thoughtful
 
 Mood MUST NOT include:
-- story elements
 - named real persons
 - violent or aggressive language
-
----
 
 ## Prompt Constraints
 
 Generated prompts MUST comply with all of the following:
 
-- No brand names
-- No logos or trademarks
 - No real or identifiable persons
 - No text or typography instructions
-- No UI or application references
 - No political, military, or sexual content
 - Maximum length: 400 characters
-
----
 
 ## Determinism
 
@@ -203,8 +188,6 @@ Given identical inputs:
 Randomness:
 - MUST NOT affect semantic meaning
 - MUST stay within allowed variation boundaries
-
----
 
 ## Validation
 
@@ -218,8 +201,6 @@ If validation fails:
 - Prompt MUST be sanitized
 - Or regenerated with stricter constraints
 
----
-
 ## Failure Behavior
 
 Prompt generation MUST NOT fail silently.
@@ -231,10 +212,10 @@ If generation cannot produce a valid prompt:
 
 Fallback example:
 
-\`\`\`text
+```text
 A simple abstract illustration inspired by outdoor endurance activity,
 minimal style, calm atmosphere
-\`\`\`
+```
 
 ---
 
