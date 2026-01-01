@@ -40,94 +40,113 @@ Cross‑level rule duplication is **forbidden**.
 
 ### Level 0 — Meta Specification
 
-**Purpose**  
+#### Purpose
+
 Defines how specifications are structured and how they interact.
 
-**Responsibilities**
+#### Responsibilities
+
 - Define specification hierarchy
 - Define allowed spec types
 - Define rule ownership
 - Define inheritance and dependency rules
 - Define versioning and change policy
 
-**Examples**
-- zero.spec.md
+#### Examples
 
-**Constraints**
+- 00-zero.spec.md
+
+#### Constraints
+
 - MUST NOT define domain behavior  
 - MUST NOT define runtime logic  
 - MUST NOT reference implementation details  
 
 ### Level 1 — Global Guardrails
 
-**Purpose**  
+#### Purpose
+
 Define global, cross‑cutting constraints that apply to the entire system.
 
-**Responsibilities**
+#### Responsibilities
+
 - Safety constraints
 - Content constraints
 - Determinism rules
 - Style boundaries
 - Retry and fallback rules
 
-**Examples**
+#### Examples
+
 - guardrails.spec.md
 
-**Constraints**
+#### Constraints
+
 - MAY restrict lower‑level behavior  
 - MUST NOT describe implementation details  
 - MUST be referenced by all Level 2+ specs  
 
 ### Level 2 — Domain Specifications
 
-**Purpose**  
+#### Purpose
+
 Define domain‑specific behavior within global constraints.
 
-**Responsibilities**
+#### Responsibilities
+
 - Domain inputs and outputs
 - Classification rules
 - Transformation logic
 - Validation rules
 
-**Examples**
+#### Examples
+
 - input-generation.spec.md  
 - prompt-generation.spec.md  
 - signal-processing.spec.md  
 
-**Constraints**
+#### Constraints
+
 - MUST comply with Level 1 guardrails  
 - MUST NOT redefine guardrails  
 - MUST NOT define UI or infrastructure behavior  
 
 ### Level 3 — Integration Specifications
 
-**Purpose**  
+#### Purpose
+
 Define how domains interact with each other.
 
-**Responsibilities**
+#### Responsibilities
+
 - Data flow between components
 - Ordering and orchestration rules
 - Failure propagation rules
 
-**Examples**
+#### Examples
+
 - pipeline.spec.md  
 - orchestration.spec.md  
 
-**Constraints**
+#### Constraints
+
 - MUST NOT redefine domain logic  
 - MUST describe interaction contracts explicitly  
 
 ### Level 4 — Implementation Notes (Optional)
 
-**Purpose**  
+#### Purpose
+
 Provide non‑binding guidance for implementers.
 
-**Responsibilities**
+#### Responsibilities
+
 - Clarifications
 - Examples
 - Rationale
 
-**Constraints**
+#### Constraints
+
 - MUST NOT introduce new rules  
 - MUST NOT contradict higher‑level specs  
 - MAY be omitted entirely  
@@ -150,11 +169,12 @@ Ownership rules:
 
 Specifications **MAY** depend only on lower‑numbered levels.
 
-**Allowed**
+### Allowed
 - Level 2 → Level 1  
 - Level 3 → Level 2, Level 1  
 
-**Forbidden**
+### Forbidden
+
 - Level 1 → Level 2  
 - Circular dependencies  
 - Implicit dependencies  
