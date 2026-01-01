@@ -1,0 +1,213 @@
+# Zero Specification
+
+## Multi‑Level Specification Architecture
+
+**Version:** 0.1.0  
+**Status:** Canonical  
+**Scope:** All system specifications  
+
+## Purpose
+
+This document defines the **zero‑level specification** of the system.
+
+The Zero Specification establishes a **strict, deterministic, multi‑level architecture** for all other specifications.  
+Its goal is to eliminate duplication, ambiguity, and semantic drift between specs by enforcing a clear hierarchy of responsibilities.
+
+This specification defines **how specifications are written, structured, related, and evolved**.
+
+This document describes **rules**, not implementation.
+
+## Core Principles
+
+The specification system **MUST** follow these principles:
+
+1. Single source of truth  
+2. Strict separation of concerns  
+3. Deterministic behavior  
+4. Explicit contracts between layers  
+5. No implicit inheritance  
+6. No duplication of rules  
+7. Predictable evolution through versioning  
+
+Any specification that violates these principles is **invalid**.
+
+## Specification Levels
+
+All specifications **MUST** belong to exactly one level.
+
+Cross‑level rule duplication is **forbidden**.
+
+### Level 0 — Meta Specification
+
+**Purpose**  
+Defines how specifications are structured and how they interact.
+
+**Responsibilities**
+- Define specification hierarchy
+- Define allowed spec types
+- Define rule ownership
+- Define inheritance and dependency rules
+- Define versioning and change policy
+
+**Examples**
+- zero.spec.md
+
+**Constraints**
+- MUST NOT define domain behavior  
+- MUST NOT define runtime logic  
+- MUST NOT reference implementation details  
+
+### Level 1 — Global Guardrails
+
+**Purpose**  
+Define global, cross‑cutting constraints that apply to the entire system.
+
+**Responsibilities**
+- Safety constraints
+- Content constraints
+- Determinism rules
+- Style boundaries
+- Retry and fallback rules
+
+**Examples**
+- guardrails.spec.md
+
+**Constraints**
+- MAY restrict lower‑level behavior  
+- MUST NOT describe implementation details  
+- MUST be referenced by all Level 2+ specs  
+
+### Level 2 — Domain Specifications
+
+**Purpose**  
+Define domain‑specific behavior within global constraints.
+
+**Responsibilities**
+- Domain inputs and outputs
+- Classification rules
+- Transformation logic
+- Validation rules
+
+**Examples**
+- input-generation.spec.md  
+- prompt-generation.spec.md  
+- signal-processing.spec.md  
+
+**Constraints**
+- MUST comply with Level 1 guardrails  
+- MUST NOT redefine guardrails  
+- MUST NOT define UI or infrastructure behavior  
+
+### Level 3 — Integration Specifications
+
+**Purpose**  
+Define how domains interact with each other.
+
+**Responsibilities**
+- Data flow between components
+- Ordering and orchestration rules
+- Failure propagation rules
+
+**Examples**
+- pipeline.spec.md  
+- orchestration.spec.md  
+
+**Constraints**
+- MUST NOT redefine domain logic  
+- MUST describe interaction contracts explicitly  
+
+### Level 4 — Implementation Notes (Optional)
+
+**Purpose**  
+Provide non‑binding guidance for implementers.
+
+**Responsibilities**
+- Clarifications
+- Examples
+- Rationale
+
+**Constraints**
+- MUST NOT introduce new rules  
+- MUST NOT contradict higher‑level specs  
+- MAY be omitted entirely  
+
+## Rule Ownership
+
+Every rule **MUST** have a single owning specification.
+
+Rules:
+- MUST NOT be duplicated across specs  
+- MUST be referenced, not copied  
+- MUST live at the lowest valid level  
+
+Ownership rules:
+- Global rule → Level 1  
+- Domain rule → Level 2  
+- Orchestration rule → Level 3  
+
+## Dependency Rules
+
+Specifications **MAY** depend only on lower‑numbered levels.
+
+**Allowed**
+- Level 2 → Level 1  
+- Level 3 → Level 2, Level 1  
+
+**Forbidden**
+- Level 1 → Level 2  
+- Circular dependencies  
+- Implicit dependencies  
+
+All dependencies **MUST** be explicit.
+
+## Change and Versioning Policy
+
+Any change **MUST** be classified as one of:
+
+- Structural change  
+- Behavioral change  
+- Clarification only  
+
+Rules:
+- Structural or behavioral changes **REQUIRE** version bump  
+- Clarifications **MAY** keep the same version  
+- Breaking changes **MUST** be documented  
+
+Version numbers **MUST** increase monotonically.
+
+## Validation Rules
+
+A specification is valid **only if**:
+
+- Its level is explicitly stated  
+- Its dependencies are explicit  
+- It does not redefine higher‑level rules  
+- It does not leak responsibilities across levels  
+- It follows this Zero Specification  
+
+Invalid specifications **MUST NOT** be used.
+
+## Zero Spec Authority
+
+The Zero Specification is the **highest authority**.
+
+Conflict resolution order:
+1. Zero Specification  
+2. Guardrails  
+3. Domain specifications  
+4. Integration specifications  
+
+No exceptions are allowed.
+
+## Summary
+
+The Zero Specification defines a **strict layered contract system** for specifications.
+
+Its purpose is to:
+- Prevent duplication  
+- Enforce determinism  
+- Enable safe evolution  
+- Make behavior predictable  
+- Keep specifications readable and enforceable  
+
+All future specifications **MUST** comply with this document.
