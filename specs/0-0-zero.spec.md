@@ -56,7 +56,7 @@ Defines how specifications are structured and how they interact.
 
 #### Examples
 
-- 00-zero.spec.md
+- 0-0-zero.spec.md
 
 #### Constraints
 
@@ -80,7 +80,7 @@ Define global, cross‑cutting constraints that apply to the entire system.
 
 #### Examples
 
-- guardrails.spec.md
+- 1-0-guardrails.spec.md
 
 #### Constraints
 
