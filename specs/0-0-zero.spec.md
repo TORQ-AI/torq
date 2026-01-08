@@ -234,7 +234,7 @@ Examples:
 - version: string (following semver)
 - level: number (following this specification)
 - status: canonical | regular | draft | deprecated
-- dependencies: none | string[] (references specifications on what the current specification depend)
+- dependencies: none | string[] (references specifications on what the current specification depends on)
 
 ## Summary
 
