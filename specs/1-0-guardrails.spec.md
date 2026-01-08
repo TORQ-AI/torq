@@ -74,7 +74,7 @@ Inputs MUST be semantically consistent.
 Examples of invalid combinations:
 - Running pace faster than realistic human limits
 - Cycling cadence outside realistic bounds
-- Elevation gain inconsistent with activity type
+- Elevation gain is inconsistent with athe ctivity type
 
 If semantic validation fails:
 - Prefer graceful degradation
@@ -109,7 +109,7 @@ Brand names MAY be used in prompts under the following constraints:
   - gear metadata
   - activity name or description
 - Brands MUST NOT be inferred or hallucinated
-- Brand usage MUST be contextual (e.g. equipment reference)
+- Brand usage MUST be contextual (e.g., equipment reference)
 - Excessive brand emphasis MUST be avoided
 
 Brand names MUST still comply with all other content guardrails.
@@ -151,7 +151,7 @@ Examples:
 Prompts MAY include:
 - Generic human figures
 - Nature, gym, home, urban, and abstract environments
-- Emotional tone (e.g. calm, intense, focused)
+- Emotional tone (e.g., calm, intense, focused)
 - Artistic and stylistic descriptors
 - Contextual brand references (when allowed)
 
