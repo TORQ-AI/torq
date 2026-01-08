@@ -102,47 +102,37 @@ Brand names MAY be used under the following rules:
 Prompt generation MUST return the following structure:
 
 ```yml
-    prompt:
-      text: string
-      style: string
-      mood: string
-      scene: string
+prompt:
+  subject: string
+  style: string
+  mood: string
+  scene: string
 ```
 
-- text MUST be a single plain-text prompt
-- style MUST match allowed styles
-- mood and scene MUST be descriptive and generic
+- `subject` MUST be a single plain-text prompt
+- `style` MUST match allowed styles
+- `mood` and `scene` MUST be descriptive and generic
 
-## Prompt Structure
-
-Generated prompt text MUST follow this logical structure:
-
-1. Main subject
-2. Activity context
-3. Environment / scene
-4. Mood / emotional tone
-5. Artistic style
-
-Example (logical structure):
+Prompt example:
 
 ```text
-    A trail runner during a steady outdoor run,
-    forest trail environment with gentle hills,
-    focused and calm mood,
-    cartoon illustration style
+Text: A trail runner during a steady outdoor run.
+Style: Cartoon illustration.
+Mood: Focused and calm.
+Scene: Forest trail environment with gentle hills.
 ```
 
 ## Activity Classification Rules
 
 ### By Activity Type
 
-| Activity Type | Subject Description |
-|---------------|---------------------|
-| Run           | runner              |
-| Ride          | cyclist             |
-| Trail Run     | trail runner        |
-| Walk          | walker              |
-| Hike          | hiker               |
+| Activity Type | Subject Description    |
+|---------------|------------------------|
+| Run           | runner                 |
+| Ride          | cyclist                |
+| Trail Run     | trail runner           |
+| Walk          | walker                 |
+| Hike          | hiker                  |
 | Yoga          | person practicing yoga |
 
 ### By Intensity
@@ -173,7 +163,7 @@ Default: medium
 - morning → soft light
 - day → neutral daylight
 - evening → warm light
-- night → dark, calm or dramatic
+- night → dark, calm, or dramatic
 
 Unknown → neutral daylight
 
@@ -240,7 +230,7 @@ Examples:
 Generated prompts MUST:
 - avoid real persons
 - avoid text or typography
-- avoid political, military, sexual content
+- avoid political, military, and sexual content
 - be ≤ 400 characters
 
 ## Determinism
@@ -272,8 +262,10 @@ If a valid prompt cannot be produced:
 Fallback example:
 
 ```text
-    A simple abstract illustration inspired by an outdoor endurance activity,
-    minimal style, calm atmosphere
+Subject: A simple abstract illustration inspired by an outdoor endurance activity.
+Style: Minimal cartoon.
+Mood: Calm.
+Scene: Neutral, calm outdoor atmosphere.
 ```
 
 ## Versioning
