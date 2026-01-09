@@ -36,6 +36,39 @@ The system is designed as a modular, service-oriented architecture with clear se
 4. **Prompt Generation:** Generates text prompts for image generation based on extracted Strava activity signals.
 5. **Image Generation:** Generates Strava activity image based on the prompt derived from the activity data.
 
+Service dependencies graph:
+
+```mermaid
+graph TD
+    ADS[Activity Data Service] --> CS[Configuration Service]
+    ADS --> CacheS[Cache Service]
+    ADS --> DVS[Data Validation Service]
+    
+    SES[Signal Extraction Service] --> GS[Guardrails Service]
+    SES --> TPS[Text Processing Service]
+    
+    PGS[Prompt Generation Service] --> SES
+    PGS --> GS
+    PGS --> SSS[Style Selection Service]
+    PGS --> MMS[Mood Mapping Service]
+    
+    IGS[Image Generation Service] --> PGS
+    IGS --> CacheS
+    IGS --> CS
+    IGS --> RS[Retry Service]
+    
+    GS --> CS
+    SSS --> CS
+    MMS --> CS
+    TPS --> GS
+    
+    CacheS --> CS
+    LS[Logging Service] --> CS
+    RS --> LS
+    MS[Monitoring Service] --> LS
+    MS --> CS
+```
+
 ### 1. Guardrails Service
 
 **Purpose**: Enforces all safety and content restrictions.
@@ -137,39 +170,6 @@ interface ImageGenerationService {
   generateImage(prompt: ActivityImagePrompt): Promise<ActivityImage>
   regenerateWithFallback(prompt: ActivityImagePrompt): Promise<ActivityImage>
 }
-```
-
-## Module Dependencies Graph
-
-```mermaid
-graph TD
-    ADS[Activity Data Service] --> CS[Configuration Service]
-    ADS --> CacheS[Cache Service]
-    ADS --> DVS[Data Validation Service]
-    
-    SES[Signal Extraction Service] --> GS[Guardrails Service]
-    SES --> TPS[Text Processing Service]
-    
-    PGS[Prompt Generation Service] --> SES
-    PGS --> GS
-    PGS --> SSS[Style Selection Service]
-    PGS --> MMS[Mood Mapping Service]
-    
-    IGS[Image Generation Service] --> PGS
-    IGS --> CacheS
-    IGS --> CS
-    IGS --> RS[Retry Service]
-    
-    GS --> CS
-    SSS --> CS
-    MMS --> CS
-    TPS --> GS
-    
-    CacheS --> CS
-    LS[Logging Service] --> CS
-    RS --> LS
-    MS[Monitoring Service] --> LS
-    MS --> CS
 ```
 
 ## Data Flow
