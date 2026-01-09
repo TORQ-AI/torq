@@ -15,11 +15,7 @@ dependencies:
 
 This document defines the modular architecture of the Strava Activity Image Generator system, including service boundaries, dependencies, interfaces, and data flow between components.
 
-## System Overview
-
-The system is designed as a modular, service-oriented architecture with clear separation of concerns and well-defined interfaces between components.
-
-### Core Design Principles
+## Core Design Principles
 
 1. **Single Responsibility**: Each module has one clear purpose.
 2. **Loose Coupling**: Modules communicate through well-defined interfaces.
@@ -27,6 +23,32 @@ The system is designed as a modular, service-oriented architecture with clear se
 4. **Dependency Injection**: Dependencies are explicit and injected.
 5. **Testability**: Each module can be tested in isolation.
 6. **Resilience**: Failures in one module don't cascade.
+
+## User Journey
+
+```mermaid
+graph TD
+    User[User]
+    Strava[Strava]
+    System[System]
+        
+    %% Data Flow and Dependencies
+    User -->|1. Upload activity| Strava
+    Strava -->|2. Trigger the image-generating system| System
+    System -->|3. Provide user with an AI-generated image| User
+    User -->|4. Upload an AI-generated image| Strava
+    
+    %% Styling
+    classDef user fill:#fffccc,stroke:#ccc000,stroke-width:2px,color:#000
+    classDef external fill:#ffcccc,stroke:#cc0000,stroke-width:2px,color:#000
+    classDef core fill:#ccddff,stroke:#0066cc,stroke-width:2px,color:#000
+    
+    class User user
+    class Strava external
+    class System core
+```
+
+The system is designed as a modular, service-oriented architecture with clear separation of concerns and well-defined interfaces between components.
 
 ## Services
 
@@ -36,51 +58,56 @@ The system is designed as a modular, service-oriented architecture with clear se
 4. **Prompt Generation:** Generates text prompts for image generation based on extracted Strava activity signals.
 5. **Image Generation:** Generates Strava activity image based on the prompt derived from the activity data.
 
-Service dependencies graph:
+### Service Dependency Graph
 
 ```mermaid
 graph TD
     %% External Systems
-    StravaAPI[Strava API]
-    ImageGenAPI[Image Generation API]
+    User[User]
+    Strava[Strava]
+    ImageGenAPI[External AI Image Generation API]
     
     %% Core Services
-    ConfigService[Configuration Service]
     GuardrailsService[Guardrails Service]
     ActivityService[Activity Service]
-    DataValidationService[Data Validation Service]
     ActivitySignalsService[Activity Signals Service]
-    TextProcessingService[Text Processing Service]
     PromptGenerationService[Prompt Generation Service]
     ImageGenerationService[Image Generation Service]
     
-    %% Dependencies
-    GuardrailsService --> ConfigService
-    
-    ActivityService --> ConfigService
-    ActivityService --> DataValidationService
-    ActivityService --> StravaAPI
-    
-    ActivitySignalsService --> GuardrailsService
-    ActivitySignalsService --> TextProcessingService
-    
-    PromptGenerationService --> ActivitySignalsService
-    PromptGenerationService --> GuardrailsService
-    
-    ImageGenerationService --> PromptGenerationService
-    ImageGenerationService --> ImageGenAPI
+    %% Data Flow and Dependencies
+    User -->|1. Upload activity| Strava
+    Strava -->|2. Provide an activity ID via a web hook| ActivityService
+    ActivityService -->|3. Fetch activity by ID from the web hook| Strava
+    ActivityService -->|4. Validate raw activity data| GuardrailsService
+    ActivityService -->|5. Raw activity data| ActivitySignalsService
+    ActivitySignalsService -->|6. Validate extracted activity signals| GuardrailsService
+    ActivitySignalsService -->|7. Extracted activity signals| PromptGenerationService
+    PromptGenerationService -->|7. Validate prepared image generation prompt| GuardrailsService
+    PromptGenerationService -->|9. Image generation prompt| ImageGenerationService
+    ImageGenerationService -->|10. API Request| ImageGenAPI
+    ImageGenerationService -->|11. Provide user with an AI-generated image| User
+    User -->|12. Upload an image| Strava
     
     %% Styling
-    classDef external fill:#f9f,stroke:#333,stroke-width:2px,color:black
-    classDef core fill:#bbf,stroke:#333,stroke-width:2px,color:black
-    classDef support fill:#bfb,stroke:#333,stroke-width:2px,color:black
+    classDef external fill:#ffcccc,stroke:#cc0000,stroke-width:2px,color:#000
+    classDef core fill:#ccddff,stroke:#0066cc,stroke-width:2px,color:#000
+    classDef data fill:#ffffcc,stroke:#cccc00,stroke-width:1px,stroke-dasharray: 5 5
     
-    class StravaAPI,ImageGenAPI external
+    class User,Strava,ImageGenAPI external
     class GuardrailsService,ActivityService,ActivitySignalsService,PromptGenerationService,ImageGenerationService core
-    class ConfigService,DataValidationService,TextProcessingService support
 ```
 
-### 1. Guardrails Service
+### Service Dependency Matrix
+
+| Service                       | Direct Dependencies                                   | Purpose of Dependency                    |
+|-------------------------------|-------------------------------------------------------|------------------------------------------|
+| **Guardrails Service**        | None                                                  | Independent validation service           |
+| **Activity Service**          | 1. Guardrails Service                                 | 1. Content validation                    |
+| **Activity Signals Service**  | 1. Guardrails Service                                 | 1. Signal validation                     |
+| **Prompt Generation Service** | 1. Activity Signals Service<br/>2. Guardrails Service | 1. Signal input<br/>2. Prompt validation |
+| **Image Generation Service**  | 1. Prompt Generation Service                          | 2. Prompt source                         |
+
+### Guardrails Service
 
 **Purpose**: Enforces all safety and content restrictions.
 
@@ -102,7 +129,7 @@ interface GuardrailsService {
 }
 ```
 
-### 2. Activity Service
+### Activity Service
 
 **Purpose**: Manages Strava API integration and activity data retrieval.
 
@@ -121,7 +148,7 @@ interface ActivityService {
 }
 ```
 
-### 3. Activity Signals Service
+### Activity Signals Service
 
 **Purpose**: Extracts semantic signals from raw Strava activity data.
 
@@ -139,7 +166,7 @@ interface ActivitySignalsService {
 }
 ```
 
-### 4. Prompt Generation Service
+### Prompt Generation Service
 
 **Purpose**: Generates text prompts for image generation based on extracted Strava activity signals.
 
@@ -161,7 +188,7 @@ interface PromptGenerationService {
 }
 ```
 
-### 5. Image Generation Service
+### Image Generation Service
 
 **Purpose**: Generates Strava activity image based on the prompt derived from the activity data.
 
