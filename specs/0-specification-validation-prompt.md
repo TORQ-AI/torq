@@ -12,6 +12,11 @@ dependencies:
 
 This specification defines the **canonical validation prompt** used by automated systems (including CI pipelines and AI validators) to validate specifications against the **Specification Validator Checklist**.
 
+This specification is subordinate to the Zero Specification. In the validation hierarchy:
+1. Zero Specification has absolute authority
+2. Specification Validator Checklist defines validation rules
+3. This specification defines the canonical validation prompt
+
 This specification defines **prompt structure and validation contract**, not implementation.
 
 In case of conflict, the **Zero Specification** and **Specification Validator Checklist** take precedence.
