@@ -9,7 +9,9 @@ dependencies:
 
 # Specification Validator Checklist Specification
 
-This document defines a **formal, deterministic checklist** for validating any system specification against the Zero Specification. It is authoritative for validation of all specifications.
+This document defines a **formal, deterministic checklist** for validating any system specification against the Zero Specification.
+
+This specification is authoritative for the validation of all specifications. It is subordinate to the Zero Specification. In case of conflict, Zero Specification always prevails.
 
 The checklist is **normative**.
 A specification is considered **invalid** if any mandatory check fails.
