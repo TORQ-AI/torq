@@ -1,64 +1,112 @@
 ---
-id: specification-validation-prompt
+id: specification-validation-pipeline
 version: 1.0.0
-level: 0
+level: 2
 status: canonical
 dependencies:
   - 0-0-zero.spec.md
   - 0-1-specification-validator-checklist.spec.md
 ---
 
-# Specification Validation Prompt Specification
+# Specification Validation Pipeline Specification
 
-This specification defines the **canonical validation prompt** used by automated systems (including CI pipelines and AI validators) to validate specifications against the **Specification Validator Checklist**.
+This specification defines the **implementation-level validation pipeline** for validating specifications using AI in automated environments (e.g. GitHub Actions).
 
-This specification is subordinate to the Zero Specification. In the validation hierarchy:
-1. Zero Specification has absolute authority
-2. Specification Validator Checklist defines validation rules
-3. This specification defines the canonical validation prompt
+This is a **Level 2 domain specification**.
+It defines **inputs, processing steps, prompts, and outputs**.
 
-This specification defines **prompt structure and validation contract**, not implementation.
+This specification is subordinate to:
+- Zero Specification
+- Specification Validator Checklist
 
-In case of conflict, the **Zero Specification** and **Specification Validator Checklist** take precedence.
+In case of conflict, higher-level specifications prevail.
 
 ## 1. Purpose
 
-The purpose of this specification is to:
+The purpose of this specification is to define:
 
-- Provide a **deterministic, repeatable validation prompt**
-- Ensure **uniform validation behavior** across tools and pipelines
-- Enable **AI-based validation** of specifications in CI (e.g. GitHub Actions)
-- Guarantee that validation results are **mechanical and auditable**
+- A **single, authoritative validation pipeline**
+- Exact **AI prompts** used for validation
+- Deterministic **validation execution flow**
+- Machine-readable **validation output contract**
 
-This prompt **MUST** be used whenever AI is involved in validating specifications.
+All AI-based spec validation **MUST** follow this pipeline.
 
 ## 2. Scope
 
-This prompt applies to:
+This pipeline applies to:
 
 - All `.spec.md` files
-- All specification levels
-- Single-spec and cross-spec validation
-- Local, CI, and automated review environments
+- Single-spec validation
+- Cross-spec validation
+- CI environments (e.g. GitHub Actions)
 
-## 3. Validation Input Contract
+## 3. Pipeline Inputs
 
-The validator **MUST** be provided with:
+The pipeline **MUST** receive:
 
-1. The **target specification** to validate
+1. The **target specification** being validated
 2. The **full set of all existing specifications**
 3. The **Specification Validator Checklist**
 4. The **Zero Specification**
 
-All inputs **MUST** be treated as authoritative sources.
+All inputs **MUST** be treated as authoritative text sources.
 
-Missing inputs → **INVALID VALIDATION**
+Missing input → **INVALID**
 
-## 4. Canonical Validation Prompt
+## 4. Pipeline Stages
 
-The following prompt **MUST** be used verbatim or as a strict template.
+The validation pipeline **MUST** execute the following stages in order.
 
-### 4.1 System Instruction
+### 4.1 Load Stage
+
+- Load all specification files
+- Parse front matter
+- Build dependency graph
+
+Failure → **INVALID**
+
+### 4.2 Structural Validation Stage
+
+The pipeline **MUST** validate:
+
+- Front matter correctness
+- File naming rules
+- Dependency correctness
+
+Rules are taken **exclusively** from the checklist.
+
+Failure → **INVALID**
+
+### 4.3 Semantic Validation Stage
+
+The pipeline **MUST** validate:
+
+- Rule ownership
+- Level compliance
+- Forbidden content per level
+- RFC 2119 language usage
+
+Ambiguities → **CONDITIONALLY VALID**
+
+### 4.4 Cross-Spec Validation Stage
+
+The pipeline **MUST** validate:
+
+- Dependency closure
+- Cross-level conflicts
+- Rule shadowing
+- Duplication
+- Constraint tightening rules
+- Global determinism
+
+Any conflict → **INVALID**
+
+## 5. Canonical Validation Prompt
+
+The following prompt **MUST** be used verbatim.
+
+### 5.1 System Instruction Prompt
 
 ```text
 You are a formal specification validator.
@@ -76,31 +124,31 @@ You **MUST** only report violations based on explicit rules.
 Your output **MUST** be deterministic.
 ```
 
-### 4.2 Validation Task Prompt
+### 5.2 Validation Task Prompt
 
-Validate the following specification.
+Validate the provided specification.
 
-Validation rules:
+You **MUST**:
 - Apply all General Checks
 - Apply Level-Specific Checks
 - Apply Cross-Spec Compatibility Checks
-- Treat all **MUST** / **MUST NOT** violations as **INVALID**
-- Treat **SHOULD** violations as **CONDITIONALLY VALID**
-
-You **MUST** consider the specification in the context of **ALL** other provided specifications.
+- Consider the specification in the context of ALL provided specifications
 
 You **MUST** identify:
 - Rule violations
-- Conflicts
-- Ambiguities
-- Shadowing
+- Cross-level conflicts
+- Rule shadowing
 - Duplication
-- Cross-level contradictions
+- Determinism violations
 
-You **MUST NOT** suggest implementation details.
-You **MUST NOT** propose fixes unless explicitly asked.
+You **MUST NOT**:
+- Suggest fixes
+- Propose implementations
+- Assume missing intent
 
-### 4.3 Output Format (MANDATORY)
+## 6. Validation Output Contract
+
+The validator **MUST** return valid JSON in the following format:
 
 ```json
 {
@@ -110,78 +158,60 @@ You **MUST NOT** propose fixes unless explicitly asked.
   "result": "VALID | CONDITIONALLY_VALID | INVALID",
   "violations": [
     {
-      "rule": "<rule reference>",
+      "rule": "<checklist rule reference>",
       "severity": "INVALID | CONDITIONAL",
       "description": "<precise description>"
     }
   ],
-  "notes": [
-    "<optional clarifications>"
-  ]
+  "notes": []
 }
 ```
 
 Rules:
-- Output **MUST** be valid JSON
-- Empty violations array **MUST** be present if none
-- Result **MUST** match checklist semantics
-
-## 5. Determinism Requirements
-
-The validator **MUST**:
-- Produce identical output for identical inputs
-- Not depend on execution order
-- Not use randomness
-- Not infer unstated intent
-
-Non-deterministic behavior → **INVALID VALIDATOR**
-
-## 6. Cross-Spec Awareness Requirement
-
-The validator **MUST**:
-- Load all specifications
-- Resolve full dependency graphs
-- Detect conflicts across files
-- Detect rule shadowing and duplication
-- Enforce canonical ownership
-
-Single-spec-only validation is INSUFFICIENT.
+- Violations **MUST** be present (empty if none)
+- Result **MUST** follow checklist semantics
+- Output **MUST** be deterministic
 
 ## 7. Failure Handling
 
 If validation cannot be completed due to:
-- Missing specs
-- Ambiguous inputs
-- Incomplete checklist
+- Missing specifications
+- Broken dependency graph
+- Incomplete inputs
 
-The validator **MUST** return:
+The pipeline **MUST** return:
 
 ```json
 {
   "result": "INVALID",
   "violations": [
     {
-      "rule": "validation-input",
+      "rule": "pipeline-input",
       "severity": "INVALID",
       "description": "Validation inputs are incomplete or inconsistent"
     }
-  ]
+  ],
+  "notes": []
 }
 ```
 
-## 8. Authority
+## 8. Authority and Ownership
 
 This specification:
-- Is canonical for validation prompts
-- Is subordinate only to the Zero Specification
-- **MUST** be referenced by all AI-based validation pipelines
+- Is the sole owner of validation pipeline behavior
+- Is the sole owner of AI validation prompts
+- **MUST** be referenced by CI pipelines performing spec validation
+
+No other specification may redefine this pipeline.
 
 ## Summary
 
-This specification ensures that:
-- Specification validation is formal
-- AI behavior is bounded and deterministic
-- CI validation is repeatable and auditable
-- Specifications cannot silently drift or conflict
+This specification defines a single, centralized, deterministic AI validation pipeline.
 
-All AI-based validators **MUST** comply with this prompt.
+Its goals are to:
+- Prevent validation drift
+- Centralize prompts and logic
+- Make CI validation reproducible
+- Keep higher-level specs purely normative
+
+All AI-based validation **MUST** follow this specification.
