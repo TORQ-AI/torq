@@ -9,7 +9,7 @@ dependencies:
 
 # Specification Validator Checklist Specification
 
-This document defines a **formal, deterministic checklist** for validating any system specification against the Zero Specification.
+This document defines a **formal, deterministic checklist** for validating any system specification against the Zero Specification. It is authoritative for validation of all specifications.
 
 The checklist is **normative**.
 A specification is considered **invalid** if any mandatory check fails.
@@ -117,7 +117,7 @@ A _Level 0_ spec **MUST NOT**:
 
 - Define domain behavior
 - Define runtime logic
-- Define safety or content constraints (Level 0 **MAY** define meta-rules for validation of safety constraints, but **MUST NOT**?define safety constraints themselves)
+- Define safety or content constraints (Level 0 **MAY** define meta-rules for validation of safety constraints, but **MUST NOT** define safety constraints themselves)
 - Reference implementation details
 
 Failure → **INVALID**
@@ -329,9 +329,9 @@ Non-determinism introduced by combination → **INVALID**
 
 A specification update **MUST**:
 
-- Declare compatibility expectations in the project’s CHANGELOG.md if it makes sense
-- Identify affected dependent specs and state them in the project’s CHANGELOG.md
-- Explicitly state breaking changes in the project’s CHANGELOG.md
+- Declare compatibility expectations in the project’s `/CHANGELOG.md` if it makes sense
+- Identify affected dependent specs and state them in the project’s `/CHANGELOG.md`
+- Explicitly state breaking changes in the project’s `/CHANGELOG.md`
 
 Undeclared breaking change → **INVALID**
 
