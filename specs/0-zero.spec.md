@@ -1,6 +1,6 @@
 ---
 id: 0-zero
-version: 1.0.0
+version: 1.0.1
 level: 0
 status: canonical
 dependencies: none
@@ -232,7 +232,7 @@ Examples:
 ## Mandatory Front Matter
 
 - `id: string` (pattern: `<level>-<name>`)
-- `version: string` (following semver)
+- `version: string` (following semantic versioning: `<major>.<minor>.<patch>`)
 - `level: number` (following this specification)
 - `status: 'canonical' | 'regular' | 'draft' | 'deprecated'`
 - `dependencies: 'none' | string[]` (references specifications on what the current specification depends on)

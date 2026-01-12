@@ -1,6 +1,6 @@
 ---
 id: 0-specification-validation-meta
-version: 1.0.1
+version: 1.0.2
 level: 0
 status: canonical
 dependencies:
@@ -46,10 +46,10 @@ The specification **MUST** contain front matter with:
 
 Validation rules:
 
-- id **MUST** be unique across all specs and follow this pattern: `<level>-<name>`
-- version **MUST** follow semantic versioning
-- level **MUST** be an integer
-- status **MUST** be one of:
+- `id` **MUST** be unique across all specs and follow this pattern: `<level>-<name>`
+- `version` **MUST** follow semantic versioning: `<major>.<minor>.<patch>`
+- `level` **MUST** be an integer
+- `status` **MUST** be one of:
   - canonical
   - regular
   - draft
