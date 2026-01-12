@@ -1,6 +1,6 @@
 ---
 id: 2-prompt-generation
-version: 1.2.0
+version: 1.3.0
 level: 2
 status: regular
 dependencies:
@@ -76,12 +76,12 @@ All fields **MUST** be present and non-empty.
 
 ## User-Provided Text Processing
 
-User-provided text processing **MUST** comply with `1-guardrails.spec.md`.
+User-provided text processing **MUST** comply with section 2 of `1-guardrails.spec.md`.
 
 ### Signal Extraction Rules
 
 User-provided text from `name`, `description`, or `gear`:
-- **MUST** be processed according to `1-guardrails.spec.md`
+- **MUST** be processed according to section 2 of `1-guardrails.spec.md`
 - **MUST** extract only normalized semantic signals
 
 Extracted signals **MAY** influence:
@@ -94,7 +94,7 @@ Extracted signals **MAY** influence:
 
 ### Brand Name Handling
 
-Brand names **MUST** be handled according to `1-guardrails.spec.md`.
+Brand names **MUST** be handled according to section 2.3 of `1-guardrails.spec.md`.
 
 ## Activity Classification
 
@@ -210,7 +210,7 @@ Weather conditions **MUST** influence scene composition through:
 
 ## Tag Processing
 
-Tags **MUST** be processed according to `1-guardrails.spec.md`.
+Tags **MUST** be processed according to section 3 of `1-guardrails.spec.md`.
 
 ### Recognized Tags
 
@@ -231,7 +231,7 @@ The system **MUST** recognize these Strava tags:
 
 Unrecognized tags **MUST** be processed as follows:
 
-1. **Safety Check**: Verify the tag complies with `1-guardrails.spec.md`
+1. **Safety Check**: Verify the tag complies with section 3 of `1-guardrails.spec.md`
 2. **Signal Extraction**: Extract safe semantic signals if possible:
   - Emotional indicators → mood influence
   - Location hints → scene modifiers
@@ -243,7 +243,7 @@ Unrecognized tags **MUST** be processed as follows:
 
 ### Style Selection Rules
 
-Style selection **MUST** use only styles allowed by `1-guardrails.spec.md`.
+Style selection **MUST** use only styles allowed by section 5 of `1-guardrails.spec.md`.
 
 Style selection **MUST** be deterministic:
 
@@ -296,13 +296,13 @@ Scene **MUST** include:
 ### Composition Rules
 
 Scenes **MUST**:
-- Feature 1-3 primary visual subjects (per `1-guardrails.spec.md`)
+- Feature visual subjects per section 6 of `1-guardrails.spec.md`
 - Avoid cluttered backgrounds
 - Maintain focus on the activity
 - Be appropriate for the selected style
 - Incorporate weather effects when specified
 
-Scenes **MUST NOT** include any content forbidden by `1-guardrails.spec.md`.
+Scenes **MUST NOT** include any content forbidden by section 4 of `1-guardrails.spec.md`.
 
 ### Scene Building Priority
 
@@ -328,7 +328,7 @@ Scene: [environment] with [scene_details].
 
 ### Length Constraints
 
-Prompts **MUST** comply with the length limit defined in `1-guardrails.spec.md`.
+Prompts **MUST** comply with the length limit defined in section 4.3 of `1-guardrails.spec.md`.
 
 If the limit is exceeded:
 - **MUST** truncate scene details first
@@ -338,10 +338,10 @@ If the limit is exceeded:
 
 Before returning, the system **MUST** validate:
 
-1. Prompt complies with `1-guardrails.spec.md`
-2. Style is allowed per `1-guardrails.spec.md`
+1. Prompt complies with section 4 of `1-guardrails.spec.md`
+2. Style is allowed per section 5 of `1-guardrails.spec.md`
 3. All required output fields are populated
-4. Brand usage complies with `1-guardrails.spec.md`
+4. Brand usage complies with section 2.3 of `1-guardrails.spec.md`
 
 If validation fails:
 - **MUST** sanitize and retry once
@@ -360,7 +360,7 @@ If a valid prompt cannot be generated, the fallback **MUST** always be valid and
 This fallback **MUST**:
 - Be used for any unrecoverable error
 - Be used for unsafe or ambiguous activity types
-- Comply with all `1-guardrails.spec.md`
+- Comply with all sections of `1-guardrails.spec.md`
 - Always produce a valid image
 
 ## Determinism Requirements
@@ -381,18 +381,8 @@ The system **MUST NOT**:
 - Produce empty prompts
 - Generate unsafe content
 
-All errors **MUST** result in fallback behavior per `1-guardrails.spec.md`.
+All errors **MUST** result in fallback behavior per section 7 of `1-guardrails.spec.md`.
 
 ## Compliance
 
-This specification **MUST** comply with `1-guardrails.spec.md`, specifically:
-- Input guardrails (section 1)
-- User-provided text guardrails (section 2)
-- Tag guardrails (section 3)
-- Prompt guardrails (section 4)
-- Style guardrails (section 5)
-- Image output guardrails (section 6)
-- Retry and fallback strategy (section 7)
-- Failure handling (section 8)
-
-Any violation makes the implementation invalid.
+This specification **MUST** comply with all sections of `1-guardrails.spec.md`. Any violation makes the implementation invalid.
