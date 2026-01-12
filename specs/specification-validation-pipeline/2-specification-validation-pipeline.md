@@ -1,15 +1,15 @@
 ---
-id: specification-validation-pipeline
+id: 3-specification-validation-pipeline-behavior
 version: 1.0.0
 level: 2
 status: canonical
 dependencies:
   - 0-zero.spec.md
-  - 0-specification-validation-pipeline.spec.md
-  - 1-specification-validation-pipeline.spec.md
+  - 0-specification-validation-pipeline-meta.spec.md
+  - 1-specification-validation-pipeline-guardrails.spec.md
 ---
 
-# Specification Validation Pipeline Specification
+# Specification Validation Pipeline Behavior Specification
 
 This specification defines the **implementation-level pipeline**
 for validating specifications using AI.
