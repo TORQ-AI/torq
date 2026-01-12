@@ -4,7 +4,7 @@ version: 0.0.3
 level: 1
 status: canonical
 dependencies:
-  - 0-0-zero.spec.md
+  - 0-zero.spec.md
 ---
 
 # Guardrails Specification
