@@ -17,7 +17,7 @@ This is a **Level 2 domain specification**.
 
 It defines:
 - Inputs
-- Execution stages
+- Validation stages (without ordering)
 - Concrete AI prompts
 - Output contract
 
@@ -173,7 +173,7 @@ NO SUMMARIZATION>
 }
 ```
 
-## Failure Handling
+## 6. Failure Handling
 
 If validation cannot be completed:
 
@@ -195,7 +195,8 @@ If validation cannot be completed:
 
 This specification is the sole owner of:
 - Validation pipeline behavior
-- AI prompts
-- Execution order
+- AI prompts for validation
 
-No other specification may redefine this pipeline.
+No other specification may redefine this pipeline behavior.
+
+Note: Execution order and orchestration are owned by Level 3 (3-specification-validation-orchestration).
