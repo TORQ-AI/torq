@@ -1,11 +1,11 @@
 ---
-id: prompt-generation
+id: 2-prompt-generation
 version: 1.1.0
 level: 2
 status: regular
 dependencies:
-  - 0-0-zero.spec.md
-  - 1-0-guardrails.spec.md
+  - 0-zero.spec.md
+  - 1-guardrails.spec.md
 ---
 
 # Prompt Generation Specification
