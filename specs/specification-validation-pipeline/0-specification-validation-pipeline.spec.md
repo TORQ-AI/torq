@@ -4,7 +4,7 @@ version: 1.0.0
 level: 0
 status: canonical
 dependencies:
-  - 0-0-zero.spec.md
+  - 0-zero.spec.md
 ---
 
 # Specification Validation Pipeline Specification
