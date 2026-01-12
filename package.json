@@ -2,6 +2,7 @@
   "name": "strava-activity-image-generator",
   "version": "1.0.0",
   "description": "Generates AI images based on Strava activity data.",
+  "type": "module",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -28,7 +29,6 @@
     "url": "https://balov.dev"
   },
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/mrbalov/strava-activity-image-generator/issues"
   },

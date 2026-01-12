@@ -13,7 +13,7 @@ on:
 jobs:
   validate-specifications:
     name: Validate Specifications
-    runs-on: ubuntu-latest
+    runs-on: self-hosted # EPAM DIAL requires EPAM VPN.
 
     permissions:
       contents: read

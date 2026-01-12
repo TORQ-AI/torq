@@ -67,8 +67,8 @@ The pipeline **MUST** execute the following stages in order:
 
 Each stage:
 - Receives the full accumulated validation context
-- May append validation results
-- MUST NOT modify inputs from previous stages
+- **MAY** append validation results
+- **MUST NOT** modify inputs from previous stages
 
 ## 5. Stage Transition Rules
 
@@ -94,7 +94,7 @@ Failure propagation rules:
 - Final result precedence:
   - INVALID > CONDITIONALLY VALID > VALID
 
-No stage may downgrade an existing **INVALID** result.
+No stage **MAY** downgrade an existing **INVALID** result.
 
 ## 7. Data Flow Invariants
 
