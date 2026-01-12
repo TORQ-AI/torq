@@ -4,112 +4,88 @@ version: 1.0.0
 level: 2
 status: canonical
 dependencies:
-  - 0-0-zero.spec.md
-  - 0-1-specification-validator-checklist.spec.md
+  - 0-zero.spec.md
+  - 0-specification-validation-pipeline.spec.md
+  - 1-specification-validation-pipeline.spec.md
 ---
 
 # Specification Validation Pipeline Specification
 
-This specification defines the **implementation-level validation pipeline** for validating specifications using AI in automated environments (e.g. GitHub Actions).
+This specification defines the **implementation-level pipeline**
+for validating specifications using AI.
 
 This is a **Level 2 domain specification**.
-It defines **inputs, processing steps, prompts, and outputs**.
 
-This specification is subordinate to:
-- Zero Specification
-- Specification Validator Checklist
-
-In case of conflict, higher-level specifications prevail.
+It defines:
+- Inputs
+- Execution stages
+- Concrete AI prompts
+- Output contract
 
 ## 1. Purpose
 
-The purpose of this specification is to define:
+The purpose of this specification is to define a **single, authoritative validation pipeline** used in CI and automated environments.
 
-- A **single, authoritative validation pipeline**
-- Exact **AI prompts** used for validation
-- Deterministic **validation execution flow**
-- Machine-readable **validation output contract**
-
-All AI-based spec validation **MUST** follow this pipeline.
-
-## 2. Scope
-
-This pipeline applies to:
-
-- All `.spec.md` files
-- Single-spec validation
-- Cross-spec validation
-- CI environments (e.g. GitHub Actions)
-
-## 3. Pipeline Inputs
+## 2. Pipeline Inputs
 
 The pipeline **MUST** receive:
 
-1. The **target specification** being validated
-2. The **full set of all existing specifications**
-3. The **Specification Validator Checklist**
-4. The **Zero Specification**
-
-All inputs **MUST** be treated as authoritative text sources.
+1. Target specification
+2. Full set of all specifications
+3. Specification Validator Checklist
+4. Zero Specification
 
 Missing input → **INVALID**
 
-## 4. Pipeline Stages
+## 3. Pipeline Stages
 
-The validation pipeline **MUST** execute the following stages in order.
+### 3.1 Load Stage
 
-### 4.1 Load Stage
-
-- Load all specification files
+- Load all spec files
 - Parse front matter
 - Build dependency graph
 
 Failure → **INVALID**
 
-### 4.2 Structural Validation Stage
+### 3.2 Structural Validation Stage
 
-The pipeline **MUST** validate:
+Validate:
+- Front matter
+- File naming
+- Dependencies
 
-- Front matter correctness
-- File naming rules
-- Dependency correctness
+Rules are taken **only** from the checklist.
 
-Rules are taken **exclusively** from the checklist.
+### 3.3 Semantic Validation Stage
 
-Failure → **INVALID**
-
-### 4.3 Semantic Validation Stage
-
-The pipeline **MUST** validate:
-
-- Rule ownership
+Validate:
 - Level compliance
-- Forbidden content per level
+- Allowed / forbidden content
+- Rule ownership
 - RFC 2119 language usage
 
 Ambiguities → **CONDITIONALLY VALID**
 
-### 4.4 Cross-Spec Validation Stage
+### 3.4 Cross-Spec Validation Stage
 
-The pipeline **MUST** validate:
-
+Validate:
 - Dependency closure
-- Cross-level conflicts
-- Rule shadowing
+- Rule conflicts
+- Shadowing
 - Duplication
-- Constraint tightening rules
+- Constraint tightening
 - Global determinism
 
-Any conflict → **INVALID**
+Any violation → **INVALID**
 
-## 5. Canonical Validation Prompt
+## 4. Canonical AI Prompts
 
-The following prompt **MUST** be used verbatim.
-
-### 5.1 System Instruction Prompt
+### 4.1 System Instruction Prompt
 
 ```text
 You are a formal specification validator.
+
+You **MUST** comply with AI Validation Guardrails.
 
 You **MUST** validate the provided specification strictly against:
 - The Zero Specification
@@ -119,36 +95,24 @@ You **MUST NOT** invent rules.
 You **MUST NOT** infer intent.
 You **MUST NOT** assume correctness.
 
-You **MUST** only report violations based on explicit rules.
-
 Your output **MUST** be deterministic.
 ```
 
-### 5.2 Validation Task Prompt
+### 4.2 Validation Task Prompt
 
 Validate the provided specification.
 
 You **MUST**:
-- Apply all General Checks
-- Apply Level-Specific Checks
-- Apply Cross-Spec Compatibility Checks
-- Consider the specification in the context of ALL provided specifications
-
-You **MUST** identify:
-- Rule violations
-- Cross-level conflicts
-- Rule shadowing
-- Duplication
-- Determinism violations
+- Apply all checklist sections
+- Perform cross-spec validation
+- Detect conflicts and duplication
 
 You **MUST NOT**:
 - Suggest fixes
 - Propose implementations
-- Assume missing intent
+- Infer missing intent
 
-## 6. Validation Output Contract
-
-The validator **MUST** return valid JSON in the following format:
+## 5. Validation Output Contract
 
 ```json
 {
@@ -156,30 +120,14 @@ The validator **MUST** return valid JSON in the following format:
   "version": "<version>",
   "level": <number>,
   "result": "VALID | CONDITIONALLY_VALID | INVALID",
-  "violations": [
-    {
-      "rule": "<checklist rule reference>",
-      "severity": "INVALID | CONDITIONAL",
-      "description": "<precise description>"
-    }
-  ],
+  "violations": [],
   "notes": []
 }
 ```
 
-Rules:
-- Violations **MUST** be present (empty if none)
-- Result **MUST** follow checklist semantics
-- Output **MUST** be deterministic
+## Failure Handling
 
-## 7. Failure Handling
-
-If validation cannot be completed due to:
-- Missing specifications
-- Broken dependency graph
-- Incomplete inputs
-
-The pipeline **MUST** return:
+If validation cannot be completed:
 
 ```json
 {
@@ -195,23 +143,11 @@ The pipeline **MUST** return:
 }
 ```
 
-## 8. Authority and Ownership
+## 7. Authority
 
-This specification:
-- Is the sole owner of validation pipeline behavior
-- Is the sole owner of AI validation prompts
-- **MUST** be referenced by CI pipelines performing spec validation
+This specification is the sole owner of:
+- Validation pipeline behavior
+- AI prompts
+- Execution order
 
 No other specification may redefine this pipeline.
-
-## Summary
-
-This specification defines a single, centralized, deterministic AI validation pipeline.
-
-Its goals are to:
-- Prevent validation drift
-- Centralize prompts and logic
-- Make CI validation reproducible
-- Keep higher-level specs purely normative
-
-All AI-based validation **MUST** follow this specification.
