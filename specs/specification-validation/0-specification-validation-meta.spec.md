@@ -1,6 +1,6 @@
 ---
 id: 0-specification-validation-meta
-version: 1.0.0
+version: 1.0.1
 level: 0
 status: canonical
 dependencies:
