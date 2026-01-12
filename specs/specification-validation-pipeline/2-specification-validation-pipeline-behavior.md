@@ -9,7 +9,7 @@ dependencies:
   - 1-specification-validation-pipeline-guardrails.spec.md
 ---
 
-# Specification Validation Pipeline Behavior Specification
+# Specification Validation Pipeline (Behavior) Specification
 
 This specification defines the **implementation-level pipeline**
 for validating specifications using AI.
