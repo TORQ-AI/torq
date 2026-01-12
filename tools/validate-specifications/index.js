@@ -213,7 +213,7 @@ const validateSpecifications = async () => {
 if (import.meta.url === `file://${process.argv[1]}`) {
   const result = await validateSpecifications();
 
-  console.info(result);
+  console.info(JSON.stringify(result, null, 2));
 }
 
 export default validateSpecifications;

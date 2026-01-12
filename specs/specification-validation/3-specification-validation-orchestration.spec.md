@@ -1,6 +1,6 @@
 ---
 id: 3-specification-validation-orchestration
-version: 1.0.1
+version: 1.0.2
 level: 3
 status: canonical
 dependencies:
