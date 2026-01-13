@@ -110,7 +110,7 @@ jobs:
 
   fix-specs:
     needs: validate-specs
-    # if: needs.validate-specs.outputs.validation-status == 'INVALID'
+    if: needs.validate-specs.outputs.validation-status == 'INVALID'
     uses: ./.github/workflows/fix-specs.yml
     secrets: inherit
     with:
