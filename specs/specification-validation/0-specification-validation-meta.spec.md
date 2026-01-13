@@ -1,6 +1,6 @@
 ---
 id: 0-specification-validation-meta
-version: 1.0.6
+version: 1.0.7
 level: 0
 status: regular
 dependencies:
