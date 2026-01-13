@@ -1,0 +1,41 @@
+name: Fix Specs
+
+on:
+  pull_request:
+    paths:
+      - "specs/**/*.spec.md"
+      - "packages/validate-specs/**"
+      - ".github/workflows/validate-specs.yml"
+  push:
+    branches: [ main ]
+    paths:
+      - "specs/**/*.spec.md"
+      - "packages/validate-specs/**"
+      - ".github/workflows/validate-specs.yml"
+
+jobs:
+  fix-specs:
+    name: Fix Specs
+    runs-on: self-hosted
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Ensure codemie-code is available
+        run: |
+          if ! command -v codemie-code >/dev/null 2>&1; then
+            bun add --global --dev @codemieai/code
+          fi
+
+      - name: Run test
+        run: |
+          codemie-code --profile default "Hey! How are you?"
