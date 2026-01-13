@@ -172,4 +172,4 @@ The validation rules and checklist are owned by:
 - `0-zero.spec.md` (for specification system rules)
 - `0-specification-validation-meta.spec.md` (for validation checklist)
 
-Note: Execution order and orchestration are owned by Level 3 (3-specification-validation-orchestration.spec.md).
+Note: Execution order and orchestration are owned by _Level 3_ (`3-specification-validation-orchestration.spec.md`).

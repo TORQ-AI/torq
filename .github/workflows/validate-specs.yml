@@ -1,14 +1,8 @@
 name: Validate Specs
 
 on:
-  pull_request:
-    paths:
-      - "specs/**/*.spec.md"
-      - "packages/validate-specs/**"
-      - ".github/workflows/validate-specs.yml"
-      - ".github/workflows/fix-specs.yml"
   push:
-    branches: [ main ]
+    branches: [main]
     paths:
       - "specs/**/*.spec.md"
       - "packages/validate-specs/**"
