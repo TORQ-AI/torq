@@ -1,6 +1,6 @@
 ---
 id: 2-prompt-generation
-version: 1.3.0
+version: 1.3.1
 level: 2
 status: regular
 dependencies:

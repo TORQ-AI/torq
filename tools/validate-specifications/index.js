@@ -184,8 +184,6 @@ const validateSpecifications = async () => {
           const response = JSON.parse(data);
           const content = response?.choices?.[0]?.message?.content;
 
-          console.info('LLM response:', response);
-
           if (!content) {
             return reject(
               new Error('No content in DIAL response.')
