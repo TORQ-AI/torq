@@ -102,7 +102,7 @@ Return a **SINGLE** validation result using this contract:
     {
       "spec_id": "<id or null if global>",
       "rule": "<meta rule reference>",
-      "severity": "INVALID | CONDITIONAL",
+      "severity": "CONDITIONALLY_VALID | INVALID",
       "description": "<precise, mechanical description>"
     }
   ],

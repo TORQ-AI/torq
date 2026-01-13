@@ -1,20 +1,19 @@
-name: Specification Validation
+name: Validate Specs
 
 on:
   pull_request:
     paths:
       - "specs/**/*.spec.md"
-      - "tools/validate-specifications/**"
+      - "packages/validate-specs/**"
   push:
-    branches:
-      - main
+    branches: [ main ]
     paths:
       - "specs/**/*.spec.md"
-      - "tools/validate-specifications/**"
+      - "packages/validate-specs/**"
 
 jobs:
-  validate-specifications:
-    name: Validate Specifications
+  validate-specs:
+    name: Validate Specs
     runs-on: self-hosted
 
     permissions:
@@ -25,31 +24,35 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
-      - name: Setup Node.js 24
-        uses: actions/setup-node@v4
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: 24
+          bun-version: latest
 
-      - name: Install bash utilities
+      - name: Ensure jq is available
         run: |
           if ! command -v jq >/dev/null 2>&1; then
             sudo apt-get update
             sudo apt-get install -y jq
           fi
 
-      - name: Run specification validation
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run spec validation
         run: |
-          mkdir .specification-validation && touch .specification-validation/result.json
-          node tools/validate-specifications/index.js > .specification-validation/result.json
+          mkdir -p .spec-validation
+          touch .spec-validation/result.json
+          npm run validate-specs > .spec-validation/result.json
 
       - name: Parse validation result
         id: validation
         run: |
-          RESULT=$(jq -r '.result' .specification-validation/result.json)
-          INVALID_COUNT=$(jq '[.violations[] | select(.severity=="INVALID")] | length' .specification-validation/result.json)
-          CONDITIONAL_COUNT=$(jq '[.violations[] | select(.severity=="CONDITIONAL")] | length' .specification-validation/result.json)
+          RESULT=$(jq -r '.result' .spec-validation/result.json)
+          INVALID_COUNT=$(jq '[.violations[] | select(.severity=="INVALID")] | length' .spec-validation/result.json)
+          CONDITIONAL_COUNT=$(jq '[.violations[] | select(.severity=="CONDITIONAL")] | length' .spec-validation/result.json)
 
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
           echo "invalid_count=$INVALID_COUNT" >> "$GITHUB_OUTPUT"
@@ -59,7 +62,7 @@ jobs:
         if: always()
         run: |
           {
-            echo "# 📋 Specification Validation Result"
+            echo "# 📋 Specs Validation Result"
             echo ""
             echo "| Metric | Value |"
             echo "|-------|-------|"
@@ -70,7 +73,7 @@ jobs:
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Render validation violations
-        if: always()
+        if: steps.validation.outputs.result != 'VALID'
         run: |
           echo "## ❌ Violations" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
@@ -78,11 +81,11 @@ jobs:
           echo "|------|------|----------|-------------|" >> "$GITHUB_STEP_SUMMARY"
 
           jq -r '.violations[] |
-          "| \(.spec_id // "global") | \(.rule) | **\(.severity)** | \(.description) |"
-          ' .specification-validation/result.json >> "$GITHUB_STEP_SUMMARY"
+            "| \(.spec_id // "global") | \(.rule) | **\(.severity)** | \(.description) |"
+          ' .spec-validation/result.json >> "$GITHUB_STEP_SUMMARY"
 
       - name: Fail pipeline on failed validation
         if: steps.validation.outputs.result == 'INVALID'
         run: |
-          echo "❌ Specification validation failed!"
+          echo "❌ Specs validation failed"
           exit 1

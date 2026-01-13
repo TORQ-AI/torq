@@ -3,16 +3,13 @@
   "version": "1.0.0",
   "description": "Generates AI images based on Strava activity data.",
   "type": "module",
+  "private": true,
+  "homepage": "https://github.com/mrbalov/strava-activity-image-generator#readme",
   "main": "dist/index.js",
+  "license": "MIT",
   "scripts": {
-    "build": "tsc",
-    "start": "node dist/index.js",
-    "dev": "nodemon --watch src --ext ts --exec ts-node src/index.ts",
-    "test": "jest",
-    "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage",
-    "lint": "tsc --noEmit",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "validate-specs": "bun run --cwd packages/validate-specs go -- --rootDir $(pwd)"
   },
   "repository": {
     "type": "git",
@@ -28,25 +25,18 @@
     "email": "balovbohdan@gmail.com",
     "url": "https://balov.dev"
   },
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/mrbalov/strava-activity-image-generator/issues"
   },
-  "homepage": "https://github.com/mrbalov/strava-activity-image-generator#readme",
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
-    "@types/jest": "^30.0.0",
-    "@types/node": "^24.0.0",
-    "bun": "^1.3.6",
-    "jest": "^30.2.0",
-    "nodemon": "^3.1.11",
-    "ts-jest": "^29.4.6",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "@types/bun": "^1.3.5",
+    "bun": "^1.3.6"
   },
-  "dependencies": {
-    "axios": "^1.13.2",
-    "dotenv": "^17.2.3",
-    "joi": "^18.0.2",
-    "winston": "^3.19.0"
+  "dependencies": {},
+  "peerDependencies": {
+    "typescript": "^5"
   }
 }
