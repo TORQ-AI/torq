@@ -22,5 +22,5 @@ jobs:
 
       - name: Run codemie-code basic command
         run: |
-          codemie auth login
+          codemie profile login
           codemie-code "Hey! How are you?"
