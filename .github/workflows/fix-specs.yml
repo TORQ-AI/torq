@@ -23,4 +23,5 @@ jobs:
       - name: Run codemie-code basic command
         run: |
           codemie profile login
-          codemie-code "Hey! How are you?"
+          codemie-code --profile default --task "Install concurrently dev dependency in package.json"
+          git status
