@@ -27,13 +27,20 @@ jobs:
       - name: Install CodeMie CLI
         run: npm install -g @codemieai/code
 
-      - name: Check CodeMie auth status
-        run: codemie profile status
+      - name: Check CodeMie auth status and login if needed
+        run: |
+          codemie profile status
+          codemie profile login
 
       - name: Run CodeMie to address the specs validation summary
         run: |
-          codemie profile login
-          codemie-code --model claude-4-1-opus --task "$(cat ./prompts/fix-specs.md)\n---- VALIDATION SUMMARY START ----\n${{ inputs.summary }}\n---- VALIDATION SUMMARY END ----"
+          TASK="$(cat ./prompts/fix-specs.md)
+
+          ---- VALIDATION SUMMARY START ----
+          ${{ inputs.summary }}
+          ---- VALIDATION SUMMARY END ----
+          "
+          codemie-code --model claude-4-1-opus --task "$TASK"
           echo "There are changes in the following files after the agent run:"
           git status
 

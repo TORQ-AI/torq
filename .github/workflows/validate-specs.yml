@@ -6,12 +6,14 @@ on:
       - "specs/**/*.spec.md"
       - "packages/validate-specs/**"
       - ".github/workflows/validate-specs.yml"
+      - ".github/workflows/fix-specs.yml"
   push:
     branches: [ main ]
     paths:
       - "specs/**/*.spec.md"
       - "packages/validate-specs/**"
       - ".github/workflows/validate-specs.yml"
+      - ".github/workflows/fix-specs.yml"
 
 jobs:
   validate-specs:
