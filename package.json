@@ -28,6 +28,9 @@
   "bugs": {
     "url": "https://github.com/mrbalov/strava-activity-image-generator/issues"
   },
+  "engines": {
+    "node": "24.x"
+  },
   "workspaces": [
     "packages/*"
   ],

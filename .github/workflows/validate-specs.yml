@@ -48,18 +48,19 @@ jobs:
       - name: Install dependencies
         run: bun install
 
-      - name: Run spec validation
+      - name: Run specs validation
         run: |
-          mkdir -p .spec-validation
-          touch .spec-validation/result.json
-          npm run validate-specs > .spec-validation/result.json
+          mkdir -p .specs-validation
+          touch .specs-validation/result.json
+          npm run validate-specs > .specs-validation/result.json
+          cat .specs-validation/result.json
 
       - name: Parse validation result
         id: validation
         run: |
-          RESULT=$(jq -r '.result' .spec-validation/result.json)
-          INVALID_COUNT=$(jq '[.violations[] | select(.severity=="INVALID")] | length' .spec-validation/result.json)
-          CONDITIONAL_COUNT=$(jq '[.violations[] | select(.severity=="CONDITIONAL")] | length' .spec-validation/result.json)
+          RESULT=$(jq -r '.result' .specs-validation/result.json)
+          INVALID_COUNT=$(jq '[.violations[] | select(.severity=="INVALID")] | length' .specs-validation/result.json)
+          CONDITIONAL_COUNT=$(jq '[.violations[] | select(.severity=="CONDITIONAL")] | length' .specs-validation/result.json)
 
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
           echo "invalid_count=$INVALID_COUNT" >> "$GITHUB_OUTPUT"
@@ -89,7 +90,7 @@ jobs:
 
           jq -r '.violations[] |
             "| \(.spec_id // "global") | \(.rule) | **\(.severity)** | \(.description) |"
-          ' .spec-validation/result.json >> "$GITHUB_STEP_SUMMARY"
+          ' .specs-validation/result.json >> "$GITHUB_STEP_SUMMARY"
 
       - name: Fail pipeline on failed validation
         if: steps.validation.outputs.result == 'INVALID'
