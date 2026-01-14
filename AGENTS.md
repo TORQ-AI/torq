@@ -18,7 +18,7 @@ Keep this managed block so 'openspec update' can refresh the instructions.
 
 ## System Purpose
 
-This system is an **AI-powered image generator for Strava activities** that creates personalized, artistic visualizations based on activity data. The system transforms structured Strava activity metadata into safe, deterministic, and aesthetically pleasing images that capture the essence of athletic achievements.
+The PACE system is an **AI-powered image generator for Strava activities** that creates personalized, artistic visualizations based on activity data. The system transforms structured Strava activity metadata into safe, deterministic, and aesthetically pleasing images that capture the essence of athletic achievements.
 
 ## Guardrails
 
