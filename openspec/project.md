@@ -106,7 +106,6 @@ PACE (Personal Activity Canvas Engine) is an AI-powered Strava activity image ge
 
 ### Compliance Requirements
 - **Specification Compliance**: Must adhere to all formal specifications
-- **Level System**: Follows hierarchical specification levels (0-3)
 - **Validation**: Automated spec validation via validate-specs script
 - **Documentation**: Comprehensive specs for all major components
 
@@ -123,7 +122,5 @@ PACE (Personal Activity Canvas Engine) is an AI-powered Strava activity image ge
 
 ### Future Integrations (Planned)
 - Multiple AI model providers for image generation
-- Additional fitness platforms beyond Strava
-- Cloud storage for generated images
 - User preference management system
 - Batch processing capabilities
