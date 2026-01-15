@@ -81,14 +81,30 @@ jobs:
       - name: Run specs validation
         run: |
           mkdir -p .specs-validation/ai
-          touch .specs-validation/ai/result.json
           
           if [ "${{ steps.changed-specs.outputs.has_changed_specs }}" = "true" ]; then
             echo "Validating only changed spec files..."
-            bun run --filter @pace/validate-specs validate-specs:ai -- --specFilePaths "${{ steps.changed-specs.outputs.spec_paths }}" --systemPrompt $(pwd)/prompts/validate-specs.system.md --userPrompt $(pwd)/prompts/validate-specs.user.md > .specs-validation/ai/result.json
+            bun run --filter @pace/validate-specs validate-specs-with-ai -- --specFilePaths "${{ steps.changed-specs.outputs.spec_paths }}" --systemPrompt $(pwd)/prompts/validate-specs.system.md --userPrompt $(pwd)/prompts/validate-specs.user.md > .specs-validation/ai/result.json 2>&1 || {
+              echo "Validation script failed. Output:"
+              cat .specs-validation/ai/result.json
+              # Create a valid error JSON response
+              echo '{"result": "INVALID", "violations": [], "notes": ["Validation script execution failed"]}' > .specs-validation/ai/result.json
+            }
           else
             echo "No changed spec files detected, validating all specs..."
-            bun run --filter @pace/validate-specs validate-specs:ai -- --rootDir $(pwd) --systemPrompt $(pwd)/prompts/validate-specs.system.md --userPrompt $(pwd)/prompts/validate-specs.user.md > .specs-validation/ai/result.json
+            bun run --filter @pace/validate-specs validate-specs-with-ai -- --rootDir $(pwd) --systemPrompt $(pwd)/prompts/validate-specs.system.md --userPrompt $(pwd)/prompts/validate-specs.user.md > .specs-validation/ai/result.json 2>&1 || {
+              echo "Validation script failed. Output:"
+              cat .specs-validation/ai/result.json
+              # Create a valid error JSON response
+              echo '{"result": "INVALID", "violations": [], "notes": ["Validation script execution failed"]}' > .specs-validation/ai/result.json
+            }
+          fi
+          
+          # Validate that the output is valid JSON
+          if ! jq empty .specs-validation/ai/result.json 2>/dev/null; then
+            echo "Error: result.json is not valid JSON. Content:"
+            cat .specs-validation/ai/result.json
+            echo '{"result": "INVALID", "violations": [], "notes": ["Invalid JSON output from validation script"]}' > .specs-validation/ai/result.json
           fi
 
       - name: Expose validation result JSON (as base64)
