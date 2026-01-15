@@ -309,3 +309,64 @@ If validation cannot be completed due to incomplete or inconsistent inputs, the 
 - **GIVEN** inconsistent specification inputs
 - **WHEN** validation is attempted
 - **THEN** the validator SHALL return INVALID result with violation describing inconsistency
+
+### Requirement: Approval Gate for AI Fixes
+
+The system SHALL require manual approval before automatically fixing specification validation failures using AI. The approval gate SHALL trigger when AI-assisted validation fails, require approval from the fix-specs-with-ai-approval environment, and only proceed to fix execution after approval is granted.
+
+#### Scenario: Approval gate trigger on AI validation failure
+- **GIVEN** AI-assisted validation fails
+- **WHEN** validation status is INVALID
+- **THEN** the fix-specs-with-ai-approval job SHALL trigger and wait for approval from the fix-specs-with-ai-approval environment
+
+#### Scenario: Fix workflow execution after approval
+- **GIVEN** approval is granted
+- **WHEN** the fix-specs-with-ai job executes
+- **THEN** the workflow SHALL call the fix-specs-with-ai.yml reusable workflow with the validation summary JSON
+
+### Requirement: Automated Spec Fix Workflow
+
+The system SHALL provide a reusable GitHub Actions workflow that automatically fixes specification validation failures using AI. The workflow SHALL accept a validation summary as input, checkout the repository, setup CodeMie CLI, authenticate, prepare a task with the fix-specs prompt and validation summary, execute CodeMie to fix violations, and create a pull request with the fixes.
+
+#### Scenario: Fix workflow input acceptance
+- **GIVEN** the fix-specs-with-ai workflow is called
+- **WHEN** receiving inputs
+- **THEN** the workflow SHALL accept a required summary input (base64-encoded validation summary JSON)
+
+#### Scenario: Fix workflow environment setup
+- **GIVEN** the fix workflow is executing
+- **WHEN** setting up the environment
+- **THEN** the workflow SHALL checkout the repository without persisting credentials, setup Node.js version 24, install CodeMie CLI globally, and authenticate with CodeMie
+
+#### Scenario: Fix task preparation
+- **GIVEN** the validation summary is available
+- **WHEN** preparing the fix task
+- **THEN** the workflow SHALL combine prompts/fix-specs.user.md with the decoded validation summary into a task file
+
+#### Scenario: CodeMie execution
+- **GIVEN** the fix task is prepared
+- **WHEN** executing CodeMie
+- **THEN** the workflow SHALL run codemie-code with model gpt-5-mini-2025-08-07 and the prepared task, and display git status after execution
+
+#### Scenario: Pull request creation
+- **GIVEN** CodeMie has made changes
+- **WHEN** creating a pull request
+- **THEN** the workflow SHALL create a pull request with branch name agent/fix-specs-{run_id}, title "🤖 Agent: Fix Specs", body describing automatic generation, and labels "agent" and "specs"
+
+### Requirement: Fix Workflow Prompt Usage
+
+The fix workflow SHALL use the prompt defined in prompts/fix-specs.user.md when preparing the fix task.
+
+#### Scenario: Fix workflow prompt
+- **GIVEN** the fix workflow is executing
+- **WHEN** preparing the fix task
+- **THEN** the workflow SHALL use prompts/fix-specs.user.md as the base prompt
+
+### Requirement: Fix Workflow Permissions
+
+The fix workflow SHALL require contents: write and pull-requests: write permissions to create pull requests with fixes.
+
+#### Scenario: Fix workflow permissions
+- **GIVEN** the fix-specs-with-ai workflow
+- **WHEN** examining permissions
+- **THEN** the workflow SHALL have contents: write and pull-requests: write permissions
