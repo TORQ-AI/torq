@@ -49,6 +49,14 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Log validation prompts
+        run: |
+          echo "=== System prompt ==="
+          cat prompts/validate-specs.system.md
+          echo ""
+          echo "=== User prompt ==="
+          cat prompts/validate-specs.user.md
+
       - name: Detect changed spec files
         id: changed-specs
         run: |
