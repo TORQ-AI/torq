@@ -1,0 +1,106 @@
+name: Validate Specs (OpenSpec)
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "openspec/**"
+      - "packages/validate-specs/validate-specs-with-openspec/**"
+      - ".github/workflows/validate-specs-openspec.yml"
+
+jobs:
+  validate-specs-openspec:
+    name: Validate Specs (OpenSpec)
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Ensure jq is available
+        run: |
+          if ! command -v jq >/dev/null 2>&1; then
+            sudo apt-get update
+            sudo apt-get install -y jq
+          fi
+
+      - name: Install dependencies
+        run: bun install
+
+      - name: Run OpenSpec validation
+        id: validation
+        run: |
+          mkdir -p .specs-validation/openspec
+          bun run validate-specs:openspec > .specs-validation/openspec/result.json || true
+
+      - name: Parse validation result
+        id: parse-result
+        run: |
+          SUCCESS=$(jq -r '.success' .specs-validation/openspec/result.json)
+          EXIT_CODE=$(jq -r '.exitCode' .specs-validation/openspec/result.json)
+          TOTAL_ITEMS=$(jq -r '.summary.totals.items' .specs-validation/openspec/result.json)
+          PASSED=$(jq -r '.summary.totals.passed' .specs-validation/openspec/result.json)
+          FAILED=$(jq -r '.summary.totals.failed' .specs-validation/openspec/result.json)
+
+          echo "success=$SUCCESS" >> "$GITHUB_OUTPUT"
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          echo "total_items=$TOTAL_ITEMS" >> "$GITHUB_OUTPUT"
+          echo "passed=$PASSED" >> "$GITHUB_OUTPUT"
+          echo "failed=$FAILED" >> "$GITHUB_OUTPUT"
+
+      - name: Render validation summary
+        if: always()
+        run: |
+          {
+            echo "# 📋 OpenSpec Validation Result"
+            echo ""
+            echo "| Metric | Value |"
+            echo "|-------|-------|"
+            echo "| Status | **${{ steps.parse-result.outputs.success }}** |"
+            echo "| Total items | ${{ steps.parse-result.outputs.total_items }} |"
+            echo "| Passed | ✅ ${{ steps.parse-result.outputs.passed }} |"
+            echo "| Failed | ❌ ${{ steps.parse-result.outputs.failed }} |"
+            echo ""
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Render validation failures
+        if: steps.parse-result.outputs.failed != '0'
+        run: |
+          echo "## ❌ Failed Specs" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Spec ID | Type | Issues |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---------|------|--------|" >> "$GITHUB_STEP_SUMMARY"
+
+          jq -r '.items[] | select(.valid == false) |
+            "| \(.id) | \(.type) | \(.issues | length) issue(s) |"
+          ' .specs-validation/openspec/result.json >> "$GITHUB_STEP_SUMMARY"
+
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "### Detailed Issues" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+
+          jq -r '.items[] | select(.valid == false) |
+            "#### \(.id) (\(.type))",
+            "",
+            (.issues[] | "- **\(.level)**: \(.message)"),
+            ""
+          ' .specs-validation/openspec/result.json >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Fail pipeline on validation failure
+        if: steps.parse-result.outputs.success == 'false'
+        run: |
+          echo "❌ OpenSpec validation failed! Please review the validation summary above and address the issues."
+          exit 1
