@@ -12,6 +12,8 @@ on:
 jobs:
   validate-specs-with-ai:
     name: Validate Specs with AI
+    environment:
+      name: validate-specs-with-ai-approval
     runs-on: self-hosted
 
     outputs:
@@ -47,8 +49,8 @@ jobs:
             sudo apt-get install -y jq
           fi
 
-      - name: Install dependencies
-        run: bun install
+      - name: Install dev dependencies
+        run: bun install --only dev
 
       - name: Log basic validation prompts (w/o injected specs)
         run: |

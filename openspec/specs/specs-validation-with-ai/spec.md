@@ -310,6 +310,25 @@ If validation cannot be completed due to incomplete or inconsistent inputs, the 
 - **WHEN** validation is attempted
 - **THEN** the validator SHALL return INVALID result with violation describing inconsistency
 
+### Requirement: Manual Approval Before AI Validation
+
+The system SHALL require manual approval before executing AI-based specification validation. The validation job SHALL use the validate-specs-with-ai-approval environment to pause workflow execution and wait for manual approval from designated reviewers before proceeding with AI validation steps.
+
+#### Scenario: Approval gate on workflow trigger
+- **GIVEN** the specs-validate-with-ai workflow is triggered
+- **WHEN** the validate-specs-with-ai job starts
+- **THEN** the workflow SHALL pause and wait for approval from the validate-specs-with-ai-approval environment
+
+#### Scenario: Validation execution after approval
+- **GIVEN** approval is granted from the validate-specs-with-ai-approval environment
+- **WHEN** the validate-specs-with-ai job proceeds
+- **THEN** the workflow SHALL execute AI validation steps including detecting changed spec files, running validation, and producing validation results
+
+#### Scenario: Environment configuration requirement
+- **GIVEN** the validate-specs-with-ai job
+- **WHEN** examining the job configuration
+- **THEN** the job SHALL reference the validate-specs-with-ai-approval environment
+
 ### Requirement: Approval Gate for AI Fixes
 
 The system SHALL require manual approval before automatically fixing specification validation failures using AI. The approval gate SHALL trigger when AI-assisted validation fails, require approval from the fix-specs-with-ai-approval environment, and only proceed to fix execution after approval is granted.

@@ -42,8 +42,8 @@ jobs:
             sudo apt-get install -y jq
           fi
 
-      - name: Install dependencies
-        run: bun install
+      - name: Install dev dependencies
+        run: bun install --only dev
 
       - name: Run OpenSpec validation
         id: validation
