@@ -1,6 +1,6 @@
 # Test Invalid Spec
 
-## Requirements
+## Requirements Blah-Blah-Blah!
 
 ### Requirement: Missing Scenario
 This requirement has no scenarios, which violates OpenSpec format.

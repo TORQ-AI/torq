@@ -61,8 +61,8 @@ jobs:
             BASE_SHA=$(git rev-parse HEAD~1 2>/dev/null || echo "HEAD")
           fi
           
-          # Get changed files and filter for .spec.md files
-          CHANGED_SPECS=$(git diff --name-only --diff-filter=ACMRT "$BASE_SHA" HEAD 2>/dev/null | grep '\.spec\.md$' || true)
+          # Get changed files and filter for .spec.md files *within openspec*
+          CHANGED_SPECS=$(git diff --name-only --diff-filter=ACMRT "$BASE_SHA" HEAD 2>/dev/null | grep '^openspec/.*spec\.md$' || true)
           
           if [ -n "$CHANGED_SPECS" ]; then
             # Convert newlines to commas and make paths absolute
