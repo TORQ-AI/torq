@@ -118,9 +118,22 @@ jobs:
         run: |
           RESULT=$(jq -r '.result // "INVALID"' .specs-validation/ai/result.json)
           VIOLATION_COUNT=$(jq '[.violations[]?] | length' .specs-validation/ai/result.json)
+          NOTES_COUNT=$(jq '[.notes[]?] | length' .specs-validation/ai/result.json)
 
           echo "result=$RESULT" >> "$GITHUB_OUTPUT"
           echo "violation_count=$VIOLATION_COUNT" >> "$GITHUB_OUTPUT"
+          echo "notes_count=$NOTES_COUNT" >> "$GITHUB_OUTPUT"
+
+      - name: Check for execution errors
+        if: steps.validation.outputs.notes_count != '0'
+        run: |
+          echo "⚠️ Validation script encountered errors:"
+          jq -r '.notes[]?' .specs-validation/ai/result.json | while read -r note; do
+            echo "  - $note"
+          done
+          echo ""
+          echo "This indicates the validation script failed to execute properly."
+          echo "Please check the logs above for details."
 
       - name: Render validation summary
         if: always()
@@ -132,8 +145,23 @@ jobs:
             echo "|-------|-------|"
             echo "| Result | **${{ steps.validation.outputs.result }}** |"
             echo "| Violations | ${{ steps.validation.outputs.violation_count }} |"
+            if [ "${{ steps.validation.outputs.notes_count }}" != "0" ]; then
+              echo "| Notes | ${{ steps.validation.outputs.notes_count }} |"
+            fi
             echo ""
           } >> "$GITHUB_STEP_SUMMARY"
+          
+          # Render notes if they exist
+          if [ "${{ steps.validation.outputs.notes_count }}" != "0" ]; then
+            {
+              echo "## ⚠️ Validation Notes" >> "$GITHUB_STEP_SUMMARY"
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+              jq -r '.notes[]?' .specs-validation/ai/result.json | while read -r note; do
+                echo "- $note" >> "$GITHUB_STEP_SUMMARY"
+              done
+              echo "" >> "$GITHUB_STEP_SUMMARY"
+            }
+          fi
 
       - name: Render validation violations
         if: steps.validation.outputs.result != 'VALID'
