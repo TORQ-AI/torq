@@ -26,6 +26,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v6
+        with:
+          fetch-depth: 0  # Fetch full history to ensure we can compare with any previous commit
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
@@ -47,11 +49,47 @@ jobs:
       - name: Install dependencies
         run: bun install
 
+      - name: Detect changed spec files
+        id: changed-specs
+        run: |
+          # Get the base commit for comparison
+          # For push events, use github.event.before if available, otherwise HEAD~1
+          if [ -n "${{ github.event.before }}" ] && [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            BASE_SHA="${{ github.event.before }}"
+          else
+            # Fallback: try HEAD~1, or use HEAD if it's the first commit
+            BASE_SHA=$(git rev-parse HEAD~1 2>/dev/null || echo "HEAD")
+          fi
+          
+          # Get changed files and filter for .spec.md files
+          CHANGED_SPECS=$(git diff --name-only --diff-filter=ACMRT "$BASE_SHA" HEAD 2>/dev/null | grep '\.spec\.md$' || true)
+          
+          if [ -n "$CHANGED_SPECS" ]; then
+            # Convert newlines to commas and make paths absolute
+            SPEC_PATHS=$(echo "$CHANGED_SPECS" | while read -r file; do
+              echo "$(pwd)/$file"
+            done | tr '\n' ',' | sed 's/,$//')
+            echo "spec_paths=$SPEC_PATHS" >> "$GITHUB_OUTPUT"
+            echo "has_changed_specs=true" >> "$GITHUB_OUTPUT"
+            echo "Found changed spec files:"
+            echo "$CHANGED_SPECS"
+          else
+            echo "has_changed_specs=false" >> "$GITHUB_OUTPUT"
+            echo "No changed spec files found"
+          fi
+
       - name: Run specs validation
         run: |
           mkdir -p .specs-validation/ai
           touch .specs-validation/ai/result.json
-          bun run validate-specs:ai > .specs-validation/ai/result.json
+          
+          if [ "${{ steps.changed-specs.outputs.has_changed_specs }}" = "true" ]; then
+            echo "Validating only changed spec files..."
+            bun run validate-specs:ai -- --specFilePaths "${{ steps.changed-specs.outputs.spec_paths }}" --systemPrompt $(pwd)/prompts/validate-specs.system.md --userPrompt $(pwd)/prompts/validate-specs.user.md > .specs-validation/ai/result.json
+          else
+            echo "No changed spec files detected, validating all specs..."
+            bun run validate-specs:ai -- --rootDir $(pwd) --systemPrompt $(pwd)/prompts/validate-specs.system.md --userPrompt $(pwd)/prompts/validate-specs.user.md > .specs-validation/ai/result.json
+          fi
 
       - name: Expose validation result JSON (as base64)
         id: expose-validation-summary-json
