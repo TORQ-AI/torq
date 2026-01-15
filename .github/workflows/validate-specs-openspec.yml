@@ -79,24 +79,13 @@ jobs:
       - name: Render validation failures
         if: steps.parse-result.outputs.failed != '0'
         run: |
-          echo "## ❌ Failed Specs" >> "$GITHUB_STEP_SUMMARY"
+          echo "## ❌ Validation Issues" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Spec ID | Type | Issues |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|---------|------|--------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Spec ID | Level | Message |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|---------|-------|---------|" >> "$GITHUB_STEP_SUMMARY"
 
-          jq -r '.items[] | select(.valid == false) |
-            "| \(.id) | \(.type) | \(.issues | length) issue(s) |"
-          ' .specs-validation/openspec/result.json >> "$GITHUB_STEP_SUMMARY"
-
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "### Detailed Issues" >> "$GITHUB_STEP_SUMMARY"
-          echo "" >> "$GITHUB_STEP_SUMMARY"
-
-          jq -r '.items[] | select(.valid == false) |
-            "#### \(.id) (\(.type))",
-            "",
-            (.issues[] | "- **\(.level)**: \(.message)"),
-            ""
+          jq -r '.items[] | select(.valid == false) | .id as $id |
+            .issues[] | "| \($id) | \(.level) | \(.message | gsub("\n"; " ")) |"
           ' .specs-validation/openspec/result.json >> "$GITHUB_STEP_SUMMARY"
 
       - name: Fail pipeline on validation failure
