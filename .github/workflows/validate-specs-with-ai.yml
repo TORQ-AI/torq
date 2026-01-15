@@ -2,7 +2,7 @@ name: Validate Specs with AI
 
 on:
   push:
-    branches: [todo]
+    branches: [main]
     paths:
       - "openspec/**"
       - "packages/validate-specs/validate-specs-with-ai"
