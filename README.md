@@ -7,6 +7,8 @@
 
 **PACE** (**P**ersonal **A**ctivity **C**anvas **E**ngine) is an AI-powered [Strava](https://www.strava.com/) activity image generator that automatically turns your workouts into visually compelling images. It analyzes activity data and context to create shareable, expressive visuals for each Strava activity, helping athletes present their performance and stories in a more engaging and personalized way.
 
+> **Note:** This project is being developed and supported in collaboration with AIs.
+
 ## Specification Validation Workflows
 
 GitHub Actions workflows serve as the canonical validation, so no separate local test command is required. Validation happens entirely in CI using a two-stage workflow:
