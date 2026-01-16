@@ -102,7 +102,7 @@ The workflow SHALL create a pull request with fixes using the peter-evans/create
 #### Scenario: Pull request branch naming
 - **GIVEN** CodeMie has made changes
 - **WHEN** creating a pull request
-- **THEN** the workflow SHALL create a branch with name pattern agent/fix-specs-{run_id} where run_id is the GitHub Actions run ID
+- **THEN** the workflow SHALL create a branch with name pattern agent/specs-fix-{run_id} where run_id is the GitHub Actions run ID
 
 #### Scenario: Pull request title
 - **GIVEN** a pull request is being created

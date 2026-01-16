@@ -28,7 +28,15 @@ The system SHALL provide a GitHub Actions workflow that validates specifications
 #### Scenario: OpenSpec CLI validation execution
 - **GIVEN** the workflow environment is set up
 - **WHEN** executing validation
-- **THEN** the workflow SHALL run the OpenSpec CLI tool with flags --all --strict --no-interactive --json via the validate-specs-with-openspec script and write results to .specs-validation/openspec/result.json
+- **THEN** the workflow SHALL run the validate-specs-with-openspec script with --rootDir parameter pointing to the repository root directory
+- **AND** the script SHALL internally invoke the OpenSpec CLI tool with flags --all --strict --no-interactive --json
+- **AND** the workflow SHALL write results to .specs-validation/openspec/result.json
+
+#### Scenario: OpenSpec validation scope
+- **GIVEN** the workflow executes validation
+- **WHEN** determining which files to validate
+- **THEN** the workflow SHALL validate the entire repository (using rootDir pointing to repository root)
+- **AND** the OpenSpec CLI SHALL scan all directories recursively for spec files matching its validation criteria
 
 #### Scenario: Validation result parsing
 - **GIVEN** validation results are available

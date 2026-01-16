@@ -319,6 +319,8 @@ The system SHALL provide a GitHub Actions workflow that executes AI-based specif
 - **WHEN** files in openspec/**, packages/validate-specs/specs-validate-with-ai, or .github/workflows/specs-validate-with-ai.yml are modified
 - **THEN** the AI validation workflow SHALL trigger
 
+**Note**: The path `packages/validate-specs/specs-validate-with-ai` in the workflow trigger may be a typo and should likely be `packages/validate-specs/validate-specs-with-ai` to match the actual package structure.
+
 #### Scenario: Manual workflow trigger with spec selection
 - **GIVEN** a GitHub Actions workflow_dispatch event
 - **WHEN** the AI validation workflow is manually triggered with specs input
@@ -330,15 +332,17 @@ The system SHALL provide a GitHub Actions workflow that executes AI-based specif
 - **GIVEN** the workflow is triggered by a push event
 - **WHEN** detecting changed spec files
 - **THEN** the workflow SHALL compare the current commit with the previous commit
-- **AND** the workflow SHALL identify all changed .spec.md files within the openspec directory
+- **AND** the workflow SHALL identify all changed .spec.md files within the openspec directory (matching pattern `^openspec/.*spec\.md$`)
 - **AND** the workflow SHALL convert changed file paths to absolute paths
 
 #### Scenario: Validated spec paths extraction
 - **GIVEN** validation execution context is available
 - **WHEN** extracting validated spec paths
 - **THEN** if changed specs were detected, the workflow SHALL extract spec paths from the changed specs output
-- **AND** if no changed specs were detected, the workflow SHALL find all spec.md files in the openspec directory
+- **AND** if no changed specs were detected, the workflow SHALL find all files matching pattern `*spec.md` in the `./openspec/specs` directory only
+- **AND** the workflow SHALL convert relative paths to absolute paths
 - **AND** the workflow SHALL store the list of validated spec paths as a JSON array
+- **AND** the workflow SHALL output debug information showing found spec files and the resulting JSON
 
 #### Scenario: Validation summary rendering
 - **GIVEN** validation results are parsed
@@ -369,6 +373,23 @@ The system SHALL provide a GitHub Actions workflow that executes AI-based specif
 - **WHEN** handling the failure
 - **THEN** the workflow SHALL create a valid error JSON response with INVALID result and notes describing the failure
 - **AND** the workflow SHALL continue execution to render summaries and expose outputs
+
+#### Scenario: Validation scope limitation
+- **GIVEN** the workflow validates all specs (no changed specs detected)
+- **WHEN** executing validation
+- **THEN** the workflow SHALL validate only specs in the `./openspec/specs` directory using `--rootDir $(pwd)/openspec/specs` parameter
+- **AND** the workflow SHALL NOT validate specs from `node_modules/`, `specs/`, or other directories outside `./openspec/specs`
+
+#### Scenario: Execution error detection
+- **GIVEN** validation results contain notes
+- **WHEN** checking for execution errors
+- **THEN** the workflow SHALL check if notes_count is non-zero
+- **AND** if notes exist, the workflow SHALL display a warning message listing all notes indicating validation script execution issues
+
+#### Scenario: Prompt logging
+- **GIVEN** the workflow is executing
+- **WHEN** before running validation
+- **THEN** the workflow SHALL log the system prompt and user prompt contents (without injected specs) for debugging purposes
 
 ### Requirement: Manual Approval Before AI Validation
 
