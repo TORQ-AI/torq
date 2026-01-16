@@ -186,6 +186,19 @@ jobs:
           echo "violation_count=$VIOLATION_COUNT" >> "$GITHUB_OUTPUT"
           echo "notes_count=$NOTES_COUNT" >> "$GITHUB_OUTPUT"
 
+      - name: Extract validated spec paths
+        id: extract-validated-specs
+        run: |
+          mkdir -p .specs-validation/ai
+          
+          if [ "${{ steps.changed-specs.outputs.has_changed_specs }}" = "true" ]; then
+            # Extract spec paths from comma-separated list
+            echo "${{ steps.changed-specs.outputs.spec_paths }}" | tr ',' '\n' | jq -R . | jq -s . > .specs-validation/ai/validated-specs.json
+          else
+            # Find all spec.md files in openspec directory
+            find openspec -name "spec.md" -type f | sort | jq -R . | jq -s . > .specs-validation/ai/validated-specs.json
+          fi
+
       - name: Check for execution errors
         if: steps.validation.outputs.notes_count != '0'
         run: |
@@ -225,24 +238,67 @@ jobs:
             }
           fi
 
-      - name: Render validation violations
-        if: steps.validation.outputs.result != 'VALID'
+      - name: Render validation results
+        if: always()
         run: |
-          echo "## ❌ Violations" >> "$GITHUB_STEP_SUMMARY"
+          echo "## 📋 All Validated Specs" >> "$GITHUB_STEP_SUMMARY"
           echo "" >> "$GITHUB_STEP_SUMMARY"
-          echo "| Spec ID | Rule | Description |" >> "$GITHUB_STEP_SUMMARY"
-          echo "|------|------|-------------|" >> "$GITHUB_STEP_SUMMARY"
+          echo "| Spec ID | Status | Rule | Description |" >> "$GITHUB_STEP_SUMMARY"
+          echo "|------|------|------|-------------|" >> "$GITHUB_STEP_SUMMARY"
 
-          jq -r '.violations[]? as $violation |
-            ($violation.spec_id // "global") as $id |
-            (if $id == "global" or $id == null or $id == "" then "global"
-              elif ($id | test(".*/openspec/specs/([^/]+)/spec\\.md")) then
-                ($id | capture(".*/openspec/specs/(?<spec_id>[^/]+)/spec\\.md") | .spec_id)
-              elif ($id | test("/spec\\.md$")) then
-                ($id | split("/") | .[length - 2])
-              else $id end) as $display |
-            "| \($display) | \($violation.rule // "unknown") | \($violation.description // "No description") |"
+          # Use jq to process all specs and violations together
+          jq -r --slurpfile validated_specs .specs-validation/ai/validated-specs.json '
+            # Helper function to extract display spec ID (same logic as violations)
+            def extract_display_id($path):
+              if $path == null or $path == "" or $path == "global" then "global"
+              elif ($path | test(".*/openspec/specs/([^/]+)/spec\\.md")) then
+                ($path | capture(".*/openspec/specs/(?<spec_id>[^/]+)/spec\\.md") | .spec_id)
+              elif ($path | test("/spec\\.md$")) then
+                ($path | split("/") | .[length - 2])
+              else $path end;
+
+            # Normalize path for matching (remove leading/trailing whitespace, handle absolute/relative)
+            def normalize_path($path):
+              ($path | tostring | gsub("^\\s+|\\s+$"; "")) as $trimmed |
+              if $trimmed == "" or $trimmed == "global" then "global"
+              else $trimmed end;
+
+            # Build violations map: spec_id -> violations array
+            [.violations[]? | select(.spec_id != null and .spec_id != "" and .spec_id != "global")] as $all_violations |
+            ($all_violations | group_by(.spec_id) | map({key: .[0].spec_id, value: .}) | from_entries) as $violations_by_spec |
+
+            # Process each validated spec
+            $validated_specs[0][] as $spec_path |
+            normalize_path($spec_path) as $normalized_spec_path |
+            extract_display_id($spec_path) as $display_id |
+            
+            # Try to find violations for this spec (check both exact match and normalized match)
+            (if $violations_by_spec[$spec_path] then $violations_by_spec[$spec_path]
+             elif $violations_by_spec[$normalized_spec_path] then $violations_by_spec[$normalized_spec_path]
+             else empty end) as $spec_violations |
+            
+            if $spec_violations then
+              # Spec has violations - show each violation
+              $spec_violations[] |
+              "| \($display_id) | ❌ Invalid | \(.rule // "unknown") | \(.description // "No description") |"
+            else
+              # Spec is valid
+              "| \($display_id) | ✅ Valid | - | No issues found |"
+            end
           ' .specs-validation/ai/result.json >> "$GITHUB_STEP_SUMMARY"
+
+          # Handle global violations (violations without spec_id)
+          global_violations=$(jq -r '[.violations[]? | select(.spec_id == null or .spec_id == "" or .spec_id == "global")] | if length > 0 then . else empty end' .specs-validation/ai/result.json)
+          if [ -n "$global_violations" ] && [ "$global_violations" != "[]" ]; then
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "### Global Issues" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "| Spec ID | Status | Rule | Description |" >> "$GITHUB_STEP_SUMMARY"
+            echo "|------|------|------|-------------|" >> "$GITHUB_STEP_SUMMARY"
+            echo "$global_violations" | jq -r '.[] | 
+              "| global | ❌ Invalid | \(.rule // "unknown") | \(.description // "No description") |"
+            ' >> "$GITHUB_STEP_SUMMARY"
+          fi
 
   specs-fix-with-ai-approval:
     name: Fix Specs with AI Approval

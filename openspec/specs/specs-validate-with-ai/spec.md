@@ -1,4 +1,4 @@
-# Specs Validation with AI
+# Specs Validate with AI
 
 ## Purpose
 

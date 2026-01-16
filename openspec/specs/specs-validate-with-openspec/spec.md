@@ -1,4 +1,4 @@
-# Specs Validation with OpenSpec
+# Specs Validate with OpenSpec
 
 ## Purpose
 
