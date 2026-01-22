@@ -11,8 +11,7 @@ import { handleStravaAuth, handleStravaAuthCallback, handleRoot } from '../route
 
 const config = getConfig();
 
-Bun.serve({
-  port: config.port,
+const server = Bun.serve({
   hostname: config.hostname,
   routes: {
     '/': {
@@ -35,5 +34,6 @@ Bun.serve({
   },
 });
 
-console.log(`🚀 PACE UI Server running on http://${config.hostname}:${config.port}`);
-console.log(`📋 Strava Auth: http://${config.hostname}:${config.port}/strava/auth`);
+const serverUrl = `http://${config.hostname}${server.port ? `:${server.port}` : ''}`;
+console.log(`🚀 PACE UI Server running on ${serverUrl}`);
+console.log(`📋 Strava Auth: ${serverUrl}/strava/auth`);

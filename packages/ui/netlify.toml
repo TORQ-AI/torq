@@ -1,6 +1,7 @@
 [build]
-  command = "echo 'No build step needed'"
-  publish = "public"
+  # Note: publish directory should be set in Netlify dashboard, not here
+  # because paths in netlify.toml are resolved relative to repo root,
+  # not the base directory. Set it to "public" in dashboard.
 
 [functions]
   directory = "netlify/functions"

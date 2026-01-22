@@ -4,7 +4,6 @@ import type { ServerConfig } from '../../types';
 
 describe('handleStravaAuth', () => {
   const mockConfig: ServerConfig = {
-    port: 3000,
     hostname: 'localhost',
     strava: {
       clientId: 'test-client-id',

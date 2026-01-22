@@ -33,7 +33,6 @@ Create a `.env` file in the project root:
 STRAVA_CLIENT_ID=your-client-id
 STRAVA_CLIENT_SECRET=your-client-secret
 STRAVA_REDIRECT_URI=http://localhost:3000/strava/auth/callback
-PORT=3000
 ```
 
 **Note**: The `STRAVA_REDIRECT_URI` must match what's configured in your Strava app. If Strava redirects to a different URL, check your app settings!
@@ -43,7 +42,7 @@ PORT=3000
 ```bash
 cd packages/ui
 bun run dev
-```
+```f
 
 Or from the project root:
 
@@ -147,8 +146,7 @@ Configuration is loaded from environment variables:
 
 - `STRAVA_REDIRECT_URI`: OAuth redirect URI (default: `http://localhost:3000/strava/auth/callback`)
 - `STRAVA_SCOPE`: OAuth scope (default: `activity:read`)
-- `PORT`: Server port (default: `3000`)
-- `HOSTNAME`: Server hostname (default: `localhost`)
+- `HOSTNAME`: Server hostname (default: extracted from Netlify's `URL` env var if available, otherwise `localhost`)
 - `COOKIE_DOMAIN`: Cookie domain (default: undefined)
 - `COOKIE_SECURE`: Secure cookies flag (default: `false` in dev, `true` in production)
 - `COOKIE_SAME_SITE`: SameSite attribute (default: `lax`)
@@ -318,8 +316,10 @@ In Netlify dashboard:
 
 1. Go to **Site settings** → **Build & deploy**
 2. Set **Base directory** to: `packages/ui`
-3. Set **Build command** to: `echo 'No build step needed'` (or leave empty)
+3. Set **Build command** to: (leave empty - netlify.toml handles it)
 4. Set **Publish directory** to: `public` (relative to base directory)
+
+**Important**: The `publish` directory must be set in the Netlify dashboard, not in `netlify.toml`, because Netlify resolves paths in `netlify.toml` relative to the repo root, not the base directory.
 
 ### Step 4: Deploy
 
@@ -385,6 +385,17 @@ netlify dev
 This will start a local development server that simulates Netlify's environment.
 
 ### Troubleshooting
+
+#### Deploy Directory Does Not Exist
+
+If you see the error: `Deploy directory 'public' does not exist`
+
+**Solution:**
+1. Go to **Site settings** → **Build & deploy**
+2. Ensure **Base directory** is set to: `packages/ui`
+3. Ensure **Publish directory** is set to: `public` (relative to base directory)
+4. **Important**: Do NOT set `publish` in `netlify.toml` - paths in that file are resolved relative to the repo root, not the base directory
+5. The `public` directory must exist at `packages/ui/public/`
 
 #### Functions Not Working
 

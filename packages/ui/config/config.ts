@@ -1,6 +1,32 @@
 import type { ServerConfig } from '../types';
 
 /**
+ * Gets the server hostname from environment variables.
+ *
+ * Priority order:
+ * 1. HOSTNAME environment variable (explicit override)
+ * 2. Netlify URL environment variable (extracts hostname from URL)
+ * 3. Defaults to 'localhost' for local development
+ *
+ * @returns {string} Server hostname
+ */
+const getHostname = (): string => {
+  if (process.env.HOSTNAME) {
+    return process.env.HOSTNAME;
+  } else if (process.env.URL) {
+    try {
+      const { hostname } = new URL(process.env.URL);
+
+      return hostname;
+    } catch {
+      return 'localhost';
+    }
+  } else {
+    return 'localhost';
+  }
+};
+
+/**
  * Gets server configuration from environment variables.
  *
  * @returns {ServerConfig} Server configuration
@@ -20,8 +46,7 @@ const getConfig = (): ServerConfig => {
   const isProduction = process.env.NODE_ENV === 'production';
 
   return {
-    port: Number.parseInt(process.env.PORT || '3000', 10),
-    hostname: process.env.HOSTNAME || 'localhost',
+    hostname: getHostname(),
     strava: {
       clientId,
       clientSecret,

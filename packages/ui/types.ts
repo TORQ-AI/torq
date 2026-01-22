@@ -2,8 +2,6 @@
  * Server configuration for UI package.
  */
 export type ServerConfig = {
-  /** Server port (default: 3000). */
-  port?: number;
   /** Server hostname (default: 'localhost'). */
   hostname?: string;
   /** Strava OAuth configuration. */
