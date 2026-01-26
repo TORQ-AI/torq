@@ -6,13 +6,14 @@
   "main": "dist/server.js",
   "types": "src/index.ts",
   "scripts": {
-    "build": "bun build src/server.ts --outdir dist --target node --format esm --minify --external @pace/strava-auth",
-    "build:watch": "bun build src/server.ts --outdir dist --target node --format esm --watch --external @pace/strava-auth",
+    "build": "bun build src/server.ts --outdir dist --target node --format esm --minify --external @pace/strava-auth --external @pace/strava-activity",
+    "build:watch": "bun build src/server.ts --outdir dist --target node --format esm --watch --external @pace/strava-auth --external @pace/strava-activity",
     "dev": "bun --watch src/server.ts",
     "start": "node dist/server.js",
     "test": "bun test"
   },
   "dependencies": {
-    "@pace/strava-auth": "workspace:*"
+    "@pace/strava-auth": "workspace:*",
+    "@pace/strava-activity": "workspace:*"
   }
 }

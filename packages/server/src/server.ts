@@ -9,7 +9,7 @@
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { getConfig } from './config';
-import { stravaAuth, stravaAuthCallback } from './routes';
+import { stravaAuth, stravaAuthCallback, stravaActivity } from './routes';
 
 const config = getConfig();
 
@@ -95,6 +95,18 @@ const webResponseToNodeResponse = async (
 };
 
 /**
+ * Checks if pathname matches /strava/activity/:id pattern.
+ *
+ * @param {string} pathname - Request pathname
+ * @returns {boolean} True if pathname matches the pattern
+ * @internal
+ */
+const matchesActivityRoute = (pathname: string): boolean => {
+  const pathParts = pathname.split('/').filter((part) => part !== '');
+  return pathParts.length === 3 && pathParts[0] === 'strava' && pathParts[1] === 'activity';
+};
+
+/**
  * Handles route matching and returns appropriate response.
  *
  * @param {Request} request - Web API request
@@ -108,7 +120,9 @@ const handleRoute = async (request: Request): Promise<Response> => {
     ? Promise.resolve(stravaAuth(request, config))
     : pathname === '/strava/auth/callback'
       ? stravaAuthCallback(request, config)
-      : Promise.resolve(new Response('Not Found', { status: 404 }));
+      : matchesActivityRoute(pathname)
+        ? stravaActivity(request, config)
+        : Promise.resolve(new Response('Not Found', { status: 404 }));
 
   return await promise;
 };
