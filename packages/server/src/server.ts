@@ -9,7 +9,7 @@
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { getConfig } from './config';
-import { stravaAuth, stravaAuthCallback, stravaActivity } from './routes';
+import { stravaAuth, stravaAuthCallback, stravaActivity, stravaActivities } from './routes';
 
 const config = getConfig();
 
@@ -120,9 +120,11 @@ const handleRoute = async (request: Request): Promise<Response> => {
     ? Promise.resolve(stravaAuth(request, config))
     : pathname === '/strava/auth/callback'
       ? stravaAuthCallback(request, config)
-      : matchesActivityRoute(pathname)
-        ? stravaActivity(request, config)
-        : Promise.resolve(new Response('Not Found', { status: 404 }));
+      : pathname === '/strava/activities'
+        ? stravaActivities(request, config)
+        : matchesActivityRoute(pathname)
+          ? stravaActivity(request, config)
+          : Promise.resolve(new Response('Not Found', { status: 404 }));
 
   return await promise;
 };
