@@ -27,6 +27,8 @@ export function useActivities(): UseActivitiesResult {
       setLoading(true);
       setError(null);
       setIsUnauthorized(false);
+      const startTime = Date.now();
+      const MIN_LOADING_TIME = 400; // Minimum 400ms for smooth transition
       
       try {
         const data = await fetchActivities();
@@ -52,7 +54,12 @@ export function useActivities(): UseActivitiesResult {
         }
       } finally {
         if (mounted) {
-          setLoading(false);
+          // Ensure minimum loading time for smooth transition
+          const elapsed = Date.now() - startTime;
+          const remaining = Math.max(0, MIN_LOADING_TIME - elapsed);
+          setTimeout(() => {
+            setLoading(false);
+          }, remaining);
         }
       }
     };

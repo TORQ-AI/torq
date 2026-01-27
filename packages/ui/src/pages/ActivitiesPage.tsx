@@ -1,7 +1,9 @@
-import { Card, Button, Text, Grid, Spacer, Loading, Note } from '@geist-ui/core';
+import { Card, Button, Text, Grid, Spacer, Note } from '@geist-ui/core';
 import { Activity as ActivityIcon, Navigation, Clock, TrendingUp, Zap, ArrowLeft } from '@geist-ui/icons';
 import { Link } from 'wouter';
+import { useState, useEffect } from 'react';
 import { useActivities } from '../api/hooks';
+import Preloader from '../components/Preloader';
 
 /**
  * Formats activity type to a friendly display name.
@@ -35,24 +37,28 @@ const formatActivityType = (type: string): string => {
  */
 const ActivitiesPage = (): JSX.Element => {
   const { activities, loading, error, isUnauthorized, refetch } = useActivities();
+  const [showContent, setShowContent] = useState(false);
 
-  if (loading) {
-    return (
-      <Grid.Container
-        gap={2}
-        justify="center"
-        style={{ minHeight: 'calc(100vh - 60px)', alignContent: 'center' }}
-      >
-        <Grid xs={24} style={{ textAlign: 'center' }}>
-          <Loading>Loading your activities...</Loading>
-        </Grid>
-      </Grid.Container>
-    );
+  // Handle smooth transition from preloader to content
+  useEffect(() => {
+    if (!loading) {
+      // Small delay to allow preloader fade-out before showing content
+      const timer = setTimeout(() => {
+        setShowContent(true);
+      }, 600);
+      return () => clearTimeout(timer);
+    } else {
+      setShowContent(false);
+    }
+  }, [loading]);
+
+  if (loading || !showContent) {
+    return <Preloader message="Loading your activities..." />;
   }
 
   if (isUnauthorized) {
     return (
-      <Grid.Container gap={2} style={{ padding: '2rem', minHeight: 'calc(100vh - 60px)' }}>
+      <Grid.Container gap={2} style={{ padding: '2rem', minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--geist-background)' }}>
         <Grid xs={24} sm={20} md={16} lg={12} style={{ margin: '0 auto' }}>
           <Card width="100%">
             <Card.Content>
@@ -83,7 +89,7 @@ const ActivitiesPage = (): JSX.Element => {
 
   if (error) {
     return (
-      <Grid.Container gap={2} style={{ padding: '2rem', minHeight: 'calc(100vh - 60px)' }}>
+      <Grid.Container gap={2} style={{ padding: '2rem', minHeight: 'calc(100vh - 60px)', backgroundColor: 'var(--geist-background)' }}>
         <Grid xs={24} sm={20} md={16} lg={12} style={{ margin: '0 auto' }}>
           <Card width="100%">
             <Card.Content>
@@ -115,12 +121,21 @@ const ActivitiesPage = (): JSX.Element => {
   }
 
   return (
-    <Grid.Container gap={2} style={{ padding: '2rem', minHeight: 'calc(100vh - 60px)' }}>
+    <Grid.Container 
+      gap={2} 
+      style={{ 
+        padding: '2rem', 
+        minHeight: 'calc(100vh - 60px)',
+        opacity: showContent ? 1 : 0,
+        transform: showContent ? 'translateY(0)' : 'translateY(10px)',
+        transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+        backgroundColor: 'var(--geist-background)',
+      }}
+    >
       <Grid xs={24} style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
         <Link href="/">
           <Button
             auto
-            size="small"
             icon={<ArrowLeft />}
             placeholder="Back"
             onPointerEnterCapture={() => {}}

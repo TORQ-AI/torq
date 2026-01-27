@@ -1,8 +1,10 @@
-import { Card, Button, Text, Grid, Spacer, Loading } from '@geist-ui/core';
-import { Activity as ActivityIcon, ArrowRight } from '@geist-ui/icons';
+import { Card, Button, Text, Grid, Spacer } from '@geist-ui/core';
+import { Activity as ActivityIcon } from '@geist-ui/icons';
 import { Link } from 'wouter';
+import { useState, useEffect } from 'react';
 import { authorizeStrava } from '../api/strava';
 import { useAuthStatus } from '../hooks/useAuthStatus';
+import Preloader from '../components/Preloader';
 
 /**
  * Home page component.
@@ -13,95 +15,108 @@ import { useAuthStatus } from '../hooks/useAuthStatus';
  */
 const HomePage = (): JSX.Element => {
   const { isAuthenticated, loading } = useAuthStatus();
+  const [showContent, setShowContent] = useState(false);
 
-  if (loading) {
+  // Handle smooth transition from preloader to content
+  useEffect(() => {
+    if (!loading) {
+      // Small delay to allow preloader fade-out before showing content
+      const timer = setTimeout(() => {
+        setShowContent(true);
+      }, 600);
+      return () => clearTimeout(timer);
+    } else {
+      setShowContent(false);
+    }
+  }, [loading]);
+
+  if (loading || !showContent) {
+    return <Preloader />;
+  } else {
     return (
-      <Grid.Container
-        gap={2}
-        justify="center"
-        style={{ minHeight: 'calc(100vh - 60px)', alignContent: 'center' }}
+      <Grid.Container 
+        gap={2} 
+        style={{ 
+          padding: '2rem', 
+          minHeight: 'calc(100vh - 60px)',
+          opacity: showContent ? 1 : 0,
+          transform: showContent ? 'translateY(0)' : 'translateY(10px)',
+          transition: 'opacity 0.5s ease-out, transform 0.5s ease-out',
+          backgroundColor: 'var(--geist-background)',
+        }}
       >
-        <Grid xs={24} style={{ textAlign: 'center' }}>
-          <Loading>Checking authentication...</Loading>
+        {isAuthenticated ? (
+          // Authorized - show welcome message with link to activities
+          <Grid xs={24} sm={20} md={16} lg={12} style={{ margin: '0 auto' }}>
+            <Card width="100%">
+              <Card.Content>
+                <Text h2>Welcome to PACE!</Text>
+                <Spacer h={1} />
+                <Text>
+                  You're successfully connected to Strava. Review your activities and generate beautiful AI images for them.
+                </Text>
+              </Card.Content>
+              <Card.Footer>
+                <Link href="/activities">
+                  <Button
+                    type="success"
+                    icon={<ActivityIcon />}
+                    width="100%"
+                    placeholder="View Activities"
+                    onPointerEnterCapture={() => {}}
+                    onPointerLeaveCapture={() => {}}
+                  >
+                    <span style={{ marginLeft: '0.5rem' }}>View Activities</span>
+                  </Button>
+                </Link>
+              </Card.Footer>
+            </Card>
+          </Grid>
+        ) : (
+          // Not authorized - show authorize button
+          <Grid xs={24} sm={20} md={16} lg={12} style={{ margin: '0 auto' }}>
+            <Card width="100%">
+              <Card.Content>
+                <Text h2>Strava Activity Image Generator</Text>
+                <Spacer h={1} />
+                <Text>
+                  Connect your Strava account to generate beautiful activity images.
+                </Text>
+              </Card.Content>
+              <Card.Footer>
+                <Button
+                  type="success"
+                  icon={<ActivityIcon />}
+                  onClick={authorizeStrava}
+                  width="100%"
+                  placeholder="Authorize with Strava"
+                  onPointerEnterCapture={() => {}}
+                  onPointerLeaveCapture={() => {}}
+                >
+                  Authorize with Strava
+                </Button>
+              </Card.Footer>
+            </Card>
+          </Grid>
+        )}
+  
+        {/* Project description at the bottom */}
+        <Grid xs={24} style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--geist-border)' }}>
+          <Card width="100%">
+            <Card.Content>
+              <Text h3>About PACE</Text>
+              <Spacer h={0.5} />
+              <Text>
+                PACE is a Strava Activity Image Generator that helps you create beautiful visualizations
+                of your athletic activities. Connect your Strava account to get started and transform
+                your workout data into stunning images.
+              </Text>
+            </Card.Content>
+          </Card>
         </Grid>
       </Grid.Container>
     );
   }
-
-  return (
-    <Grid.Container gap={2} style={{ padding: '2rem', minHeight: 'calc(100vh - 60px)' }}>
-      {isAuthenticated ? (
-        // Authorized - show welcome message with link to activities
-        <Grid xs={24} sm={20} md={16} lg={12} style={{ margin: '0 auto' }}>
-          <Card width="100%">
-            <Card.Content>
-              <Text h2>Welcome to PACE!</Text>
-              <Spacer h={1} />
-              <Text>
-                You're successfully connected to Strava. Review your activities and generate beautiful AI images for them.
-              </Text>
-            </Card.Content>
-            <Card.Footer>
-              <Link href="/activities">
-                <Button
-                  type="success"
-                  icon={<ActivityIcon />}
-                  iconRight={<ArrowRight />}
-                  width="100%"
-                  placeholder="View Activities"
-                  onPointerEnterCapture={() => {}}
-                  onPointerLeaveCapture={() => {}}
-                >
-                  View Activities
-                </Button>
-              </Link>
-            </Card.Footer>
-          </Card>
-        </Grid>
-      ) : (
-        // Not authorized - show authorize button
-        <Grid xs={24} sm={20} md={16} lg={12} style={{ margin: '0 auto' }}>
-          <Card width="100%">
-            <Card.Content>
-              <Text h2>Strava Activity Image Generator</Text>
-              <Spacer h={1} />
-              <Text>
-                Connect your Strava account to generate beautiful activity images.
-              </Text>
-            </Card.Content>
-            <Card.Footer>
-              <Button
-                type="success"
-                icon={<ActivityIcon />}
-                onClick={authorizeStrava}
-                width="100%"
-                placeholder="Authorize with Strava"
-                onPointerEnterCapture={() => {}}
-                onPointerLeaveCapture={() => {}}
-              >
-                Authorize with Strava
-              </Button>
-            </Card.Footer>
-          </Card>
-        </Grid>
-      )}
-
-      {/* Project description at the bottom */}
-      <Grid xs={24} style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--geist-border)' }}>
-        <Card width="100%">
-          <Card.Content>
-            <Text h3>About PACE</Text>
-            <Spacer h={0.5} />
-            <Text>
-              PACE is a Strava Activity Image Generator that helps you create beautiful visualizations
-              of your athletic activities. Connect your Strava account to get started and transform
-              your workout data into stunning images.
-            </Text>
-          </Card.Content>
-        </Card>
-      </Grid>
-    </Grid.Container>
-  );
 };
 
 export default HomePage;

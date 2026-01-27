@@ -4,19 +4,22 @@ import { GeistProvider, CssBaseline } from '@geist-ui/core';
 import App from './App';
 
 function Root() {
-  const [themeType, setThemeType] = useState<'light' | 'dark'>('light');
-
-  useEffect(() => {
-    // Load theme from localStorage or system preference
+  // Initialize theme synchronously to prevent flash
+  const getInitialTheme = (): 'light' | 'dark' => {
     const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
     if (savedTheme) {
-      setThemeType(savedTheme);
-    } else {
-      // Check system preference
-      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      setThemeType(prefersDark ? 'dark' : 'light');
+      return savedTheme;
     }
-  }, []);
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    return prefersDark ? 'dark' : 'light';
+  };
+
+  const [themeType, setThemeType] = useState<'light' | 'dark'>(getInitialTheme);
+
+  // Sync data-theme attribute when theme changes
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', themeType);
+  }, [themeType]);
 
   const handleThemeChange = (newTheme: 'light' | 'dark') => {
     setThemeType(newTheme);

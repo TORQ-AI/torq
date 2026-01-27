@@ -20,6 +20,9 @@ export const useAuthStatus = (): UseAuthStatusResult => {
   useEffect(() => {
     const checkAuth = async () => {
       setLoading(true);
+      const startTime = Date.now();
+      const MIN_LOADING_TIME = 400; // Minimum 400ms for smooth transition
+      
       try {
         await apiRequest<{ authenticated: boolean }>('/strava/auth/status');
         setIsAuthenticated(true);
@@ -31,7 +34,12 @@ export const useAuthStatus = (): UseAuthStatusResult => {
           setIsAuthenticated(false);
         }
       } finally {
-        setLoading(false);
+        // Ensure minimum loading time for smooth transition
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, MIN_LOADING_TIME - elapsed);
+        setTimeout(() => {
+          setLoading(false);
+        }, remaining);
       }
     };
 
