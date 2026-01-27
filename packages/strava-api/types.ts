@@ -48,47 +48,11 @@ export type StravaApiConfig = {
 };
 
 /**
-* StravaActivity data structure matching Guardrails spec.
-*/
-export type StravaActivity = {
-  type: string;
-  sport_type: string;
-  distance?: number;
-  avg_hr?: number;
-  pace?: number;
-  elevation_gain?: number;
-  time_of_day?: string;
-  weather?: string;
-  name?: string;
-  description?: string;
-  tags?: string[];
-  gear?: string;
-  id?: number;
-  start_date?: string;
-  start_date_local?: string;
-  timezone?: string;
-  moving_time?: number;
-  elapsed_time?: number;
-  total_elevation_gain?: number;
-  average_speed?: number;
-  max_speed?: number;
-  average_cadence?: number;
-  average_temp?: number;
-  average_watts?: number;
-  weighted_average_watts?: number;
-  kilojoules?: number;
-  device_watts?: boolean;
-  has_heartrate?: boolean;
-  max_watts?: number;
-  elev_high?: number;
-  elev_low?: number;
-  calories?: number;
-};
-
-/**
- * Strava API response type (raw format from API).
+ * Strava Activity type.
+ * The type is dictated by the Strava API and used internally by the system.
+ * @see {@link https://developers.strava.com/docs/reference/#api-Activities-getActivityById | Strava Activity Response Format}
  */
-export type StravaActivityApiResponse = {
+export type StravaActivity = {
   id: number;
   resource_state?: number;
   external_id?: string;

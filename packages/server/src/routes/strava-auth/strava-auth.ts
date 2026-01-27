@@ -9,21 +9,12 @@ import type { ServerConfig } from '../../types';
  * @internal
  */
 const createAuthSuccessResponse = (config: ServerConfig): Response => {
-  // Log the redirect URI being used for debugging
-  console.log(`🔐 Initiating Strava OAuth`);
-  console.log(`   Client ID: ${config.strava.clientId}`);
-  console.log(`   Redirect URI: ${config.strava.redirectUri}`);
-  console.log(`   Scope: ${config.strava.scope}`);
-  console.log(`⚠️  Make sure the redirect URI matches your Strava app's registered callback URL!`);
-
   const authUrl = getStravaAuthUrl({
     clientId: config.strava.clientId,
     clientSecret: config.strava.clientSecret,
     redirectUri: config.strava.redirectUri,
     scope: config.strava.scope,
   });
-
-  console.log(`   Authorization URL: ${authUrl}`);
 
   return new Response(null, {
     status: 302,

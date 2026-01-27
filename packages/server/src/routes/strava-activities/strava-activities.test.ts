@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach, mock } from 'bun:test';
 import type { ServerConfig } from '../../types';
 import { COOKIE_NAMES } from '../../types';
-import { type StravaActivityApiResponse } from '@pace/strava-api';
+import { type StravaActivity } from '@pace/strava-api';
 
 describe('stravaActivities', () => {
   const mockConfig: ServerConfig = {
@@ -23,7 +23,7 @@ describe('stravaActivities', () => {
   let mockFetchStravaActivities: ReturnType<typeof mock>;
 
   beforeEach(() => {
-    mockFetchStravaActivities = mock(() => Promise.resolve([] as StravaActivityApiResponse[]));
+    mockFetchStravaActivities = mock(() => Promise.resolve([] as StravaActivity[]));
     mock.module('@pace/strava-api', () => ({
       fetchStravaActivities: mockFetchStravaActivities,
       fetchStravaActivity: mock(() => Promise.resolve(null)),
@@ -47,7 +47,7 @@ describe('stravaActivities', () => {
 
   test('successfully fetches activities with valid tokens', async () => {
     const { default: stravaActivities } = await import('./strava-activities');
-    const mockActivities: StravaActivityApiResponse[] = [
+    const mockActivities: StravaActivity[] = [
       {
         id: 123456,
         type: 'Ride',

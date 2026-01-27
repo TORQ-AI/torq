@@ -1,7 +1,7 @@
 import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import fetchFromApi from './fetch-from-api';
 import { StravaApiConfig } from '../../types';
-import { StravaApiError, StravaActivityApiResponse } from '../../types';
+import { StravaApiError, StravaActivity } from '../../types';
 
 type Case = [
   string,
@@ -11,7 +11,7 @@ type Case = [
     mockResponse: Response | Error;
     shouldThrow: boolean;
     expectedError?: StravaApiError;
-    expectedData?: StravaActivityApiResponse;
+    expectedData?: StravaActivity;
   }
 ];
 

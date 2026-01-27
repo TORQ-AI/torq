@@ -1,4 +1,4 @@
-import { StravaApiError, StravaActivityApiResponse } from '../../types';
+import { StravaApiError, StravaActivity } from '../../types';
 import { StravaApiConfig } from '../../types';
 import { STRAVA_API_BASE_URL, STRAVA_API_ENDPOINTS } from '../../constants';
 import getAuthHeaders from '../get-auth-headers';
@@ -57,9 +57,9 @@ const fetchApiResponse = async (url: string, headers: HeadersInit): Promise<Resp
  * @throws {Error} Throws ActivityError with 'MALFORMED_RESPONSE' code if JSON parsing fails
  * @internal
  */
-const parseApiJsonData = async (response: Response): Promise<StravaActivityApiResponse> => {
+const parseApiJsonData = async (response: Response): Promise<StravaActivity> => {
   try {
-    return (await response.json()) as StravaActivityApiResponse;
+    return (await response.json()) as StravaActivity;
   } catch (error) {
     throw createActivityError(
       'MALFORMED_RESPONSE',
@@ -101,7 +101,7 @@ const parseApiJsonData = async (response: Response): Promise<StravaActivityApiRe
 const fetchFromApi = async (
   activityId: string,
   config: StravaApiConfig,
-): Promise<StravaActivityApiResponse | null> => {
+): Promise<StravaActivity | null> => {
   const baseUrl = config.baseUrl ?? STRAVA_API_BASE_URL;
   const url = `${baseUrl}${STRAVA_API_ENDPOINTS.ACTIVITY}/${activityId}`;
   const headers = getAuthHeaders(config);

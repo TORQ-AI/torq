@@ -1,9 +1,8 @@
 import { StravaApiConfig } from '../../types';
-import { StravaActivityApiResponse, StravaApiError, StravaActivity } from '../../types';
+import { StravaApiError, StravaActivity } from '../../types';
 import { STRAVA_API_MAX_RETRIES, STRAVA_API_INITIAL_BACKOFF_MS } from '../../constants';
 import validateActivityId from '../validate-activity-id';
 import fetchFromApi from '../fetch-from-api';
-import transformResponse from '../transform-response';
 import handleRetry from '../../handle-retry';
 import handleRateLimit from '../../handle-rate-limit';
 import refreshToken from '../refresh-token';
@@ -38,7 +37,7 @@ const parseError = (error: Error): StravaApiError | null => {
 const fetchApiResponseWithErrorHandling = async (
   activityId: string,
   currentConfig: StravaApiConfig,
-): Promise<StravaActivityApiResponse | null> => {
+): Promise<StravaActivity | null> => {
   try {
     return await fetchFromApi(activityId, currentConfig);
   } catch (error) {
@@ -94,8 +93,7 @@ const fetchActivityWithTokenRefresh = async (
   currentConfig: StravaApiConfig,
   originalConfig: StravaApiConfig
 ): Promise<StravaActivity | null> => {
-  const apiResponse = await fetchApiResponseWithErrorHandling(activityId, currentConfig);
-  const activity = transformResponse(apiResponse);
+  const activity = await fetchApiResponseWithErrorHandling(activityId, currentConfig);
 
   if (originalConfig.guardrails !== undefined) {
     const validationResult = activity

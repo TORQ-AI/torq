@@ -364,7 +364,7 @@ describe('fetch-activity', () => {
           name: 'Morning Ride',
           description: 'Great ride',
           distance: 50000,
-          elevation_gain: 500,
+          total_elevation_gain: 500,
           start_date: '2024-01-01T08:00:00Z',
           average_speed: 25.5,
           calories: 800,

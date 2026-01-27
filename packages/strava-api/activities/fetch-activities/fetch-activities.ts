@@ -1,5 +1,5 @@
 import { StravaApiConfig } from '../../types';
-import { StravaApiError, StravaActivityApiResponse } from '../../types';
+import { StravaApiError, StravaActivity } from '../../types';
 import { STRAVA_API_MAX_RETRIES, STRAVA_API_INITIAL_BACKOFF_MS } from '../../constants';
 import fetchActivitiesFromApi from './fetch-activities-from-api';
 import handleRetry from '../../handle-retry';
@@ -34,7 +34,7 @@ const parseError = (error: Error): StravaApiError | null => {
  */
 const fetchApiResponseWithErrorHandling = async (
   currentConfig: StravaApiConfig,
-): Promise<StravaActivityApiResponse[]> => {
+): Promise<StravaActivity[]> => {
   try {
     return await fetchActivitiesFromApi(currentConfig);
   } catch (error) {
@@ -87,7 +87,7 @@ const fetchApiResponseWithErrorHandling = async (
 const fetchActivitiesWithTokenRefresh = async (
   currentConfig: StravaApiConfig,
   originalConfig: StravaApiConfig
-): Promise<StravaActivityApiResponse[]> => {
+): Promise<StravaActivity[]> => {
   return await fetchApiResponseWithErrorHandling(currentConfig);
 };
 
@@ -127,8 +127,8 @@ const fetchActivitiesWithTokenRefresh = async (
  * });
  * ```
  */
-const fetchActivities = async (config: StravaApiConfig): Promise<StravaActivityApiResponse[]> => {
-  const fetchWithRetry = async (): Promise<StravaActivityApiResponse[]> => {
+const fetchActivities = async (config: StravaApiConfig): Promise<StravaActivity[]> => {
+  const fetchWithRetry = async (): Promise<StravaActivity[]> => {
     return fetchActivitiesWithTokenRefresh(config, config);
   };
 
