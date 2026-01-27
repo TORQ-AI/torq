@@ -31,7 +31,6 @@ function formatActivityType(type: string): string {
 export default function HomePage() {
   const [skipAuth, setSkipAuth] = useState(false);
   const { activities, loading, error, refetch } = useActivities();
-  const isAuthorized = activities !== null && !error;
   const isUnauthorized = error && (error.includes('Unauthorized') || error.includes('Authentication'));
 
   // Check if we just logged out
@@ -75,6 +74,9 @@ export default function HomePage() {
                 icon={<ActivityIcon />}
                 onClick={authorizeStrava}
                 width="100%"
+                placeholder="Authorize with Strava"
+                onPointerEnterCapture={() => {}}
+                onPointerLeaveCapture={() => {}}
               >
                 Authorize with Strava
               </Button>
@@ -93,7 +95,7 @@ export default function HomePage() {
         style={{ minHeight: 'calc(100vh - 60px)', alignContent: 'center' }}
       >
         <Grid xs={24} style={{ textAlign: 'center' }}>
-          <Loading size="large">Loading your activities...</Loading>
+          <Loading>Loading your activities...</Loading>
         </Grid>
       </Grid.Container>
     );
@@ -118,6 +120,9 @@ export default function HomePage() {
                 icon={<ActivityIcon />}
                 onClick={authorizeStrava}
                 width="100%"
+                placeholder="Authorize with Strava"
+                onPointerEnterCapture={() => {}}
+                onPointerLeaveCapture={() => {}}
               >
                 Authorize with Strava
               </Button>
@@ -131,7 +136,7 @@ export default function HomePage() {
             {error}
           </Note>
           <Spacer h={1} />
-          <Button onClick={refetch} width="100%">
+          <Button onClick={refetch} width="100%" placeholder="Try Again" onPointerEnterCapture={() => {}} onPointerLeaveCapture={() => {}}>
             Try Again
           </Button>
         </Grid>
@@ -182,6 +187,9 @@ export default function HomePage() {
                       width="100%" 
                       scale={0.8}
                       icon={<Zap />}
+                      placeholder="Generate Image"
+                      onPointerEnterCapture={() => {}}
+                      onPointerLeaveCapture={() => {}}
                     >
                       Generate Image
                     </Button>
