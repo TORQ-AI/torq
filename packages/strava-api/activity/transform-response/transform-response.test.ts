@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import transformResponse from './transform-response';
-import { StravaActivityApiResponse, StravaActivity } from '../types';
+import { StravaActivityApiResponse, StravaActivity } from '../../types';
 
 type Case = [
   string,

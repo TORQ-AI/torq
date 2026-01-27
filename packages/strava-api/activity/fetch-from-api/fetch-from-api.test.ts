@@ -1,21 +1,22 @@
 import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import fetchFromApi from './fetch-from-api';
-import { StravaActivityConfig, StravaActivityApiResponse, StravaActivityError } from '../types';
+import { StravaApiConfig } from '../../types';
+import { StravaApiError, StravaActivityApiResponse } from '../../types';
 
 type Case = [
   string,
   {
     activityId: string;
-    config: StravaActivityConfig;
+    config: StravaApiConfig;
     mockResponse: Response | Error;
     shouldThrow: boolean;
-    expectedError?: StravaActivityError;
+    expectedError?: StravaApiError;
     expectedData?: StravaActivityApiResponse;
   }
 ];
 
-const parseError = (error: Error): StravaActivityError => {
-  return JSON.parse(error.message) as StravaActivityError;
+const parseError = (error: Error): StravaApiError => {
+  return JSON.parse(error.message) as StravaApiError;
 };
 
 describe('fetch-from-api', () => {
@@ -217,7 +218,7 @@ describe('fetch-from-api', () => {
       }
     } else {
       const result = await fetchFromApi(activityId, config);
-      expect(result).toStrictEqual(expectedData);
+      expect(result).toStrictEqual(expectedData ?? null);
     }
   });
 });

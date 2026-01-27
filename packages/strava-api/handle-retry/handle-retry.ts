@@ -1,20 +1,20 @@
-import { StravaActivityError } from '../types';
-import { INITIAL_BACKOFF_MS, MAX_BACKOFF_MS } from '../constants';
+import { STRAVA_API_INITIAL_BACKOFF_MS, STRAVA_API_MAX_BACKOFF_MS } from '../constants';
+import { StravaApiError } from '../types';
 import { RetryFunction } from './types';
 
 /**
  * Parses an Error object to extract ActivityError if present.
  *
- * Attempts to parse the error message as JSON to extract structured ActivityError.
- * Returns null if parsing fails or error doesn't contain ActivityError structure.
+* Attempts to parse the error message as JSON to extract structured StravaApiError.
+ * Returns null if parsing fails or error doesn't contain StravaApiError structure.
  *
  * @param {Error} error - Error object potentially containing ActivityError in message
- * @returns {StravaActivityError | null} ActivityError if successfully parsed, null otherwise
+ * @returns {StravaApiError | null} StravaApiError if successfully parsed, null otherwise
  * @internal
  */
-const parseError = (error: Error): StravaActivityError | null => {
+const parseError = (error: Error): StravaApiError | null => {
   try {
-    return JSON.parse(error.message) as StravaActivityError;
+    return JSON.parse(error.message) as StravaApiError;
   } catch {
     return null;
   }
@@ -55,7 +55,7 @@ const attemptWithBackoff = async <T>(
       throw currentError;
     }
 
-    const delayMs = Math.min(currentBackoffMs, MAX_BACKOFF_MS);
+    const delayMs = Math.min(currentBackoffMs, STRAVA_API_MAX_BACKOFF_MS);
     await Bun.sleep(delayMs);
     const nextBackoffMs = currentBackoffMs * 2;
     const nextAttemptIndex = attemptIndex + 1;
@@ -92,7 +92,7 @@ const attemptWithBackoff = async <T>(
 const handleRetry = async <T>(
   fn: RetryFunction<T>,
   maxRetries: number,
-  initialBackoffMs: number = INITIAL_BACKOFF_MS
+  initialBackoffMs: number = STRAVA_API_INITIAL_BACKOFF_MS
 ): Promise<T> => {
   return attemptWithBackoff(fn, 0, maxRetries, initialBackoffMs, null);
 };

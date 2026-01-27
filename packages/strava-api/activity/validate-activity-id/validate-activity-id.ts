@@ -1,4 +1,4 @@
-import { StravaActivityError } from '../types';
+import { StravaApiError } from '../../types';
 
 /**
  * Validates the format of a Strava activity ID.
@@ -21,7 +21,7 @@ import { StravaActivityError } from '../types';
  */
 const validateActivityId = (activityId: string): void => {
   if (activityId === undefined || activityId === null) {
-    const error: StravaActivityError = {
+    const error: StravaApiError = {
       code: 'INVALID_ID',
       message: 'Activity ID is required',
       retryable: false,
@@ -32,7 +32,7 @@ const validateActivityId = (activityId: string): void => {
   const trimmedId = String(activityId).trim();
 
   if (trimmedId === '') {
-    const error: StravaActivityError = {
+    const error: StravaApiError = {
       code: 'INVALID_ID',
       message: 'Activity ID cannot be empty',
       retryable: false,
@@ -43,7 +43,7 @@ const validateActivityId = (activityId: string): void => {
   const numericId = Number(trimmedId);
 
   if (Number.isNaN(numericId) || !Number.isFinite(numericId)) {
-    const error: StravaActivityError = {
+    const error: StravaApiError = {
       code: 'INVALID_ID',
       message: 'Activity ID must be a valid number',
       retryable: false,
@@ -52,7 +52,7 @@ const validateActivityId = (activityId: string): void => {
   }
 
   if (numericId <= 0) {
-    const error: StravaActivityError = {
+    const error: StravaApiError = {
       code: 'INVALID_ID',
       message: 'Activity ID must be a positive number',
       retryable: false,

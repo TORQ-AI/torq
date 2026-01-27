@@ -1,15 +1,23 @@
+import { fetchStravaActivities, type StravaActivityConfig } from '@pace/strava-api';
 import { getTokens } from '../../cookies';
 import type { ServerConfig, ServerTokenResult } from '../../types';
 
 /**
- * Strava API base URL.
+ * Creates ActivityConfig from server tokens and config.
+ *
+ * @param {ServerTokenResult} tokens - OAuth tokens from cookies
+ * @param {ServerConfig} config - Server configuration
+ * @returns {StravaActivityConfig} Activity module configuration
+ * @internal
  */
-const STRAVA_API_BASE_URL = 'https://www.strava.com/api/v3';
-
-/**
- * Strava athlete activities endpoint.
- */
-const STRAVA_ATHLETE_ACTIVITIES_ENDPOINT = '/athlete/activities';
+const createActivityConfig = (tokens: ServerTokenResult, config: ServerConfig): StravaActivityConfig => {
+  return {
+    accessToken: tokens.accessToken,
+    refreshToken: tokens.refreshToken,
+    clientId: config.strava.clientId,
+    clientSecret: config.strava.clientSecret,
+  };
+};
 
 /**
  * Creates error response for unauthorized requests.
@@ -33,37 +41,41 @@ const createUnauthorizedResponse = (): Response => {
 };
 
 /**
- * Determines status code and error message from HTTP status code.
+ * Determines status code and error message from activity error code.
  *
- * @param {number} statusCode - HTTP status code
+ * @param {string | undefined} code - Activity error code
+ * @param {string | undefined} message - Error message from activity error
  * @returns {{ statusCode: number; errorMessage: string }} Status code and error message
  * @internal
  */
-const determineErrorDetails = (statusCode: number): { statusCode: number; errorMessage: string } => {
-  if (statusCode === 401) {
+const determineErrorDetails = (
+  code: string | undefined,
+  message: string | undefined
+): { statusCode: number; errorMessage: string } => {
+  if (code === 'UNAUTHORIZED') {
     return {
       statusCode: 401,
-      errorMessage: 'Authentication failed. Token may be expired or invalid.',
+      errorMessage: message ?? 'Authentication failed. Token may be expired or invalid.',
     };
-  } else if (statusCode === 403) {
+  } else if (code === 'FORBIDDEN') {
     return {
       statusCode: 403,
-      errorMessage: 'Insufficient permissions to access activities',
+      errorMessage: message ?? 'Insufficient permissions to access activities',
     };
-  } else if (statusCode === 429) {
+  } else if (code === 'RATE_LIMITED') {
     return {
       statusCode: 429,
-      errorMessage: 'Rate limit exceeded. Please try again later.',
+      errorMessage: message ?? 'Rate limit exceeded. Please try again later.',
     };
-  } else if (statusCode >= 500) {
+  } else if (code === 'SERVER_ERROR' || code === 'NETWORK_ERROR') {
     return {
       statusCode: 500,
-      errorMessage: 'Strava API server error',
+      errorMessage: message ?? 'Failed to fetch activities',
     };
   } else {
     return {
       statusCode: 500,
-      errorMessage: 'Failed to fetch activities',
+      errorMessage: message ?? 'Failed to fetch activities',
     };
   }
 };
@@ -71,12 +83,30 @@ const determineErrorDetails = (statusCode: number): { statusCode: number; errorM
 /**
  * Creates error response for activities fetch failures.
  *
- * @param {number} statusCode - HTTP status code from API response
+ * @param {Error} error - Error object
  * @returns {Response} Error response with appropriate status code
  * @internal
  */
-const createErrorResponse = (statusCode: number): Response => {
-  const details = determineErrorDetails(statusCode);
+const createErrorResponse = (error: Error): Response => {
+  const defaultDetails = {
+    statusCode: 500,
+    errorMessage: 'Internal server error',
+  };
+
+  const details = (() => {
+    try {
+      const activityError = JSON.parse(error.message) as {
+        code?: string;
+        message?: string;
+      };
+      return determineErrorDetails(activityError.code, activityError.message);
+    } catch {
+      return {
+        statusCode: 500,
+        errorMessage: error.message ?? 'Failed to fetch activities',
+      };
+    }
+  })();
 
   return new Response(
     JSON.stringify({
@@ -92,69 +122,44 @@ const createErrorResponse = (statusCode: number): Response => {
 };
 
 /**
- * Fetches activities from Strava API and creates success response.
+ * Fetches activities data and creates success response.
  *
  * @param {ServerTokenResult} tokens - OAuth tokens from cookies
+ * @param {ServerConfig} config - Server configuration
  * @returns {Promise<Response>} Success response with activities data
  * @internal
  */
-const fetchActivitiesAndCreateResponse = async (tokens: ServerTokenResult): Promise<Response> => {
-  const url = `${STRAVA_API_BASE_URL}${STRAVA_ATHLETE_ACTIVITIES_ENDPOINT}`;
-  const headers = {
-    Authorization: `Bearer ${tokens.accessToken}`,
-  };
+const fetchActivitiesAndCreateResponse = async (
+  tokens: ServerTokenResult,
+  config: ServerConfig
+): Promise<Response> => {
+  const activityConfig = createActivityConfig(tokens, config);
+  const activities = await fetchStravaActivities(activityConfig);
 
-  const response = await fetch(url, {
-    method: 'GET',
-    headers,
+  return new Response(JSON.stringify(activities), {
+    status: 200,
+    headers: {
+      'Content-Type': 'application/json',
+    },
   });
-
-  const isOk = response.ok;
-
-  if (!isOk) {
-    return createErrorResponse(response.status);
-  } else {
-    const activities = await response.json();
-
-    return new Response(JSON.stringify(activities), {
-      status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-  }
 };
 
 /**
  * Handles activities fetch with error handling.
  *
  * @param {ServerTokenResult} tokens - OAuth tokens from cookies
+ * @param {ServerConfig} config - Server configuration
  * @returns {Promise<Response>} Success or error response
  * @internal
  */
-const handleActivitiesFetch = async (tokens: ServerTokenResult): Promise<Response> => {
+const handleActivitiesFetch = async (
+  tokens: ServerTokenResult,
+  config: ServerConfig
+): Promise<Response> => {
   try {
-    return await fetchActivitiesAndCreateResponse(tokens);
+    return await fetchActivitiesAndCreateResponse(tokens, config);
   } catch (error) {
-    const fetchError = error as { status?: number };
-    const hasStatus = fetchError.status !== undefined;
-    const statusCode = hasStatus ? fetchError.status! : 500;
-
-    if (!hasStatus) {
-      return new Response(
-        JSON.stringify({
-          error: 'Failed to fetch activities',
-        }),
-        {
-          status: 500,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-    } else {
-      return createErrorResponse(statusCode);
-    }
+    return createErrorResponse(error as Error);
   }
 };
 
@@ -176,7 +181,7 @@ const stravaActivities = async (request: Request, config: ServerConfig): Promise
   if (!hasTokens) {
     return createUnauthorizedResponse();
   } else {
-    return await handleActivitiesFetch(tokens);
+    return await handleActivitiesFetch(tokens, config);
   }
 };
 

@@ -1,4 +1,4 @@
-import { StravaActivityConfig } from '../types';
+import { StravaApiConfig } from '../../types';
 
 /**
  * Builds HTTP headers for Strava API authentication.
@@ -6,7 +6,7 @@ import { StravaActivityConfig } from '../types';
  * Creates the Authorization header using OAuth2 Bearer token format as required
  * by the Strava API. The header format follows RFC 6750 Bearer Token Usage.
  *
- * @param {StravaActivityConfig} config - Activity module configuration containing the access token
+ * @param {StravaApiConfig} config - Strava API configuration containing the access token
  * @returns {HeadersInit} Headers object with Authorization header set to "Bearer {token}"
  *
  * @see {@link https://developers.strava.com/docs/authentication/ | Strava API Authentication}
@@ -18,7 +18,7 @@ import { StravaActivityConfig } from '../types';
  * // Returns: { Authorization: 'Bearer abc123' }
  * ```
  */
-const getAuthHeaders = (config: StravaActivityConfig): HeadersInit => {
+const getAuthHeaders = (config: StravaApiConfig): HeadersInit => {
   const headers: HeadersInit = {
     Authorization: `Bearer ${config.accessToken}`,
   };

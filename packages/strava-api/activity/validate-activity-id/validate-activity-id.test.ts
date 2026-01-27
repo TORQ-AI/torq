@@ -1,18 +1,18 @@
 import { describe, test, expect } from 'bun:test';
 import validateActivityId from './validate-activity-id';
-import { StravaActivityError } from '../types';
+import { StravaApiError } from '../../types';
 
 type Case = [
   string,
   {
     activityId: string | undefined | null;
     shouldThrow: boolean;
-    expectedError?: StravaActivityError;
+    expectedError?: StravaApiError;
   }
 ];
 
-const parseError = (error: Error): StravaActivityError => {
-  return JSON.parse(error.message) as StravaActivityError;
+const parseError = (error: Error): StravaApiError => {
+  return JSON.parse(error.message) as StravaApiError;
 };
 
 describe('validate-activity-id', () => {

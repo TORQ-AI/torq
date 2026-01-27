@@ -1,23 +1,22 @@
-import { StravaApiError, StravaActivityApiResponse } from '../../types';
-import { StravaApiConfig } from '../../types';
-import { STRAVA_API_BASE_URL, STRAVA_API_ENDPOINTS } from '../../constants';
-import getAuthHeaders from '../get-auth-headers';
+import { StravaActivityConfig, StravaActivityApiResponse, StravaActivityError } from '../../activity/types';
+import { STRAVA_API_BASE_URL, STRAVA_API_ATHLETE_ACTIVITIES_ENDPOINT } from '../../activity/constants';
+import getAuthHeaders from '../../activity/get-auth-headers';
 
 /**
- * Creates an StravaApiError wrapped in an Error object.
+ * Creates an ActivityError wrapped in an Error object.
  *
- * @param {StravaApiError['code']} code - Error code from StravaApiErrorCode union type
+ * @param {StravaActivityError['code']} code - Error code from StravaActivityErrorCode union type
  * @param {string} message - User-friendly error message
  * @param {boolean} [retryable=false] - Whether the error is retryable (default: false)
- * @returns {Error} Error object with JSON-stringified StravaApiError in message
+ * @returns {Error} Error object with JSON-stringified StravaActivityError in message
  * @internal
  */
 const createActivityError = (
-  code: StravaApiError['code'],
+  code: StravaActivityError['code'],
   message: string,
   retryable: boolean = false
 ): Error => {
-  const error: StravaApiError = {
+  const error: StravaActivityError = {
     code,
     message,
     retryable,
@@ -31,7 +30,7 @@ const createActivityError = (
  * @param {string} url - The full API endpoint URL
  * @param {HeadersInit} headers - Request headers including authorization
  * @returns {Promise<Response>} Promise resolving to the fetch response
- * @throws {Error} Throws ActivityError with 'NETWORK_ERROR' code if fetch fails
+ * @throws {Error} Throws StravaActivityError with 'NETWORK_ERROR' code if fetch fails
  * @internal
  */
 const fetchApiResponse = async (url: string, headers: HeadersInit): Promise<Response> => {
@@ -53,14 +52,26 @@ const fetchApiResponse = async (url: string, headers: HeadersInit): Promise<Resp
  * Parses JSON data from the API response.
  *
  * @param {Response} response - Response object to parse
- * @returns {Promise<StravaActivityStravaApiResponse>} Promise resolving to parsed API response
- * @throws {Error} Throws ActivityError with 'MALFORMED_RESPONSE' code if JSON parsing fails
+ * @returns {Promise<StravaActivityApiResponse[]>} Promise resolving to parsed API response array
+ * @throws {Error} Throws StravaActivityError with 'MALFORMED_RESPONSE' code if JSON parsing fails
  * @internal
  */
-const parseApiJsonData = async (response: Response): Promise<StravaActivityApiResponse> => {
+const parseApiJsonData = async (response: Response): Promise<StravaActivityApiResponse[]> => {
   try {
-    return (await response.json()) as StravaActivityApiResponse;
+    const data = await response.json();
+    if (!Array.isArray(data)) {
+      throw createActivityError(
+        'MALFORMED_RESPONSE',
+        'Expected array response from Strava API',
+        false
+      );
+    }
+    return data as StravaActivityApiResponse[];
   } catch (error) {
+    const activityError = error as StravaActivityError;
+    if (activityError.code !== undefined) {
+      throw error;
+    }
     throw createActivityError(
       'MALFORMED_RESPONSE',
       'Invalid response format from Strava API',
@@ -70,51 +81,40 @@ const parseApiJsonData = async (response: Response): Promise<StravaActivityApiRe
 };
 
 /**
- * Fetches activity data from the Strava API.
+ * Fetches activities list from the Strava API.
  *
  * Makes an authenticated HTTP GET request to the Strava API to retrieve
- * complete activity details. Handles various HTTP error responses and maps
- * them to appropriate ActivityError codes.
+ * a list of activities for the authenticated athlete. Handles various HTTP
+ * error responses and maps them to appropriate StravaActivityError codes.
  *
- * @param {string} activityId - Validated activity ID (must be numeric string)
- * @param {StravaApiConfig} config - Strava API configuration with access token and optional base URL
- * @returns {Promise<StravaActivityStravaApiResponse>} Promise resolving to the raw Strava API response data
- * @throws {Error} Throws an error with ActivityError structure for various failure scenarios:
+ * @param {StravaActivityConfig} config - Activity module configuration with access token and optional base URL
+ * @returns {Promise<StravaActivityApiResponse[]>} Promise resolving to the raw Strava API response data array
+ * @throws {Error} Throws an error with StravaActivityError structure for various failure scenarios:
  *   - 'NETWORK_ERROR' (retryable): Network connection failure
- *   - 'NOT_FOUND' (not retryable): Activity ID doesn't exist (404)
  *   - 'UNAUTHORIZED' (not retryable): Invalid or expired token (401)
  *   - 'FORBIDDEN' (not retryable): Insufficient permissions (403)
  *   - 'RATE_LIMITED' (retryable): Rate limit exceeded (429)
  *   - 'SERVER_ERROR' (retryable): Strava API server error (5xx)
- *   - 'MALFORMED_RESPONSE' (not retryable): Invalid JSON response
+ *   - 'MALFORMED_RESPONSE' (not retryable): Invalid JSON response or not an array
  *
- * @see {@link https://developers.strava.com/docs/reference/#api-Activities-getActivityById | Strava Get Activity API}
+ * @see {@link https://developers.strava.com/docs/reference/#api-Activities-getLoggedInAthleteActivities | Strava Get Activities API}
  *
  * @example
  * ```typescript
- * const response = await fetchFromApi('123456', {
+ * const activities = await fetchActivitiesFromApi({
  *   accessToken: 'abc123',
  *   baseUrl: 'https://www.strava.com/api/v3'
  * });
  * ```
  */
-const fetchFromApi = async (
-  activityId: string,
-  config: StravaApiConfig,
-): Promise<StravaActivityApiResponse | null> => {
+const fetchActivitiesFromApi = async (
+  config: StravaActivityConfig
+): Promise<StravaActivityApiResponse[]> => {
   const baseUrl = config.baseUrl ?? STRAVA_API_BASE_URL;
-  const url = `${baseUrl}${STRAVA_API_ENDPOINTS.ACTIVITY}/${activityId}`;
+  const url = `${baseUrl}${STRAVA_API_ATHLETE_ACTIVITIES_ENDPOINT}`;
   const headers = getAuthHeaders(config);
 
   const response = await fetchApiResponse(url, headers);
-
-  if (response.status === 404) {
-    throw createActivityError(
-      'NOT_FOUND',
-      'Activity not found',
-      false
-    );
-  }
 
   if (response.status === 401) {
     throw createActivityError(
@@ -127,7 +127,7 @@ const fetchFromApi = async (
   if (response.status === 403) {
     throw createActivityError(
       'FORBIDDEN',
-      'Insufficient permissions to access this activity',
+      'Insufficient permissions to access activities',
       false
     );
   }
@@ -164,4 +164,4 @@ const fetchFromApi = async (
   return jsonData;
 };
 
-export default fetchFromApi;
+export default fetchActivitiesFromApi;

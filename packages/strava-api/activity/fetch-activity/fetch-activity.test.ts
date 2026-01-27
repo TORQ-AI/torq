@@ -1,21 +1,22 @@
 import { describe, test, expect, beforeEach, afterEach } from 'bun:test';
 import fetchActivity from './fetch-activity';
-import { StravaActivityConfig, StravaActivity, StravaActivityError, StravaActivityGuardrails } from '../types';
+import { StravaApiConfig } from '../../types';
+import { StravaApiError, StravaActivity } from '../../types';
 
 type Case = [
   string,
   {
     activityId: string;
-    config: StravaActivityConfig;
+    config: StravaApiConfig;
     mockFetch?: () => Promise<Response>;
     shouldThrow: boolean;
-    expectedError?: StravaActivityError;
+    expectedError?: StravaApiError;
     expectedActivity?: StravaActivity;
   }
 ];
 
-const parseError = (error: Error): StravaActivityError => {
-  return JSON.parse(error.message) as StravaActivityError;
+const parseError = (error: Error): StravaApiError => {
+  return JSON.parse(error.message) as StravaApiError;
 };
 
 describe('fetch-activity', () => {
@@ -253,13 +254,13 @@ describe('fetch-activity', () => {
         config: {
           accessToken: 'test-token',
           guardrails: {
-            validateActivity: (activity: StravaActivity) => {
+            validate: (activity: StravaActivity) => {
               if (activity.type === 'Ride') {
                 return { valid: true };
               }
               return { valid: false, errors: ['Invalid activity type'] };
             },
-          } as StravaActivityGuardrails,
+          },
         },
         mockFetch: async () =>
           new Response(
@@ -285,10 +286,10 @@ describe('fetch-activity', () => {
         config: {
           accessToken: 'test-token',
           guardrails: {
-            validateActivity: (activity: StravaActivity) => {
+            validate: (activity: StravaActivity) => {
               return { valid: false, errors: ['Validation failed'] };
             },
-          } as StravaActivityGuardrails,
+          },
         },
         mockFetch: async () =>
           new Response(

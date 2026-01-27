@@ -1,25 +1,26 @@
-import { StravaActivity, StravaActivityConfig, StravaActivityError, StravaActivityApiResponse } from '../types';
-import { MAX_RETRIES, INITIAL_BACKOFF_MS } from '../constants';
+import { StravaApiConfig } from '../../types';
+import { StravaActivityApiResponse, StravaApiError, StravaActivity } from '../../types';
+import { STRAVA_API_MAX_RETRIES, STRAVA_API_INITIAL_BACKOFF_MS } from '../../constants';
 import validateActivityId from '../validate-activity-id';
 import fetchFromApi from '../fetch-from-api';
 import transformResponse from '../transform-response';
-import handleRetry from '../handle-retry';
-import handleRateLimit from '../handle-rate-limit';
+import handleRetry from '../../handle-retry';
+import handleRateLimit from '../../handle-rate-limit';
 import refreshToken from '../refresh-token';
 
 /**
- * Parses an Error object to extract ActivityError if present.
+ * Parses an Error object to extract StravaApiError if present.
  *
- * Attempts to parse the error message as JSON to extract structured ActivityError.
- * Returns null if parsing fails or error doesn't contain ActivityError structure.
+ * Attempts to parse the error message as JSON to extract structured StravaApiError.
+ * Returns null if parsing fails or error doesn't contain StravaApiError structure.
  *
- * @param {Error} error - Error object potentially containing ActivityError in message
- * @returns {StravaActivityError | null} ActivityError if successfully parsed, null otherwise
+ * @param {Error} error - Error object potentially containing StravaApiError in message
+ * @returns {StravaApiError | null} StravaApiError if successfully parsed, null otherwise
  * @internal
  */
-const parseError = (error: Error): StravaActivityError | null => {
+const parseError = (error: Error): StravaApiError | null => {
   try {
-    return JSON.parse(error.message) as StravaActivityError;
+    return JSON.parse(error.message) as StravaApiError;
   } catch {
     return null;
   }
@@ -29,15 +30,15 @@ const parseError = (error: Error): StravaActivityError | null => {
  * Fetches API response with error handling for rate limits and token refresh.
  *
  * @param {string} activityId - Activity ID to fetch
- * @param {StravaActivityConfig} currentConfig - Current activity configuration
-  * @returns {Promise<StravaActivityApiResponse>} Promise resolving to API response
+ * @param {StravaApiConfig} currentConfig - Current Strava API configuration
+ * @returns {Promise<StravaActivityApiResponse>} Promise resolving to API response
  * @throws {Error} Throws error for rate limits, unauthorized errors, or other API errors
  * @internal
  */
 const fetchApiResponseWithErrorHandling = async (
   activityId: string,
-  currentConfig: StravaActivityConfig
-): Promise<StravaActivityApiResponse> => {
+  currentConfig: StravaApiConfig,
+): Promise<StravaActivityApiResponse | null> => {
   try {
     return await fetchFromApi(activityId, currentConfig);
   } catch (error) {
@@ -61,7 +62,7 @@ const fetchApiResponseWithErrorHandling = async (
       if (canRefreshToken) {
         try {
           const newAccessToken = await refreshToken(currentConfig);
-          const refreshedConfig: StravaActivityConfig = {
+          const refreshedConfig: StravaApiConfig = {
             ...currentConfig,
             accessToken: newAccessToken,
           };
@@ -82,25 +83,27 @@ const fetchApiResponseWithErrorHandling = async (
  * Fetches activity with token refresh support and validation.
  *
  * @param {string} activityId - Activity ID to fetch
- * @param {StravaActivityConfig} currentConfig - Current activity configuration
+ * @param {StravaApiConfig} currentConfig - Current Strava API configuration
  * @param {StravaActivityConfig} originalConfig - Original activity configuration (for guardrails)
- * @returns {Promise<Activity>} Promise resolving to validated activity
+ * @returns {Promise<StravaActivity>} Promise resolving to validated activity
  * @throws {Error} Throws error if validation fails or API errors occur
  * @internal
  */
 const fetchActivityWithTokenRefresh = async (
   activityId: string,
-  currentConfig: StravaActivityConfig,
-  originalConfig: StravaActivityConfig
-): Promise<StravaActivity> => {
+  currentConfig: StravaApiConfig,
+  originalConfig: StravaApiConfig
+): Promise<StravaActivity | null> => {
   const apiResponse = await fetchApiResponseWithErrorHandling(activityId, currentConfig);
   const activity = transformResponse(apiResponse);
 
   if (originalConfig.guardrails !== undefined) {
-    const validationResult = originalConfig.guardrails.validateActivity(activity);
+    const validationResult = activity
+      ? originalConfig.guardrails.validate(activity)
+      : { valid: false, errors: ['Activity is null'] };
 
     if (!validationResult.valid) {
-      const error: StravaActivityError = {
+      const error: StravaApiError = {
         code: 'VALIDATION_FAILED',
         message: validationResult.errors?.join(', ') ?? 'Activity validation failed',
         retryable: false,
@@ -158,14 +161,14 @@ const fetchActivityWithTokenRefresh = async (
  * });
  * ```
  */
-const fetchActivity = async (activityId: string, config: StravaActivityConfig): Promise<StravaActivity | null> => {
+const fetchActivity = async (activityId: string, config: StravaApiConfig): Promise<StravaActivity | null> => {
   validateActivityId(activityId);
 
-  const fetchWithRetry = async (): Promise<StravaActivity> => {
+  const fetchWithRetry = async (): Promise<StravaActivity | null> => {
     return fetchActivityWithTokenRefresh(activityId, config, config);
   };
 
-  return handleRetry(fetchWithRetry, MAX_RETRIES, INITIAL_BACKOFF_MS);
+  return handleRetry(fetchWithRetry, STRAVA_API_MAX_RETRIES, STRAVA_API_INITIAL_BACKOFF_MS);
 };
 
 export default fetchActivity;

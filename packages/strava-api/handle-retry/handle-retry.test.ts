@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import handleRetry from './handle-retry';
-import { StravaActivityError } from '../types';
+import { StravaApiError } from '../types';
 
 type Case = [
   string,
@@ -10,12 +10,12 @@ type Case = [
     initialBackoffMs?: number;
     shouldSucceed: boolean;
     expectedAttempts?: number;
-    expectedError?: StravaActivityError;
+    expectedError?: StravaApiError;
   }
 ];
 
 const createRetryableError = (): Error => {
-  const error: StravaActivityError = {
+  const error: StravaApiError = {
     code: 'SERVER_ERROR',
     message: 'Server error',
     retryable: true,
@@ -24,7 +24,7 @@ const createRetryableError = (): Error => {
 };
 
 const createNonRetryableError = (): Error => {
-  const error: StravaActivityError = {
+  const error: StravaApiError = {
     code: 'INVALID_ID',
     message: 'Invalid ID',
     retryable: false,
