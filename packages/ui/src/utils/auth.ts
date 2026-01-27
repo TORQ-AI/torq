@@ -57,9 +57,6 @@ export function logout(): void {
     localStorage.setItem('theme', theme);
   }
   
-  // Set a logout flag in sessionStorage to prevent activities from loading
-  sessionStorage.setItem('logout', 'true');
-  
   // Force a hard refresh with cache-busting to ensure fresh state
   // Use replace to prevent back button from going to logged-in state
   window.location.replace(`/?logout=${Date.now()}`);
