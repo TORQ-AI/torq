@@ -96,6 +96,18 @@ const normalizePath = (path: string): string => {
 };
 
 /**
+ * Checks if HTTP method supports a request body.
+ *
+ * @param {string} method - HTTP method
+ * @returns {boolean} True if method supports body
+ * @internal
+ */
+const methodSupportsBody = (method: string): boolean => {
+  const upperMethod = method.toUpperCase();
+  return ['POST', 'PUT', 'PATCH', 'DELETE'].includes(upperMethod);
+};
+
+/**
  * Converts Netlify event to Web API Request.
  *
  * @param {NetlifyEvent} event - Netlify function event
@@ -110,12 +122,20 @@ const netlifyEventToRequest = (event: NetlifyEvent): Request => {
     ? '?' + new URLSearchParams(event.queryStringParameters).toString()
     : '';
   const url = `${protocol}://${host}${normalizedPath}${queryString}`;
+  const method = event.httpMethod || 'GET';
 
-  return new Request(url, {
-    method: event.httpMethod || 'GET',
+  const requestInit: RequestInit = {
+    method,
     headers: event.headers,
-    body: event.body,
-  });
+  };
+
+  // Only include body for methods that support it (POST, PUT, PATCH, DELETE)
+  // GET and HEAD requests cannot have a body
+  if (methodSupportsBody(method) && event.body) {
+    requestInit.body = event.body;
+  }
+
+  return new Request(url, requestInit);
 };
 
 /**
@@ -139,6 +159,7 @@ const getAllowedOrigin = (): string => {
 const webResponseToNetlify = async (response: Response): Promise<NetlifyResponse> => {
   const headers: Record<string, string> = {};
   const multiValueHeaders: Record<string, string[]> = {};
+  const isRedirect = response.status >= 300 && response.status < 400;
 
   // Handle Set-Cookie with multiValueHeaders (Netlify requirement)
   const setCookies = response.headers.getSetCookie();
@@ -146,12 +167,14 @@ const webResponseToNetlify = async (response: Response): Promise<NetlifyResponse
     multiValueHeaders['Set-Cookie'] = setCookies;
   }
 
-  // Add CORS headers
-  const allowedOrigin = getAllowedOrigin();
-  headers['Access-Control-Allow-Origin'] = allowedOrigin;
-  headers['Access-Control-Allow-Credentials'] = 'true';
-  headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, DELETE';
-  headers['Access-Control-Allow-Headers'] = 'Content-Type';
+  // Add CORS headers (skip for redirects as they're not needed)
+  if (!isRedirect) {
+    const allowedOrigin = getAllowedOrigin();
+    headers['Access-Control-Allow-Origin'] = allowedOrigin;
+    headers['Access-Control-Allow-Credentials'] = 'true';
+    headers['Access-Control-Allow-Methods'] = 'GET, POST, OPTIONS, DELETE';
+    headers['Access-Control-Allow-Headers'] = 'Content-Type';
+  }
 
   // Copy other headers from response (excluding Set-Cookie and CORS headers which we handled above)
   response.headers.forEach((value, key) => {
@@ -167,7 +190,8 @@ const webResponseToNetlify = async (response: Response): Promise<NetlifyResponse
     }
   });
 
-  const hasBody = response.body !== null;
+  // For redirects, body should be empty
+  const hasBody = !isRedirect && response.body !== null;
   const body = hasBody ? await response.text() : undefined;
 
   return {
