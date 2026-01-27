@@ -8,6 +8,6 @@
     "start": "bun run build && bun run server/server.ts"
   },
   "dependencies": {
-    "@pace/strava-auth": "workspace:*"
+    "@pace/strava-api": "workspace:*"
   }
 }

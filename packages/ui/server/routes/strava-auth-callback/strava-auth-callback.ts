@@ -1,4 +1,4 @@
-import { exchangeToken } from '@pace/strava-auth';
+import { exchangeToken } from '@pace/strava-api';
 import { setTokens } from '../../cookies';
 import type { ServerConfig } from '../../../types';
 

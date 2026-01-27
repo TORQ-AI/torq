@@ -1,5 +1,4 @@
-import { fetchActivity } from '@pace/strava-activity';
-import type { ActivityConfig } from '@pace/strava-activity';
+import { fetchActivity, type ActivityConfig } from '@pace/strava-api';
 import { getTokens } from '../../cookies';
 import type { ServerConfig, ServerTokenResult } from '../../types';
 
