@@ -1,8 +1,8 @@
 import { describe, test, expect } from 'bun:test';
-import extractSignals from './extract-signals';
-import { Activity } from '../../../types';
+import extractSignals from './get-activity-signals';
+import { Activity } from '../types';
 
-describe('extract-signals', () => {
+describe('get-activity-signals', () => {
   test('extracts signals from valid activity', async () => {
     const activity: Activity = {
       id: 123456,

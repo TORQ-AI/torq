@@ -1,12 +1,12 @@
-import { Activity, ActivitySignals } from '../../types';
-import validateActivity from '../../activity-guardrails/validate-activity';
-import validateActivitySignals from '../../activity-guardrails/validate-signals';
-import classifyIntensity from '../classify-intensity';
-import classifyElevation from '../classify-elevation';
-import extractTimeSignals from '../extract-time-signals';
-import extractWeatherSignals from '../extract-weather-signals';
-import extractTagSignals from '../extract-tag-signals';
-import normalizeText from '../normalize-text';
+import { Activity, ActivitySignals } from '../types';
+import validateActivity from '../guardrails/validate-activity';
+import validateActivitySignals from '../guardrails/validate-signals';
+import classifyIntensity from './classify-intensity';
+import classifyElevation from './classify-elevation';
+import extractTimeSignals from './extract-time-signals';
+import extractWeatherSignals from './extract-weather-signals';
+import extractTagSignals from './extract-tag-signals';
+import normalizeText from './normalize-text';
 
 /**
  * Extracts semantic signals from Strava activity data.
@@ -31,7 +31,7 @@ import normalizeText from '../normalize-text';
  * 8. Processes user text (name, description) for semantic context
  * 9. Validates extracted signals via Activity Guardrails
  */
-const extractSignals = async (activity: Activity): Promise<ActivitySignals> => {
+const getActivitySignals = async (activity: Activity): Promise<ActivitySignals> => {
   // Validate activity first
   const activityValidation = validateActivity(activity);
   if (!activityValidation.valid) {
@@ -101,4 +101,4 @@ const extractSignals = async (activity: Activity): Promise<ActivitySignals> => {
   return signals;
 };
 
-export default extractSignals;
+export default getActivitySignals;

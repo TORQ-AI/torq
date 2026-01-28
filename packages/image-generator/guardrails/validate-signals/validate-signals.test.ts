@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import validateActivitySignals from './validate-signals';
-import { ActivitySignals } from '../../../types';
+import { ActivitySignals } from '../../types';
 
 type Case = [
   string,

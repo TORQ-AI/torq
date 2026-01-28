@@ -1,5 +1,5 @@
-import { ActivitySignals, ActivitySignalsValidationResult } from '../types';
-import { CONFIG } from '../../constants';
+import { ActivitySignalsValidationResult } from '../types';
+import { ActivitySignals } from '../../types';
 import checkForbiddenContent from '../check-forbidden-content';
 
 /**

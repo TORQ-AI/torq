@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import validateActivityImagePrompt from './validate-prompt';
-import { ActivityImagePrompt } from '../../../types';
+import { ActivityImagePrompt } from '../../types';
 
 type Case = [
   string,

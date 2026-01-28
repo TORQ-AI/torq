@@ -1,4 +1,4 @@
-import sanitizeText from '../../activity-guardrails/sanitize-text';
+import sanitizeText from '../../guardrails/sanitize-text';
 
 /**
  * Normalizes user-provided text to extract safe semantic signals.

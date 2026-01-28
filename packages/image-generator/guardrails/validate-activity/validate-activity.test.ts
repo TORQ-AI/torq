@@ -1,6 +1,6 @@
 import { describe, test, expect } from 'bun:test';
 import validateActivity from './validate-activity';
-import { Activity } from '../../../types';
+import { Activity } from '../../types';
 
 type Case = [
   string,

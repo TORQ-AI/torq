@@ -1,7 +1,7 @@
 import { describe, test, expect } from 'bun:test';
 import generatePrompt from './generate-prompt';
-import { ActivitySignals } from '../../types';
-import validateActivityImagePrompt from '../../activity-guardrails/validate-prompt';
+import { ActivitySignals } from '../types';
+import { validateActivityImagePrompt } from '../guardrails';
 
 describe('generate-prompt', () => {
   test('generates valid prompt from signals', () => {

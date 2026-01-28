@@ -1,4 +1,5 @@
-import { ActivityImagePrompt, ActivityImagePromptValidationResult } from '../types';
+import { ActivityImagePromptValidationResult } from '../types';
+import { ActivityImagePrompt } from '../../types';
 import { CONFIG } from '../../constants';
 import checkForbiddenContent from '../check-forbidden-content';
 

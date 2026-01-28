@@ -1,5 +1,5 @@
-import { Activity, ActivityValidationResult } from '../types';
-import { CONFIG } from '../../constants';
+import { ActivityValidationResult } from '../types';
+import { Activity } from '../../types';
 
 /**
  * Validates activity value constraints.

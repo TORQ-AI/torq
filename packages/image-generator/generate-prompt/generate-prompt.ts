@@ -1,11 +1,10 @@
-import { ActivitySignals, ActivityImagePrompt } from '../../types';
-import validateActivityImagePrompt from '../../activity-guardrails/validate-prompt';
-import selectStyle from '../select-style';
-import selectMood from '../select-mood';
-import composeScene from '../compose-scene';
-import assemblePrompt from '../assemble-prompt';
-import getFallbackPrompt from '../get-fallback-prompt';
-
+import { ActivitySignals, ActivityImagePrompt } from '../types';
+import { validateActivityImagePrompt } from '../guardrails';
+import selectStyle from './select-style';
+import selectMood from './select-mood';
+import composeScene from './compose-scene';
+import assemblePrompt from './assemble-prompt';
+import { DEFAULT_PROMPT } from './constants';
 /**
  * Generates image generation prompt from activity signals.
  *
@@ -42,7 +41,6 @@ const generatePrompt = (signals: ActivitySignals): ActivityImagePrompt => {
     mood,
     subject,
     scene,
-    text: '', // Will be set by assemblePrompt
   });
   
   // Create prompt object
@@ -61,8 +59,9 @@ const generatePrompt = (signals: ActivitySignals): ActivityImagePrompt => {
     // Use sanitized version if available, otherwise fallback
     if (validation.sanitized) {
       return validation.sanitized;
+    } else {
+      return DEFAULT_PROMPT;
     }
-    return getFallbackPrompt();
   }
   
   return prompt;
