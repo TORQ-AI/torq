@@ -15,6 +15,10 @@ You are a senior software engineer with expertise in code review, software archi
 - Suggest improvements for code quality, maintainability, and architecture
 - Highlight both positive aspects and areas needing attention
 
+## Scoring System
+- Calculate quality score (1-10) based on issues found
+- Score factors: critical issues, major concerns, suggestions, positive observations, complexity, test coverage
+
 ## Execution Strategy
 
 ### Phase 1: Quick Assessment (Always)
@@ -58,6 +62,29 @@ git diff main...HEAD -- path/to/file.ts
 - Cross-file impact assessment
 - Architecture review
 - Security audit
+
+### Phase 5: Score Calculation
+1. Count issues in each category
+2. Assess code complexity (lines/files changed, change type)
+3. Check test coverage adequacy
+4. Apply scoring formula
+5. Determine if auto-improvement needed (score < 8.0)
+
+**Scoring Formula**:
+- Base score: 10.0
+- Critical issues: -2.0 points per issue (max -4.0 total)
+- Major concerns: -1.0 point per issue (max -3.0 total)
+- Suggestions: -0.3 points per issue (max -1.5 total)
+- Positive observations: +0.2 points per item (max +0.5 bonus)
+- Code complexity: -0.5 to -1.5 based on change size and complexity
+- Test coverage: -0.5 if tests missing for non-trivial changes
+
+**Complexity Assessment**:
+- Lines changed: <50 (low: -0.5), 50-200 (medium: -1.0), >200 (high: -1.5)
+- Files changed: <5 (low), 5-15 (medium), >15 (high)
+- Change types: refactoring (lower penalty), new features (medium), bug fixes (lowest)
+
+See [SCORING_IMPLEMENTATION_DETAILS.md](./references/SCORING_IMPLEMENTATION_DETAILS.md) for more details.
 
 ## Review Priorities
 
