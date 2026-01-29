@@ -2,7 +2,7 @@ import { fetchStravaActivity, type StravaApiConfig } from '@pace/strava-api';
 import { getActivitySignals, createActivityImageGenerationPrompt, generateImage } from '@pace/activity-image-generator';
 import { getTokens } from '../../cookies';
 import type { ServerConfig, ServerTokenResult } from '../../types';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 
 /**
  * Creates StravaApiConfig from server tokens and config.
@@ -126,16 +126,22 @@ const createErrorResponse = (error: Error): Response => {
 /**
  * Gets the directory path for saving generated images.
  *
+ * Uses IMAGES_DIRECTORY environment variable if set, otherwise resolves
+ * relative to the server package directory.
+ *
  * @returns {string} Images directory path
  * @internal
  */
 const getImagesDirectory = (): string => {
-  const customDir = process.env.IMAGES_DIRECTORY;
-  if (customDir) {
-    return customDir;
-  } else {
-    return join(process.cwd(), 'images');
+  if (process.env.IMAGES_DIRECTORY) {
+    return process.env.IMAGES_DIRECTORY;
   }
+  // Resolve relative to server package directory (three levels up from routes/activity-image-generator/activity-image-generator.ts)
+  // import.meta.dir = packages/server/src/routes/activity-image-generator
+  const routesDir = dirname(import.meta.dir); // packages/server/src/routes
+  const srcDir = dirname(routesDir); // packages/server/src
+  const packageDir = dirname(srcDir); // packages/server
+  return join(packageDir, 'images');
 };
 
 /**

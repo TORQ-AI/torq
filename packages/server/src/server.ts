@@ -8,6 +8,7 @@
  */
 
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
+import { readFile, stat } from 'node:fs/promises';
 import { getConfig } from './config';
 import {
   stravaAuth,
@@ -18,7 +19,7 @@ import {
   stravaLogout,
   activityImageGenerator,
 } from './routes';
-import { join } from 'node:path';
+import { join, dirname } from 'node:path';
 
 const config = getConfig();
 
@@ -101,6 +102,30 @@ const addCorsHeaders = (nodeResponse: ServerResponse): void => {
 };
 
 /**
+ * Checks if Content-Type represents binary data.
+ *
+ * @param {string | null} contentType - Content-Type header value
+ * @returns {boolean} True if binary content type
+ * @internal
+ */
+const isBinaryContentType = (contentType: string | null): boolean => {
+  if (!contentType) {
+    return false;
+  }
+  
+  const binaryTypes = [
+    'image/',
+    'video/',
+    'audio/',
+    'application/octet-stream',
+    'application/pdf',
+    'application/zip',
+  ];
+  
+  return binaryTypes.some(type => contentType.toLowerCase().startsWith(type));
+};
+
+/**
  * Converts Web API Response to Node.js ServerResponse.
  *
  * @param {Response} webResponse - Web API Response object
@@ -133,8 +158,17 @@ const webResponseToNodeResponse = async (
   // Handle body
   const hasBody = webResponse.body !== null;
   if (hasBody) {
-    const body = await webResponse.text();
-    nodeResponse.end(body);
+    const contentType = webResponse.headers.get('Content-Type');
+    
+    if (isBinaryContentType(contentType)) {
+      // For binary content, use arrayBuffer to preserve data integrity
+      const arrayBuffer = await webResponse.arrayBuffer();
+      nodeResponse.end(Buffer.from(arrayBuffer));
+    } else {
+      // For text content, use text() for proper encoding
+      const body = await webResponse.text();
+      nodeResponse.end(body);
+    }
   } else {
     nodeResponse.end();
   }
@@ -165,6 +199,44 @@ const matchesActivityImageGeneratorRoute = (pathname: string): boolean => {
 };
 
 /**
+ * Gets the images directory path.
+ *
+ * Uses IMAGES_DIRECTORY environment variable if set, otherwise resolves
+ * relative to the server package directory.
+ *
+ * @returns {string} Images directory path
+ * @internal
+ */
+const getImagesDir = (): string => {
+  if (process.env.IMAGES_DIRECTORY) {
+    return process.env.IMAGES_DIRECTORY;
+  }
+  // Resolve relative to server package directory (one level up from src/server.ts)
+  const packageDir = dirname(import.meta.dir);
+  return join(packageDir, 'images');
+};
+
+/**
+ * Determines the Content-Type header for an image file based on its extension.
+ *
+ * @param {string} filename - Image filename
+ * @returns {string} MIME type for the image
+ * @internal
+ */
+const getImageContentType = (filename: string): string => {
+  const ext = filename.split('.').pop()?.toLowerCase();
+  const mimeTypes: Record<string, string> = {
+    'png': 'image/png',
+    'jpg': 'image/jpeg',
+    'jpeg': 'image/jpeg',
+    'gif': 'image/gif',
+    'webp': 'image/webp',
+    'svg': 'image/svg+xml',
+  };
+  return mimeTypes[ext || ''] || 'application/octet-stream';
+};
+
+/**
  * Serves images from the images directory.
  *
  * @param {Request} request - HTTP request with image filename in path
@@ -180,23 +252,29 @@ const serveImage = async (request: Request): Promise<Response> => {
     return new Response('Not Found', { status: 404 });
   }
   
-  const imagesDir = process.env.IMAGES_DIRECTORY || join(process.cwd(), 'images');
+  const imagesDir = getImagesDir();
   const filePath = join(imagesDir, filename);
   
   try {
-    const file = Bun.file(filePath);
-    const exists = await file.exists();
+    // Check if file exists using fs.stat
+    await stat(filePath);
     
-    if (!exists) {
-      return new Response('Not Found', { status: 404 });
-    }
+    // Read file as buffer
+    const fileBuffer = await readFile(filePath);
     
-    return new Response(file, {
+    // Determine content type from extension
+    const contentType = getImageContentType(filename);
+    
+    return new Response(fileBuffer, {
       headers: {
-        'Content-Type': file.type || 'image/png',
+        'Content-Type': contentType,
       },
     });
   } catch (error) {
+    // stat() throws if file doesn't exist
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
+      return new Response('Not Found', { status: 404 });
+    }
     console.error('Error serving image:', error);
     return new Response('Internal Server Error', { status: 500 });
   }
