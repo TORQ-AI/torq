@@ -4,8 +4,9 @@ import { listImageKeys, getImage, isExpired, deleteImage } from '../../src/stora
 /**
  * Scheduled function that runs daily to clean up expired images.
  * Deletes images older than 24 hours.
- * @param request
- * @param context
+ * @param {Request} request - The incoming HTTP request
+ * @param {Context} context - Netlify function context
+ * @returns {Promise<Response>} HTTP response with cleanup summary
  */
 export default async (request: Request, context: Context) => {
   console.log('Starting image cleanup...');

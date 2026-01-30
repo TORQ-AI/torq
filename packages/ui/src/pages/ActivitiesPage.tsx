@@ -80,7 +80,7 @@ const ActivitiesPage = (): JSX.Element => {
       
       if (response.image?.imageData) {
         const imageData = response.image.imageData;
-        console.log('Image data received:', imageData.substring(0, 50) + '...');
+        console.info('Image data received:', imageData.substring(0, 50) + '...');
         setGeneratedImageData(imageData);
         setGeneratingImage(false);
       } else {

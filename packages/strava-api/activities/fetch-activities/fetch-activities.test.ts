@@ -18,9 +18,7 @@ type Case = [
 // Network failure test needs ~7s for retries (1s + 2s + 4s) plus execution time
 const TEST_TIMEOUT = 15000;
 
-const parseError = (error: Error): StravaApiError => {
-  return JSON.parse(error.message) as StravaApiError;
-};
+const parseError = (error: Error): StravaApiError => JSON.parse(error.message) as StravaApiError;
 
 describe('fetch-activities', () => {
   const fetchState = { originalFetch: globalThis.fetch };
@@ -41,7 +39,7 @@ describe('fetch-activities', () => {
           accessToken: 'test-token',
         },
         mockFetch: async () =>
-          {return new Response(
+          new Response(
             JSON.stringify([
               {
                 id: 123456,
@@ -67,7 +65,7 @@ describe('fetch-activities', () => {
               },
             ]),
             { status: 200 }
-          )},
+          ),
         shouldThrow: false,
         expectedActivities: [
           {
@@ -101,7 +99,7 @@ describe('fetch-activities', () => {
         config: {
           accessToken: 'test-token',
         },
-        mockFetch: async () => {return new Response(JSON.stringify([]), { status: 200 })},
+        mockFetch: async () => new Response(JSON.stringify([]), { status: 200 }),
         shouldThrow: false,
         expectedActivities: [],
       },
@@ -112,7 +110,7 @@ describe('fetch-activities', () => {
         config: {
           accessToken: 'invalid-token',
         },
-        mockFetch: async () => {return new Response('Unauthorized', { status: 401 })},
+        mockFetch: async () => new Response('Unauthorized', { status: 401 }),
         shouldThrow: true,
         expectedError: {
           code: 'UNAUTHORIZED',
@@ -173,7 +171,7 @@ describe('fetch-activities', () => {
         config: {
           accessToken: 'test-token',
         },
-        mockFetch: async () => {return new Response('Forbidden', { status: 403 })},
+        mockFetch: async () => new Response('Forbidden', { status: 403 }),
         shouldThrow: true,
         expectedError: {
           code: 'FORBIDDEN',
@@ -280,7 +278,7 @@ describe('fetch-activities', () => {
         config: {
           accessToken: 'test-token',
         },
-        mockFetch: async () => {return new Response('invalid json', { status: 200 })},
+        mockFetch: async () => new Response('invalid json', { status: 200 }),
         shouldThrow: true,
         expectedError: {
           code: 'MALFORMED_RESPONSE',
@@ -296,13 +294,13 @@ describe('fetch-activities', () => {
           accessToken: 'test-token',
         },
         mockFetch: async () =>
-          {return new Response(
+          new Response(
             JSON.stringify({
               id: 123456,
               type: 'Ride',
             }),
             { status: 200 }
-          )},
+          ),
         shouldThrow: true,
         expectedError: {
           code: 'MALFORMED_RESPONSE',
@@ -319,7 +317,7 @@ describe('fetch-activities', () => {
           baseUrl: 'https://custom-api.example.com/api/v3',
         },
         mockFetch: async () =>
-          {return new Response(
+          new Response(
             JSON.stringify([
               {
                 id: 123456,
@@ -328,7 +326,7 @@ describe('fetch-activities', () => {
               },
             ]),
             { status: 200 }
-          )},
+          ),
         shouldThrow: false,
         expectedActivities: [
           {
@@ -373,7 +371,7 @@ describe('fetch-activities', () => {
     if (timeout !== undefined) {
       await Promise.race([
         testFn(),
-        new Promise((_, reject) => {return setTimeout(() => {return reject(new Error('Test timeout'))}, timeout)})
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Test timeout')), timeout))
       ]).catch((error) => {
         if (error.message === 'Test timeout') {
           throw new Error(`Test timed out after ${timeout}ms`);

@@ -4,8 +4,9 @@ import { getConfig } from '../../src/config';
 
 /**
  * Netlify Function handler for activity image generation.
- * @param request
- * @param context
+ * @param {Request} request - The incoming HTTP request
+ * @param {any} context - Netlify function context
+ * @returns {Promise<Response>} HTTP response with generated image or error
  */
 export default async (request: Request, context: any) => {
   // Connect to Netlify Blobs context

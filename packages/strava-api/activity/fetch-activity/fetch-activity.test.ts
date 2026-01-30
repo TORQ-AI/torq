@@ -15,9 +15,7 @@ type Case = [
   }
 ];
 
-const parseError = (error: Error): StravaApiError => {
-  return JSON.parse(error.message) as StravaApiError;
-};
+const parseError = (error: Error): StravaApiError => JSON.parse(error.message) as StravaApiError;
 
 describe('fetch-activity', () => {
   const fetchState = { originalFetch: globalThis.fetch };
@@ -39,7 +37,7 @@ describe('fetch-activity', () => {
           accessToken: 'test-token',
         },
         mockFetch: async () =>
-          {return new Response(
+          new Response(
             JSON.stringify({
               id: 123456,
               type: 'Ride',
@@ -47,7 +45,7 @@ describe('fetch-activity', () => {
               name: 'Test Activity',
             }),
             { status: 200 }
-          )},
+          ),
         shouldThrow: false,
         expectedActivity: {
           type: 'Ride',
@@ -94,7 +92,7 @@ describe('fetch-activity', () => {
         config: {
           accessToken: 'test-token',
         },
-        mockFetch: async () => {return new Response('Not Found', { status: 404 })},
+        mockFetch: async () => new Response('Not Found', { status: 404 }),
         shouldThrow: true,
         expectedError: {
           code: 'NOT_FOUND',
@@ -110,7 +108,7 @@ describe('fetch-activity', () => {
         config: {
           accessToken: 'invalid-token',
         },
-        mockFetch: async () => {return new Response('Unauthorized', { status: 401 })},
+        mockFetch: async () => new Response('Unauthorized', { status: 401 }),
         shouldThrow: true,
         expectedError: {
           code: 'UNAUTHORIZED',
@@ -169,7 +167,7 @@ describe('fetch-activity', () => {
         config: {
           accessToken: 'test-token',
         },
-        mockFetch: async () => {return new Response('Forbidden', { status: 403 })},
+        mockFetch: async () => new Response('Forbidden', { status: 403 }),
         shouldThrow: true,
         expectedError: {
           code: 'FORBIDDEN',
@@ -264,14 +262,14 @@ describe('fetch-activity', () => {
           },
         },
         mockFetch: async () =>
-          {return new Response(
+          new Response(
             JSON.stringify({
               id: 123456,
               type: 'Ride',
               sport_type: 'Ride',
             }),
             { status: 200 }
-          )},
+          ),
         shouldThrow: false,
         expectedActivity: {
           type: 'Ride',
@@ -287,20 +285,18 @@ describe('fetch-activity', () => {
         config: {
           accessToken: 'test-token',
           guardrails: {
-            validate: (_input: Record<string, unknown>) => {
-              return { valid: false, errors: ['Validation failed'] };
-            },
+            validate: (_input: Record<string, unknown>) => ({ valid: false, errors: ['Validation failed'] }),
           },
         },
         mockFetch: async () =>
-          {return new Response(
+          new Response(
             JSON.stringify({
               id: 123456,
               type: 'Ride',
               sport_type: 'Ride',
             }),
             { status: 200 }
-          )},
+          ),
         shouldThrow: true,
         expectedError: {
           code: 'VALIDATION_FAILED',
@@ -317,14 +313,14 @@ describe('fetch-activity', () => {
           accessToken: 'test-token',
         },
         mockFetch: async () =>
-          {return new Response(
+          new Response(
             JSON.stringify({
               id: 123456,
               type: 'Run',
               sport_type: 'Run',
             }),
             { status: 200 }
-          )},
+          ),
         shouldThrow: false,
         expectedActivity: {
           type: 'Run',
@@ -341,7 +337,7 @@ describe('fetch-activity', () => {
           accessToken: 'test-token',
         },
         mockFetch: async () =>
-          {return new Response(
+          new Response(
             JSON.stringify({
               id: 123456,
               type: 'Ride',
@@ -355,7 +351,7 @@ describe('fetch-activity', () => {
               calories: 800,
             }),
             { status: 200 }
-          )},
+          ),
         shouldThrow: false,
         expectedActivity: {
           type: 'Ride',

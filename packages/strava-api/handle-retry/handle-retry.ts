@@ -93,8 +93,6 @@ const handleRetry = async <T>(
   fn: RetryFunction<T>,
   maxRetries: number,
   initialBackoffMs: number = STRAVA_API_INITIAL_BACKOFF_MS
-): Promise<T> => {
-  return attemptWithBackoff(fn, 0, maxRetries, initialBackoffMs, null);
-};
+): Promise<T> => attemptWithBackoff(fn, 0, maxRetries, initialBackoffMs, null);
 
 export default handleRetry;

@@ -23,11 +23,11 @@ describe('stravaActivities', () => {
   let mockFetchStravaActivities: ReturnType<typeof mock>;
 
   beforeEach(() => {
-    mockFetchStravaActivities = mock(() => {return Promise.resolve([] as StravaActivity[])});
-    mock.module('@pace/strava-api', () => {return {
+    mockFetchStravaActivities = mock(() => Promise.resolve([] as StravaActivity[]));
+    void mock.module('@pace/strava-api', () => ({
       fetchStravaActivities: mockFetchStravaActivities,
-      fetchStravaActivity: mock(() => {return Promise.resolve(null)}),
-    }});
+      fetchStravaActivity: mock(() => Promise.resolve(null)),
+    }));
   });
 
   afterEach(() => {
@@ -40,7 +40,7 @@ describe('stravaActivities', () => {
     const response = await stravaActivities(request, mockConfig);
 
     expect(response.status).toBe(401);
-    const body = await response.json();
+    const body = await response.json() as { error: string; message: string };
     expect(body.error).toBe('Unauthorized');
     expect(body.message).toBe('Authentication required. Please authenticate with Strava.');
   });
@@ -83,7 +83,7 @@ describe('stravaActivities', () => {
     const response = await stravaActivities(request, mockConfig);
 
     expect(response.status).toBe(200);
-    const body = await response.json();
+    const body = await response.json() as StravaActivity[];
     expect(Array.isArray(body)).toBe(true);
     expect(body.length).toBe(2);
     expect(body[0].id).toBe(123456);

@@ -8,16 +8,15 @@ import checkForbiddenContent from '../check-forbidden-content';
  * Checks that signals comply with guardrails, tags are normalized,
  * and intensity/elevation classifications are valid.
  *
- * @param {StravaActivitySignals} signals - Activity signals to validate
- * @returns {StravaActivitySignalsValidationResult} Validation result with errors and optional sanitized signals
- *
- * @remarks
  * Validates:
  * - Intensity is one of: low, medium, high
  * - Elevation is one of: flat, rolling, mountainous
  * - Time of day is one of: morning, day, evening, night
  * - Tags are normalized strings
  * - No forbidden content in semantic context
+ *
+ * @param {StravaActivitySignals} signals - Activity signals to validate
+ * @returns {StravaActivitySignalsValidationResult} Validation result with errors and optional sanitized signals
  */
 const validateActivitySignals = (signals: StravaActivitySignals): StravaActivitySignalsValidationResult => {
   const errors: string[] = [];
@@ -49,7 +48,7 @@ const validateActivitySignals = (signals: StravaActivitySignals): StravaActivity
   if (!Array.isArray(signals.tags)) {
     errors.push('Tags must be an array');
   } else {
-    const invalidTags = signals.tags.filter((tag) => {return typeof tag !== 'string'});
+    const invalidTags = signals.tags.filter((tag) => typeof tag !== 'string');
     if (invalidTags.length > 0) {
       errors.push('All tags must be strings');
     }
@@ -57,7 +56,7 @@ const validateActivitySignals = (signals: StravaActivitySignals): StravaActivity
   
   // Check for forbidden content in semantic context
   if (signals.semanticContext !== undefined) {
-    const hasForbidden = signals.semanticContext.some((context) => {return checkForbiddenContent(context)});
+    const hasForbidden = signals.semanticContext.some((context) => checkForbiddenContent(context));
     if (hasForbidden) {
       errors.push('Semantic context contains forbidden content');
     }
@@ -76,7 +75,7 @@ const validateActivitySignals = (signals: StravaActivitySignals): StravaActivity
     if (!Array.isArray(signals.brands)) {
       errors.push('Brands must be an array');
     } else {
-      const invalidBrands = signals.brands.filter((brand) => {return typeof brand !== 'string'});
+      const invalidBrands = signals.brands.filter((brand) => typeof brand !== 'string');
       if (invalidBrands.length > 0) {
         errors.push('All brands must be strings');
       }
@@ -90,7 +89,7 @@ const validateActivitySignals = (signals: StravaActivitySignals): StravaActivity
     ? undefined
     : {
         ...signals,
-        semanticContext: signals.semanticContext?.filter((context) => {return !checkForbiddenContent(context)}),
+        semanticContext: signals.semanticContext?.filter((context) => !checkForbiddenContent(context)),
       };
   
   return {

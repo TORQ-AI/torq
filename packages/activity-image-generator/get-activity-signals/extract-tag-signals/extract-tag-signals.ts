@@ -19,12 +19,11 @@ const KNOWN_TAGS = [
  * Processes Strava tags and normalizes them to known tag values.
  * Tags influence mood, intensity, and scene composition.
  *
- * @param {StravaActivity} activity - Activity data to extract tags from
- * @returns {string[]} Array of normalized tag strings
- *
- * @remarks
  * Tags are normalized to lowercase and matched against known tag list.
  * Unknown tags are filtered out to ensure only safe, recognized tags are used.
+ *
+ * @param {StravaActivity} activity - Activity data to extract tags from
+ * @returns {string[]} Array of normalized tag strings
  */
 const extractTagSignals = (activity: StravaActivity): string[] => {
   const tags: string[] = [];
@@ -54,8 +53,8 @@ const extractTagSignals = (activity: StravaActivity): string[] => {
   
   // Normalize tags to lowercase and filter to known tags
   const normalizedTags = tags
-    .map((tag) => {return tag.toLowerCase().trim()})
-    .filter((tag) => {return KNOWN_TAGS.includes(tag as typeof KNOWN_TAGS[number])});
+    .map((tag) => tag.toLowerCase().trim())
+    .filter((tag) => KNOWN_TAGS.includes(tag as typeof KNOWN_TAGS[number]));
   
   return normalizedTags;
 };

@@ -27,7 +27,7 @@ describe('validate-specs-with-openspec', () => {
     
     // Mock existsSync to return true for any path ending with node_modules/.bin/openspec
     const actualFs = await import('node:fs');
-    mock.module('node:fs', () => {return {
+    mock.module('node:fs', () => ({
       ...actualFs,
       existsSync: (path: string) => {
         if (typeof path === 'string' && path.endsWith('node_modules/.bin/openspec')) {
@@ -35,7 +35,7 @@ describe('validate-specs-with-openspec', () => {
         }
         return actualFs.existsSync(path);
       },
-    }});
+    }));
   });
 
   afterEach(async () => {
@@ -453,7 +453,7 @@ describe('validate-specs-with-openspec', () => {
       exited: Promise.resolve(exitCode),
     };
 
-    Bun.spawn = mock(() => {return mockProc as any}) as typeof Bun.spawn;
+    Bun.spawn = mock(() => mockProc as any) as typeof Bun.spawn;
 
     // Re-import the function to get the mocked version
     const { default: validateSpecsWithOpenspec } = await import('./validate-specs-with-openspec');
@@ -473,8 +473,7 @@ describe('validate-specs-with-openspec', () => {
   });
 
   test('calls openspec with correct arguments', async () => {
-    const mockSpawn = mock(() => {
-      return {
+    const mockSpawn = mock(() => ({
         stdout: new Response(JSON.stringify({
           items: [],
           summary: {
@@ -500,8 +499,7 @@ describe('validate-specs-with-openspec', () => {
         })).body as ReadableStream,
         stderr: new Response('').body as ReadableStream,
         exited: Promise.resolve(0),
-      } as any;
-    });
+      } as any));
 
     Bun.spawn = mockSpawn as typeof Bun.spawn;
 

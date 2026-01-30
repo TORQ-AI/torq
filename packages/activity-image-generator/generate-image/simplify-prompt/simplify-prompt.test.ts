@@ -59,7 +59,7 @@ describe('simplify-prompt', () => {
             text: 'a'.repeat(500),
           },
           retryLevel: 1,
-          expectedText: expect.stringMatching(/^abstract style, very energetic and dynamic mood, a{1,400}$/),
+          expectedText: 'abstract style, very energetic and dynamic mood, ' + 'a'.repeat(400 - 'abstract style, very energetic and dynamic mood, '.length),
           expectedScene: '',
           expectedMood: 'very energetic and dynamic',
         },

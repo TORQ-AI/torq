@@ -8,15 +8,14 @@ import { StravaActivityImagePrompt } from '../../types';
  * First simplification removes scene details, keeping style, mood, and subject.
  * Second simplification keeps only style and basic subject.
  *
- * @param {StravaActivityImagePrompt} prompt - Original prompt to simplify
- * @param {number} attemptLevel - Retry attempt level (1, 2, and so on).
- * @returns {StravaActivityImagePrompt} Simplified prompt with reduced text
- *
- * @remarks
  * Simplification strategy:
  * - Level 1: Remove scene, keep style + mood + subject
  * - Level 2: Keep only style + basic subject
  * The text field is reassembled after simplification.
+ *
+ * @param {StravaActivityImagePrompt} prompt - Original prompt to simplify
+ * @param {number} attemptLevel - Retry attempt level (1, 2, and so on).
+ * @returns {StravaActivityImagePrompt} Simplified prompt with reduced text
  *
  * @example
  * ```typescript

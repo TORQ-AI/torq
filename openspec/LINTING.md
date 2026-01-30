@@ -59,7 +59,7 @@ Some rules require manual review:
 
 The following rules from `project.md` require manual code review as they cannot be fully automated:
 
-1. **JSDoc completeness**: While ESLint enforces JSDoc presence and basic structure, ensuring all required tags (`@throws`, `@see`, `@example`, `@remarks`, `@internal`, `@template`) are present requires manual review.
+1. **JSDoc completeness**: While ESLint enforces JSDoc presence and basic structure, ensuring all required tags (`@throws`, `@see`, `@example`, `@internal`, `@template`) are present requires manual review.
 
 2. **Type naming conventions**: Module-scoped type prefixes (e.g., `ActivityConfig`) cannot be automatically enforced and require manual review.
 
@@ -140,4 +140,4 @@ Consider creating custom ESLint rules for:
 1. Detecting inline object/function types in parameters
 2. Enforcing no early returns pattern
 3. Validating type naming conventions with module prefixes
-4. Ensuring complete JSDoc tag coverage (all required tags: `@throws`, `@see`, `@example`, `@remarks`, `@internal`, `@template`)
+4. Ensuring complete JSDoc tag coverage (all required tags: `@throws`, `@see`, `@example`, `@internal`, `@template`)

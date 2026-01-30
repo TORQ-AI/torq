@@ -10,16 +10,18 @@ interface HeaderProps {
 }
 
 /**
- *
- * @param root0
- * @param root0.onThemeChange
+ * Application header with navigation and theme switcher.
+ * @param {HeaderProps} root0 - Component props
+ * @param {Function} root0.onThemeChange - Callback to change theme
+ * @returns {JSX.Element} Header component
  */
 export default function Header({ onThemeChange }: HeaderProps) {
   const [location, setLocation] = useLocation();
   const { isAuthenticated, loading } = useAuth();
 
   /**
-   *
+   * Handles user logout.
+   * @returns {Promise<void>}
    */
   const handleLogout = async () => {
     await logout();

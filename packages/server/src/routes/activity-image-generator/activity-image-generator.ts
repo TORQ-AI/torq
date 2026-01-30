@@ -12,12 +12,12 @@ import { ERROR_CODES, ERROR_MESSAGES, STATUS_CODES } from './constants';
  * @returns {StravaApiConfig} Strava API configuration.
  * @internal
  */
-const createActivityConfig = (tokens: ServerTokenResult, config: ServerConfig): StravaApiConfig => {return {
+const createActivityConfig = (tokens: ServerTokenResult, config: ServerConfig): StravaApiConfig => ({
   accessToken: tokens.accessToken,
   refreshToken: tokens.refreshToken,
   clientId: config.strava.clientId,
   clientSecret: config.strava.clientSecret,
-}};
+});
 
 /**
  * Creates error response for unauthorized requests.
@@ -25,7 +25,7 @@ const createActivityConfig = (tokens: ServerTokenResult, config: ServerConfig): 
  * @returns {Response} 401 Unauthorized response.
  * @internal
  */
-const createUnauthorizedResponse = (): Response => {return (
+const createUnauthorizedResponse = (): Response => (
   new Response(
     JSON.stringify({
       error: 'Unauthorized',
@@ -38,7 +38,7 @@ const createUnauthorizedResponse = (): Response => {return (
       },
     }
   )
-)};
+);
 
 /**
  * Determines status code and error message from activity error code.
@@ -135,7 +135,7 @@ const processActivityAndCreateResponse = async (
   const provider = 'pollinations';
   const activityConfig = createActivityConfig(tokens, config);
   const activity = await fetchStravaActivity(activityId, activityConfig);
-  const signals = activity ? await getActivitySignals(activity) : null;
+  const signals = activity ? getActivitySignals(activity) : null;
   const prompt = signals ? createActivityImageGenerationPrompt(signals) : null;
   const image = await (async () => {
     if (!prompt) {
@@ -173,8 +173,7 @@ const processActivityAndCreateResponse = async (
  * @returns {Response} 400 Bad Request response
  * @internal
  */
-const createBadRequestResponse = (): Response => {
-  return new Response(
+const createBadRequestResponse = (): Response => new Response(
     JSON.stringify({
       error: 'Bad Request',
       message: ERROR_MESSAGES.ACTIVITY_ID_REQUIRED,
@@ -186,7 +185,6 @@ const createBadRequestResponse = (): Response => {
       },
     }
   );
-};
 
 /**
  * Handles activity processing with error handling.
@@ -224,7 +222,7 @@ const handleActivityProcessing = async (
 const activityImageGenerator = async (request: Request, config: ServerConfig): Promise<Response> => {
   const url = new URL(request.url);
   const pathname = url.pathname;
-  const pathParts = pathname.split('/').filter((part) => {return part !== ''});
+  const pathParts = pathname.split('/').filter((part) => part !== '');
   const activityIdIndex = pathParts.indexOf('activity-image-generator');
   const hasActivityId = activityIdIndex !== -1 && activityIdIndex < pathParts.length - 1;
 

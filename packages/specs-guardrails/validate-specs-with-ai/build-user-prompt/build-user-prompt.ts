@@ -38,14 +38,14 @@ const buildUserPrompt = async (specFilePaths: string[], userPrompt: string): Pro
     });
   }
 
-  const specificationContents = specs.map((spec, index) => {return (
+  const specificationContents = specs.map((spec, index) => (
     `
     [SPEC ${index + 1}]
     PATH: ${spec.path}
 
     ${spec.content}
     `
-  )}).join('\n\n');
+  )).join('\n\n');
 
   return (
     `

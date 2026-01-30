@@ -19,7 +19,8 @@ export const useAuthStatus = (): UseAuthStatusResult => {
 
   useEffect(() => {
     /**
-     *
+     * Checks authentication status with the API.
+     * @returns {Promise<void>}
      */
     const checkAuth = async () => {
       setLoading(true);
@@ -46,7 +47,7 @@ export const useAuthStatus = (): UseAuthStatusResult => {
       }
     };
 
-    checkAuth();
+    void checkAuth();
   }, []);
 
   return { isAuthenticated, loading };

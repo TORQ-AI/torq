@@ -8,16 +8,18 @@ interface ThemeSwitcherProps {
 }
 
 /**
- *
- * @param root0
- * @param root0.className
- * @param root0.onThemeChange
+ * Theme switcher button component.
+ * @param {ThemeSwitcherProps} root0 - Component props
+ * @param {string} root0.className - Optional CSS class name
+ * @param {Function} root0.onThemeChange - Callback to change theme
+ * @returns {JSX.Element} Theme switcher button
  */
 export default function ThemeSwitcher({ className, onThemeChange }: ThemeSwitcherProps) {
   const theme = useTheme();
 
   /**
-   *
+   * Toggles between light and dark theme.
+   * @returns {void}
    */
   const toggleTheme = () => {
     const newTheme = theme.type === 'dark' ? 'light' : 'dark';

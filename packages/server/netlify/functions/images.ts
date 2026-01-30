@@ -3,15 +3,16 @@ import { getImage, isExpired, deleteImage } from '../../src/storage';
 
 /**
  * Netlify Function handler for serving images from Blobs.
- * 
+ *
  * GET /images/:key - Retrieves and serves image by key
  * Auto-deletes if expired (>24 hours old)
- * @param request
- * @param context
+ * @param {Request} request - The incoming HTTP request
+ * @param {Context} context - Netlify function context
+ * @returns {Promise<Response>} HTTP response with image data or error
  */
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url);
-  const pathParts = url.pathname.split('/').filter(part => {return part});
+  const pathParts = url.pathname.split('/').filter(part => part);
   
   // Extract key from path: /images/:key or /.netlify/functions/images/:key
   const keyIndex = pathParts.indexOf('images');

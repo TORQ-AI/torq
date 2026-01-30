@@ -243,7 +243,7 @@ describe('get-spec-file-paths', () => {
     expect(result.length).toStrictEqual(expectedCount);
 
     if (expectedPaths.length > 0) {
-      const relativePaths = result.map((path) => {return path.replace(testState.tempDir + '/', '')});
+      const relativePaths = result.map((path) => path.replace(testState.tempDir + '/', ''));
       for (const expectedPath of expectedPaths) {
         expect(relativePaths).toContain(expectedPath);
       }

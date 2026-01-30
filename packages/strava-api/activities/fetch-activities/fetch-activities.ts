@@ -87,9 +87,7 @@ const fetchApiResponseWithErrorHandling = async (
 const fetchActivitiesWithTokenRefresh = async (
   currentConfig: StravaApiConfig,
   originalConfig: StravaApiConfig
-): Promise<StravaActivity[]> => {
-  return await fetchApiResponseWithErrorHandling(currentConfig);
-};
+): Promise<StravaActivity[]> => await fetchApiResponseWithErrorHandling(currentConfig);
 
 /**
  * Fetches a list of activities from Strava API for the authenticated athlete.
@@ -100,6 +98,12 @@ const fetchActivitiesWithTokenRefresh = async (
  *
  * This function is typically called to retrieve a list of activities for display
  * or processing purposes.
+ * 
+ * The function implements the following flow:
+ * 1. Fetches from API with automatic retry on retryable errors
+ * 2. Handles rate limiting by waiting before retry
+ * 3. Attempts token refresh on 401 errors (if refresh token available)
+ * 4. Returns raw API response array
  *
  * @param {StravaApiConfig} config - Strava API configuration including OAuth tokens
  * @returns {Promise<StravaActivityApiResponse[]>} Promise resolving to array of activities in raw Strava API format
@@ -110,13 +114,6 @@ const fetchActivitiesWithTokenRefresh = async (
  *   - 'SERVER_ERROR' (retryable): Strava API server error (handled with retry)
  *   - 'NETWORK_ERROR' (retryable): Network connection failure (handled with retry)
  *   - 'MALFORMED_RESPONSE' (not retryable): Invalid API response format
- *
- * @remarks
- * The function implements the following flow:
- * 1. Fetches from API with automatic retry on retryable errors
- * 2. Handles rate limiting by waiting before retry
- * 3. Attempts token refresh on 401 errors (if refresh token available)
- * 4. Returns raw API response array
  *
  * @see {@link https://developers.strava.com/docs/reference/#api-Activities-getLoggedInAthleteActivities | Strava Get Activities API}
  *
@@ -131,9 +128,7 @@ const fetchActivities = async (config: StravaApiConfig): Promise<StravaActivity[
   /**
    *
    */
-  const fetchWithRetry = async (): Promise<StravaActivity[]> => {
-    return fetchActivitiesWithTokenRefresh(config, config);
-  };
+  const fetchWithRetry = async (): Promise<StravaActivity[]> => fetchActivitiesWithTokenRefresh(config, config);
 
   return handleRetry(fetchWithRetry, STRAVA_API_MAX_RETRIES, STRAVA_API_INITIAL_BACKOFF_MS);
 };

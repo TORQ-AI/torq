@@ -11,9 +11,7 @@ type Case = [
   }
 ];
 
-const parseError = (error: Error): StravaApiError => {
-  return JSON.parse(error.message) as StravaApiError;
-};
+const parseError = (error: Error): StravaApiError => JSON.parse(error.message) as StravaApiError;
 
 describe('validate-activity-id', () => {
   test.each<Case>([

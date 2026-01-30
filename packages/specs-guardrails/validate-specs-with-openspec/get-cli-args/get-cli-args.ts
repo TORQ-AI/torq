@@ -35,8 +35,8 @@ const getCliArg = (name: string): string | undefined => {
  * // Returns: { rootDir: '/path/to/specs' }
  * ```
  */
-const getCliArgs = () => {return {
+const getCliArgs = () => ({
   rootDir: getCliArg('--rootDir') ?? process.cwd(),
-}};
+});
 
 export default getCliArgs;

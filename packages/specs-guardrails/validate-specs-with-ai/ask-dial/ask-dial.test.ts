@@ -274,9 +274,9 @@ describe('ask-dial', () => {
     }
 
     global.fetch = mock(() =>
-      {return Promise.resolve({
-        json: () => {return Promise.resolve(responseBody)},
-      } as Response)}
+      Promise.resolve({
+        json: () => Promise.resolve(responseBody),
+      } as Response)
     ) as typeof fetch;
 
     if (shouldThrow) {
@@ -292,9 +292,9 @@ describe('ask-dial', () => {
     process.env.DIAL_KEY = 'test-key';
 
     const mockFetch = mock(() =>
-      {return Promise.resolve({
+      Promise.resolve({
         json: () =>
-          {return Promise.resolve({
+          Promise.resolve({
             choices: [
               {
                 message: {
@@ -302,8 +302,8 @@ describe('ask-dial', () => {
                 },
               },
             ],
-          })},
-      } as Response)}
+          }),
+      } as Response)
     ) as typeof fetch;
 
     global.fetch = mockFetch;
@@ -329,7 +329,7 @@ describe('ask-dial', () => {
       requestBodyState.value = JSON.parse(options?.body as string);
       return Promise.resolve({
         json: () =>
-          {return Promise.resolve({
+          Promise.resolve({
             choices: [
               {
                 message: {
@@ -337,7 +337,7 @@ describe('ask-dial', () => {
                 },
               },
             ],
-          })},
+          }),
       } as Response);
     }) as typeof fetch;
 

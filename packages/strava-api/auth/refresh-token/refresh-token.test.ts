@@ -14,9 +14,7 @@ type Case = [
   }
 ];
 
-const parseError = (error: Error): StravaAuthError => {
-  return JSON.parse(error.message) as StravaAuthError;
-};
+const parseError = (error: Error): StravaAuthError => JSON.parse(error.message) as StravaAuthError;
 
 describe('refresh-token', () => {
   const fetchState = { originalFetch: globalThis.fetch };
@@ -200,7 +198,7 @@ describe('refresh-token', () => {
       };
     } else {
       // @ts-expect-error - mockResponse is a Response
-      globalThis.fetch = async () => {return mockResponse};
+      globalThis.fetch = async () => mockResponse;
     }
 
     if (shouldThrow) {

@@ -12,8 +12,7 @@ import getFallbackPrompt from './get-fallback-prompt';
  * @param {StravaActivityImagePrompt} prompt - Current prompt to use.
  * @param {number} attempt - Current attempt number (0-based).
  * @param {number} maxAttempts - Maximum number of attempts allowed.
- * @param providerName
- * @param {ImageGenerationOptions} [options] - Optional configuration.
+ * @param {ImageGenerationProviderName} [providerName] - Optional provider name to use.
  * @returns {Promise<string>} Promise resolving to base64-encoded image data URL.
  * @throws {Error} Throws error if all retries fail.
  */
@@ -55,12 +54,6 @@ const attemptGeneration = async (
  * on each retry. If all retries fail, uses a safe fallback prompt. Images are
  * downloaded from the provider and returned as base64-encoded data URLs.
  *
- * @param {GenerateImageInput} input - Image generation input with prompt
- * @param {ImageGenerationOptions} [options] - Optional configuration
- * @returns {Promise<GenerateImageOutput>} Promise resolving to generated image data and metadata
- * @throws {Error} Throws error if generation fails
- *
- * @remarks
  * Generation process:
  * 1. Get configured provider based on IMAGE_PROVIDER env var (defaults to Pollinations)
  * 2. Validate prompt text length (max 400 characters)
@@ -69,6 +62,10 @@ const attemptGeneration = async (
  * 5. If all retries fail, use fallback prompt
  * 6. Images are downloaded from provider and returned as base64 data URLs
  * 7. Always returns a valid base64-encoded image data URL
+ *
+ * @param {GenerateImageInput} input - Image generation input with prompt
+ * @returns {Promise<GenerateImageOutput>} Promise resolving to generated image data and metadata
+ * @throws {Error} Throws error if generation fails
  *
  * @example
  * ```typescript
@@ -101,7 +98,7 @@ const generateImage = async (
         imageData,
         attempts,
       };
-    } catch (error) {
+    } catch {
       const fallbackPrompt = getFallbackPrompt(input.prompt.subject);
       const fallbackImageData = await provider(fallbackPrompt.text);
 
