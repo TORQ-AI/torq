@@ -1,8 +1,50 @@
-import { ImageProvider, ImageGenerationOptions, ImageBlobMetadata } from './types';
-import { CONFIG } from '../constants';
-import { DialImageResponse } from '../ask-dial-for-image/types';
+import { ImageProvider, ImageGenerationOptions } from '../types';
+import { CONFIG } from '../../constants';
 import { mkdir } from 'node:fs/promises';
 import { join } from 'node:path';
+
+/**
+ * Metadata stored with each image blob.
+ */
+export type ImageBlobMetadata = {
+  /** ISO 8601 timestamp when blob was created */
+  createdAt: string;
+  /** Original filename */
+  filename: string;
+  /** MIME type */
+  contentType: string;
+};
+
+/**
+ * DIAL API response structure for image generation.
+ */
+export type DialImageResponse = {
+  /** Error information if request failed. */
+  error?: {
+    /** Error message. */
+    message?: string;
+  };
+  /** Array of completion choices. */
+  choices?: Array<{
+    /** Message content. */
+    message?: {
+      /** Custom content with attachments. */
+      custom_content?: {
+        /** Array of image attachments. */
+        attachments?: Array<{
+          /** Attachment type. */
+          type?: string;
+          /** Attachment title. */
+          title?: string;
+          /** URL to the image in DIAL storage. */
+          url?: string;
+          /** Base64-encoded image data. */
+          data?: string;
+        }>;
+      };
+    };
+  }>;
+};
 
 /**
  * Extracts file extension from image type or URL.
@@ -170,7 +212,6 @@ const dialProvider: ImageProvider = {
       saveDirectory,
       imageAttachment.type,
       baseUrl,
-      options?.storeImage // Pass store function if provided
     );
 
     return fullImageUrl;

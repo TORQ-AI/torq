@@ -1,5 +1,5 @@
 import { ImageProvider, ProviderName } from './types';
-import pollinationsProvider from './pollinations-provider';
+import pollinationsProvider from './pollinations/pollinations-provider';
 
 /**
  * Gets the configured image generation provider.

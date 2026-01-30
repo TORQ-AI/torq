@@ -27,4 +27,4 @@ export type ImageProvider = {
 /**
  * Supported image generation providers.
  */
-export type ProviderName = 'pollinations';
+export type ProviderName = 'pollinations' | 'dial';

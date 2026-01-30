@@ -1,4 +1,4 @@
-import { ImageProvider, ImageGenerationOptions } from './types';
+import { ImageProvider, ImageGenerationOptions } from '../types';
 
 /**
  * Pollinations.ai image generation provider.

@@ -3,7 +3,7 @@ import { mkdir, rm } from 'node:fs/promises';
 import { join } from 'node:path';
 import { tmpdir } from 'os';
 import dialProvider from './dial-provider';
-import { DialImageResponse } from '../../ask-dial-for-image/types';
+import { DialImageResponse } from './ask-dial-for-image/types';
 
 describe('dial-provider', () => {
   const testState = {
