@@ -35,10 +35,10 @@ describe('validate-prompt', () => {
             mood: 'calm',
             subject: 'runner',
             scene: 'outdoor setting',
-            text: 'a'.repeat(500), // 500 characters
+            text: 'a'.repeat(700),
           },
           expectedValid: false,
-          expectedErrors: [`Prompt length (500) exceeds maximum (400)`],
+          expectedErrors: [`Prompt length (700) exceeds maximum (600)`],
         },
       ],
       [
