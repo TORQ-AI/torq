@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test';
+import { test, expect } from 'bun:test';
 import simplifyPrompt from './simplify-prompt';
 import { StravaActivityImagePrompt } from '../../types';
 
@@ -13,8 +13,7 @@ type Case = [
   }
 ];
 
-describe('simplify-prompt', () => {
-  test.each<Case>([
+test.each<Case>([
     [
       'simplifies prompt at level 1 by removing scene',
       {
@@ -76,4 +75,3 @@ describe('simplify-prompt', () => {
       expect(result.text.length).toBeLessThanOrEqual(400);
     }
   });
-});

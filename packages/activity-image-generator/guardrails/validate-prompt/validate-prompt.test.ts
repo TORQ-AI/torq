@@ -1,4 +1,4 @@
-import { describe, test, expect } from 'bun:test';
+import { test, expect } from 'bun:test';
 import validateActivityImagePrompt from './validate-prompt';
 import { StravaActivityImagePrompt } from '../../types';
 
@@ -11,8 +11,7 @@ type Case = [
   }
 ];
 
-describe('validate-prompt', () => {
-  test.each<Case>([
+test.each<Case>([
     [
       'valid prompt within length limit',
       {
@@ -85,11 +84,10 @@ describe('validate-prompt', () => {
     ],
   ])('%s', (_name, { prompt, expectedValid, expectedErrors }) => {
     const result = validateActivityImagePrompt(prompt);
-    
+
     expect(result.valid).toBe(expectedValid);
-    
+
     if (expectedErrors !== undefined) {
       expect(result.errors).toStrictEqual(expectedErrors);
     }
   });
-});

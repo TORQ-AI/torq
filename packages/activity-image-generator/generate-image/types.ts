@@ -15,7 +15,7 @@ export type GenerateImageInput = {
  * Output from image generation.
  */
 export type GenerateImageOutput = {
-  /** Base64-encoded image data URL (data:image/png;base64,...). */
+  /** Base64-encoded image data URL. */
   imageData: string;
   /** Whether fallback was used. */
   fallback: boolean;
