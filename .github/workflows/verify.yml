@@ -1,4 +1,4 @@
-name: Test (All Packages)
+name: Verify (All Packages)
 
 on:
   pull_request:
@@ -31,10 +31,37 @@ jobs:
         run: bun install --only dev
 
       - name: Run tests
-        run: bun test
+        run: bun run test
+
+  lint:
+    name: Lint All Packages
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      - name: Setup bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dev dependencies
+        run: bun install --only dev
+
+      - name: Run linting
+        run: bun run lint
 
   build-ui:
-    name: Build UI Package
+    name: Build UI Package (Test)
     runs-on: ubuntu-latest
 
     permissions:
@@ -60,10 +87,10 @@ jobs:
       - name: Build UI package
         run: |
           cd packages/ui
-          bun build
+          bun run build
 
   build-server:
-    name: Build Server Package
+    name: Build Server Package (Test)
     runs-on: ubuntu-latest
 
     permissions:
@@ -89,4 +116,4 @@ jobs:
       - name: Build Server package
         run: |
           cd packages/server
-          bun build
+          bun run build
