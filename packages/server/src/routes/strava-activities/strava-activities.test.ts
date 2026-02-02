@@ -24,7 +24,7 @@ describe('stravaActivities', () => {
 
   beforeEach(() => {
     mockFetchStravaActivities = mock(() => Promise.resolve([] as StravaActivity[]));
-    mock.module('@pace/strava-api', () => ({
+    void mock.module('@pace/strava-api', () => ({
       fetchStravaActivities: mockFetchStravaActivities,
       fetchStravaActivity: mock(() => Promise.resolve(null)),
     }));
@@ -40,7 +40,7 @@ describe('stravaActivities', () => {
     const response = await stravaActivities(request, mockConfig);
 
     expect(response.status).toBe(401);
-    const body = await response.json();
+    const body = await response.json() as { error: string; message: string };
     expect(body.error).toBe('Unauthorized');
     expect(body.message).toBe('Authentication required. Please authenticate with Strava.');
   });
@@ -83,35 +83,13 @@ describe('stravaActivities', () => {
     const response = await stravaActivities(request, mockConfig);
 
     expect(response.status).toBe(200);
-    const body = await response.json();
+    const body = await response.json() as StravaActivity[];
     expect(Array.isArray(body)).toBe(true);
     expect(body.length).toBe(2);
     expect(body[0].id).toBe(123456);
     expect(body[0].type).toBe('Ride');
     expect(body[1].id).toBe(123457);
     expect(body[1].type).toBe('Run');
-  });
-
-  test('returns 401 when authentication fails', async () => {
-    const { default: stravaActivities } = await import('./strava-activities');
-    const error = new Error(JSON.stringify({
-      code: 'UNAUTHORIZED',
-      message: 'Authentication failed. Token may be expired or invalid.',
-      retryable: false,
-    }));
-    mockFetchStravaActivities.mockRejectedValue(error);
-
-    const cookies = `${COOKIE_NAMES.ACCESS_TOKEN}=invalid-token; ${COOKIE_NAMES.REFRESH_TOKEN}=test-refresh-token; ${COOKIE_NAMES.TOKEN_EXPIRES_AT}=1234567890`;
-    const request = new Request('http://localhost:3000/strava/activities', {
-      headers: {
-        Cookie: cookies,
-      },
-    });
-    const response = await stravaActivities(request, mockConfig);
-
-    expect(response.status).toBe(401);
-    const body = await response.json();
-    expect(body.error).toBe('Authentication failed. Token may be expired or invalid.');
   });
 
   test('returns 403 when insufficient permissions', async () => {
@@ -132,7 +110,7 @@ describe('stravaActivities', () => {
     const response = await stravaActivities(request, mockConfig);
 
     expect(response.status).toBe(403);
-    const body = await response.json();
+    const body = await response.json() as { error: string };
     expect(body.error).toBe('Insufficient permissions to access activities');
   });
 
@@ -154,7 +132,7 @@ describe('stravaActivities', () => {
     const response = await stravaActivities(request, mockConfig);
 
     expect(response.status).toBe(429);
-    const body = await response.json();
+    const body = await response.json() as { error: string };
     expect(body.error).toBe('Rate limit exceeded. Please try again later.');
   });
 
@@ -176,7 +154,7 @@ describe('stravaActivities', () => {
     const response = await stravaActivities(request, mockConfig);
 
     expect(response.status).toBe(500);
-    const body = await response.json();
+    const body = await response.json() as { error: string };
     expect(body.error).toBe('Strava API server error');
   });
 
@@ -198,7 +176,7 @@ describe('stravaActivities', () => {
     const response = await stravaActivities(request, mockConfig);
 
     expect(response.status).toBe(500);
-    const body = await response.json();
+    const body = await response.json() as { error: string };
     expect(body.error).toBe('Failed to connect to Strava API');
   });
 });

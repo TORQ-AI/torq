@@ -1,6 +1,19 @@
 import { StravaActivityImagePrompt } from '../../types';
 import { CONFIG } from '../../constants';
 
+<<<<<<< HEAD
+=======
+/**
+ * Deterministically computes style index from activity type string.
+ *
+ * Uses a simple hash function to convert activity type into an index
+ * for selecting fallback styles. Ensures consistent style selection
+ * for the same activity type.
+ * 
+ * @param {string} activityType - The activity type string (e.g., 'Run', 'Ride').
+ * @returns {number} Deterministic index for style selection.
+ */
+>>>>>>> a24e8e8b4d99cfd9ac6c73aead3b30e8b87836b0
 const getStyleIndex = (activityType: string): number => {
   const chars = Array.from(activityType);
   const hash = chars.reduce((acc, char) => {
@@ -18,16 +31,15 @@ const getStyleIndex = (activityType: string): number => {
  * Creates a minimal, safe prompt using abstract or minimal style when
  * all retry attempts have failed. Uses deterministic style selection based
  * on activity type hash to ensure consistency.
- *
- * @param {string} activityType - Activity type (e.g., 'Run', 'Ride')
- * @returns {StravaActivityImagePrompt} Safe fallback prompt with minimal/abstract style
- *
- * @remarks
+ * 
  * Fallback prompts are designed to be:
  * - Safe and family-friendly
  * - Simple and generic
  * - Always valid and compliant with guardrails
  * Style selection is deterministic based on activity type.
+ *
+ * @param {string} activityType - Activity type (e.g., 'Run', 'Ride')
+ * @returns {StravaActivityImagePrompt} Safe fallback prompt with minimal/abstract style
  *
  * @example
  * ```typescript

@@ -135,7 +135,7 @@ const processActivityAndCreateResponse = async (
   const provider = 'pollinations';
   const activityConfig = createActivityConfig(tokens, config);
   const activity = await fetchStravaActivity(activityId, activityConfig);
-  const signals = activity ? await getActivitySignals(activity) : null;
+  const signals = activity ? getActivitySignals(activity) : null;
   const prompt = signals ? createActivityImageGenerationPrompt(signals) : null;
   const image = await (async () => {
     if (!prompt) {
@@ -173,8 +173,7 @@ const processActivityAndCreateResponse = async (
  * @returns {Response} 400 Bad Request response
  * @internal
  */
-const createBadRequestResponse = (): Response => {
-  return new Response(
+const createBadRequestResponse = (): Response => new Response(
     JSON.stringify({
       error: 'Bad Request',
       message: ERROR_MESSAGES.ACTIVITY_ID_REQUIRED,
@@ -186,7 +185,6 @@ const createBadRequestResponse = (): Response => {
       },
     }
   );
-};
 
 /**
  * Handles activity processing with error handling.

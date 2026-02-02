@@ -8,15 +8,22 @@ import { StravaActivityImagePrompt } from '../../types';
  * First simplification removes scene details, keeping style, mood, and subject.
  * Second simplification keeps only style and basic subject.
  *
+<<<<<<< HEAD
  * @param {StravaActivityImagePrompt} prompt - Original prompt to simplify
  * @param {number} attemptLevel - Retry attempt level (1, 2, and so on).
  * @returns {StravaActivityImagePrompt} Simplified prompt with reduced text
  *
  * @remarks
+=======
+>>>>>>> a24e8e8b4d99cfd9ac6c73aead3b30e8b87836b0
  * Simplification strategy:
  * - Level 1: Remove scene, keep style + mood + subject
  * - Level 2: Keep only style + basic subject
  * The text field is reassembled after simplification.
+ *
+ * @param {StravaActivityImagePrompt} prompt - Original prompt to simplify
+ * @param {number} attemptLevel - Retry attempt level (1, 2, and so on).
+ * @returns {StravaActivityImagePrompt} Simplified prompt with reduced text
  *
  * @example
  * ```typescript
@@ -35,7 +42,11 @@ const simplifyPrompt = (
       scene: '',
       text: simplifiedText.length <= CONFIG.MAX_PROMPT_LENGTH
         ? simplifiedText
+<<<<<<< HEAD
         : simplifiedText.substring(0, 400),
+=======
+        : simplifiedText.substring(0, CONFIG.MAX_PROMPT_LENGTH),
+>>>>>>> a24e8e8b4d99cfd9ac6c73aead3b30e8b87836b0
     };
   } else {
     const basicSubject = prompt.subject.split(',')[0]?.trim() ?? prompt.subject;
@@ -47,7 +58,11 @@ const simplifyPrompt = (
       scene: '',
       text: simplifiedText.length <= CONFIG.MAX_PROMPT_LENGTH
         ? simplifiedText
+<<<<<<< HEAD
         : simplifiedText.substring(0, 400),
+=======
+        : simplifiedText.substring(0, CONFIG.MAX_PROMPT_LENGTH),
+>>>>>>> a24e8e8b4d99cfd9ac6c73aead3b30e8b87836b0
     };
   }
 };
