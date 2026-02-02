@@ -55,7 +55,6 @@ PACE (Personal Activity Canvas Engine) is an AI-powered Strava activity image ge
   - **`@throws` tags**: Document all error conditions the function may throw (if applicable)
   - **`@see` tags**: Links to external resources (API documentation, RFCs, standards) when relevant
   - **`@example` tags**: Usage examples when helpful for understanding
-  - **`@remarks`**: Additional important implementation notes or constraints
   - **`@internal` tag**: Mark internal/private helper functions that are not part of the public API
   - **`@template` tags**: For generic functions, document type parameters (e.g., `@template T - The return type of the function`)
 
@@ -873,7 +872,7 @@ Strava tags influence mood and scene composition:
 4. **Style Selection**: Choose appropriate visual style deterministically.
 5. **Mood Mapping**: Align emotional tone with activity characteristics.
 6. **Scene Composition**: Build environment and atmosphere.
-7. **Prompt Assembly**: Construct text prompt (≤400 characters).
+7. **Prompt Assembly**: Construct text prompt (≤ 600  characters).
 8. **Validation**: Ensure compliance with all guardrails.
 9. **Fallback**: Use safe defaults if validation fails.
 
