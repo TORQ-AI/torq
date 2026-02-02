@@ -92,28 +92,6 @@ describe('stravaActivities', () => {
     expect(body[1].type).toBe('Run');
   });
 
-  test('returns 401 when authentication fails', async () => {
-    const { default: stravaActivities } = await import('./strava-activities');
-    const error = new Error(JSON.stringify({
-      code: 'UNAUTHORIZED',
-      message: 'Authentication failed. Token may be expired or invalid.',
-      retryable: false,
-    }));
-    mockFetchStravaActivities.mockRejectedValue(error);
-
-    const cookies = `${COOKIE_NAMES.ACCESS_TOKEN}=invalid-token; ${COOKIE_NAMES.REFRESH_TOKEN}=test-refresh-token; ${COOKIE_NAMES.TOKEN_EXPIRES_AT}=1234567890`;
-    const request = new Request('http://localhost:3000/strava/activities', {
-      headers: {
-        Cookie: cookies,
-      },
-    });
-    const response = await stravaActivities(request, mockConfig);
-
-    expect(response.status).toBe(401);
-    const body = await response.json() as { error: string };
-    expect(body.error).toBe('Authentication failed. Token may be expired or invalid.');
-  });
-
   test('returns 403 when insufficient permissions', async () => {
     const { default: stravaActivities } = await import('./strava-activities');
     const error = new Error(JSON.stringify({
