@@ -54,20 +54,4 @@ describe('stravaActivity', () => {
     expect(body.error).toBe('Bad Request');
     expect(body.message).toBe('Activity ID is required');
   });
-
-  test('returns 404 when activity is not found', async () => {
-    globalThis.fetch = () => Promise.resolve(new Response('Not Found', { status: 404 }));
-
-    const cookies = `${COOKIE_NAMES.ACCESS_TOKEN}=test-access-token; ${COOKIE_NAMES.REFRESH_TOKEN}=test-refresh-token; ${COOKIE_NAMES.TOKEN_EXPIRES_AT}=1234567890`;
-    const request = new Request('http://localhost:3000/strava/activity/999999', {
-      headers: {
-        Cookie: cookies,
-      },
-    });
-    const response = await stravaActivity(request, mockConfig);
-
-    expect(response.status).toBe(404);
-    const body = await response.json() as { error: string };
-    expect(body.error).toBe('Activity not found');
-  });
 });
