@@ -52,5 +52,3 @@ const simplifyPrompt = (
 };
 
 export default simplifyPrompt;
-
-export default simplifyPrompt;
