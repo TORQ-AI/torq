@@ -142,7 +142,7 @@ const processActivityAndCreateResponse = async (
     if (prompt) {
       try {
         return await generateImage({
-          providerApiKey: env.pollinationsApiKey,
+          providerApiKeys: env.imageGenerationProviderApiKeys,
           provider,
           prompt,
         });

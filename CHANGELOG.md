@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 See the [Changelog Manual](https://kb.epam.com/display/VCTXDSE/14.+Frontastic+Development+-+Changelog) for more details.
 
+## [1.2.0] - 2026-02-03
+
+### Refactored Provider API Key Management
+
+### Changed
+- Restructured provider API key handling from single `providerApiKey` parameter to `providerApiKeys` object for better extensibility
+- Introduced `ImageGenerationProviderApiKeys` interface to define provider-specific API key structure
+- Updated `getProvider()` to accept and pass structured API keys to providers
+- Modified environment variable structure in `env.ts` to use nested `providerApiKeys` object instead of flat `pollinationsApiKey`
+- Provider instances now receive only API keys relevant to their implementation
+
 ## [1.1.0] - 2026-02-03
 
 ### Enhanced Pollinations Provider Configuration and Authorization

@@ -1,5 +1,7 @@
 const env = {
-  pollinationsApiKey: process.env.POLLINATIONS_API_KEY,
+  imageGenerationProviderApiKeys: {
+    pollinations: process.env.POLLINATIONS_API_KEY,
+  },
 };
 
 export default env;

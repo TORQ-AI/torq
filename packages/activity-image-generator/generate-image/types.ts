@@ -1,5 +1,9 @@
 import { ImageGenerationProviderName, StravaActivityImagePrompt } from '../types';
 
+export interface ImageGenerationProviderApiKeys {
+  pollinations?: string;
+};
+
 /**
  * Input for image generation.
  */
@@ -9,7 +13,7 @@ export interface GenerateImageInput {
   /** Number of retry attempts made so far. */
   attempts?: number;
   provider?: ImageGenerationProviderName;
-  providerApiKey?: string;
+  providerApiKeys?: ImageGenerationProviderApiKeys;
 }
 
 /**
@@ -29,7 +33,7 @@ export interface GenerateImageOutput {
  * Generates an image from a text prompt.
  * 
  * @param {string} prompt - Text prompt for image generation.
- * @param {string} [apiKey] - Optional API key for the provider.
+ * @param {string} [apiKey] - Optional API key for the provider (if required).
  * @returns {Promise<string>} Promise resolving to base64-encoded image data URL (`data:image/png;base64,...`).
  * @throws {Error} Throws error if generation fails.
  */
