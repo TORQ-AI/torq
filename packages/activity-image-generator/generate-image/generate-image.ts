@@ -1,4 +1,4 @@
-import { GenerateImageInput, GenerateImageOutput } from './types';
+import { GenerateImageInput, GenerateImageOutput, ImageGenerationProviderApiKeys } from './types';
 import { CONFIG } from '../constants';
 import { ImageGenerationProviderName, StravaActivityImagePrompt } from '../types';
 import { getProvider } from './providers';
@@ -13,7 +13,7 @@ import getFallbackPrompt from './get-fallback-prompt';
  * @param {number} attempt - Current attempt number (0-based)
  * @param {number} maxAttempts - Maximum number of retries allowed
  * @param {ImageGenerationProviderName} [providerName] - Optional provider name
- * @param {string} [providerApiKey] - Optional provider API key.
+ * @param {ImageGenerationProviderApiKeys} [providerApiKeys] - Optional provider API keys.
  * @returns {Promise<string>} Promise resolving to base64-encoded image data URL
  * @throws {Error} Throws error if all retries fail
  */
@@ -22,12 +22,12 @@ const attemptGeneration = async (
   attempt: number,
   maxAttempts: number,
   providerName?: ImageGenerationProviderName,
-  providerApiKey?: string,
+  providerApiKeys?: ImageGenerationProviderApiKeys,
 ): Promise<string> => {
-  const provider = getProvider(providerName);
+  const provider = getProvider(providerName, providerApiKeys);
   
   try {
-    return await provider(prompt.text, providerApiKey);
+    return await provider(prompt.text);
   } catch (error) {
     if (attempt < maxAttempts) {
       const nextAttempt = attempt + 1;
@@ -38,7 +38,7 @@ const attemptGeneration = async (
         nextAttempt,
         maxAttempts,
         providerName,
-        providerApiKey,
+        providerApiKeys,
       );
     } else {
       throw error;
@@ -74,17 +74,14 @@ const attemptGeneration = async (
  * ```typescript
  * const result = await generateImage({ prompt });
  * console.log('Image data:', result.imageData);
- * console.log('Used fallback:', result.usedFallback);
+ * console.log('Used fallback:', result.fallback);
  * ```
  */
 const generateImage = async (
   input: GenerateImageInput,
 ): Promise<GenerateImageOutput> => {
-  const provider = getProvider();
-  const promptText = input.prompt.text;
-
-  if (promptText.length > CONFIG.MAX_PROMPT_LENGTH) {
-    throw new Error(`Prompt text exceeds ${CONFIG.MAX_PROMPT_LENGTH} character limit: ${promptText.length} characters`);
+  if (input.prompt.text.length > CONFIG.MAX_PROMPT_LENGTH) {
+    throw new Error(`Prompt text exceeds ${CONFIG.MAX_PROMPT_LENGTH} character limit: ${input.prompt.text.length} characters`);
   } else {
     const attempts = input.attempts ?? 0;
 
@@ -94,7 +91,7 @@ const generateImage = async (
         0,
         CONFIG.MAX_RETRIES,
         input.provider,
-        input.providerApiKey,
+        input.providerApiKeys,
       );
 
       return {
@@ -103,6 +100,7 @@ const generateImage = async (
         attempts,
       };
     } catch {
+      const provider = getProvider(input.provider, input.providerApiKeys);
       const fallbackPrompt = getFallbackPrompt(input.prompt.subject);
       const fallbackImageData = await provider(fallbackPrompt.text);
 

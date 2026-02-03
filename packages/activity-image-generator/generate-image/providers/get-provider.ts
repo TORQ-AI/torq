@@ -1,4 +1,4 @@
-import { ImageGenerationProvider } from '../types';
+import { ImageGenerationProvider, ImageGenerationProviderApiKeys } from '../types';
 import { ImageGenerationProviderName } from '../../types';
 import pollinations from './pollinations';
 
@@ -15,6 +15,7 @@ import pollinations from './pollinations';
  * 3. Default to 'pollinations'
  *
  * @param {ImageGenerationProviderName} [providerName] - Override provider name
+ * @param {ImageGenerationProviderApiKeys} [providerApiKeys] - Optional provider API keys.
  * @returns {ImageGenerationProvider} Image generation provider instance.
  * @throws {Error} Throws if provider name is invalid.
  *
@@ -26,10 +27,11 @@ import pollinations from './pollinations';
  */
 const getProvider = (
   providerName: ImageGenerationProviderName = 'pollinations',
+  providerApiKeys?: ImageGenerationProviderApiKeys,
 ): ImageGenerationProvider => {
   switch (providerName) {
     case 'pollinations': {
-      return pollinations;
+      return (prompt: string) => pollinations(prompt, providerApiKeys?.pollinations);
     }
     default: {
       throw new Error(`Unknown image generation provider: ${String(providerName)}.`);

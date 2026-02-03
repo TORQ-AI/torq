@@ -68,7 +68,7 @@ const pollinations: ImageGenerationProvider = async (
       },
     }),
   });
-  
+
   if (response.ok) {
     const imageBuffer = await response.arrayBuffer();
     const base64 = Buffer.from(imageBuffer).toString('base64');
