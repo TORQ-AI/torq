@@ -14,7 +14,8 @@
     "lint:fix": "eslint packages --fix",
     "validate-specs:ai": "bun run --filter @pace/specs-guardrails validate-specs:ai -- --rootDir $(pwd) --systemPrompt $(pwd)/prompts/validate-specs.system.md --userPrompt $(pwd)/prompts/validate-specs.user.md",
     "validate-specs:openspec": "bun run --filter @pace/specs-guardrails validate-specs:openspec -- --rootDir $(pwd)",
-    "ui:dev": "bun run --filter @pace/ui dev"
+    "ui:dev": "bun run --filter @pace/ui dev",
+    "server:dev": "bun run --filter @pace/server dev"
   },
   "repository": {
     "type": "git",

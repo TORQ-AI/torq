@@ -100,6 +100,9 @@ const HomePage = (): JSX.Element => {
                 <Text h2>Strava Activity Image Generator</Text>
                 <Spacer h={1} />
                 <Text>
+                  PACE is a Strava Activity Image Generator that helps you create beautiful visualizations of your athletic activities. Connect your Strava account to get started and transform your workout data into stunning images.
+                </Text>
+                <Text>
                   Connect your Strava account to generate beautiful activity images.
                 </Text>
               </Card.Content>
@@ -119,21 +122,6 @@ const HomePage = (): JSX.Element => {
             </Card>
           </Grid>
         )}
-  
-        {/* Project description at the bottom */}
-        <Grid xs={24} style={{ marginTop: '4rem', paddingTop: '2rem', borderTop: '1px solid var(--geist-border)' }}>
-          <Card width="100%">
-            <Card.Content>
-              <Text h3>About PACE</Text>
-              <Spacer h={0.5} />
-              <Text>
-                PACE is a Strava Activity Image Generator that helps you create beautiful visualizations
-                of your athletic activities. Connect your Strava account to get started and transform
-                your workout data into stunning images.
-              </Text>
-            </Card.Content>
-          </Card>
-        </Grid>
       </Grid.Container>
     );
   }
