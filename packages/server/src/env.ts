@@ -1,5 +1,5 @@
 const env = {
-  providerApiKeys: {
+  imageGenerationProviderApiKeys: {
     pollinations: process.env.POLLINATIONS_API_KEY,
   },
 };
