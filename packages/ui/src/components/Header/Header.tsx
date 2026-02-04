@@ -1,9 +1,11 @@
-import { Text, Button, useTheme } from '@geist-ui/core';
+import { Text, Button, useTheme, Page } from '@geist-ui/core';
 import { useLocation } from 'wouter';
-import { LogOut, Github, Globe } from '@geist-ui/icons';
-import { logout } from '../utils/auth';
-import { useAuth } from '../hooks/useAuth';
-import ThemeSwitcher from './ThemeSwitcher';
+import { LogOut } from '@geist-ui/icons';
+
+import { logout } from '../../utils/auth';
+import { useAuth } from '../../hooks/useAuth';
+import ThemeSwitcher from '../ThemeSwitcher';
+import { useCallback } from 'react';
 
 interface HeaderProps {
   onThemeChange: (theme: 'light' | 'dark') => void;
@@ -11,9 +13,10 @@ interface HeaderProps {
 
 /**
  * Application header with navigation and theme switcher.
- * @param {HeaderProps} root0 - Component props
- * @param {Function} root0.onThemeChange - Callback to change theme
- * @returns {JSX.Element} Header component
+ * 
+ * @param {HeaderProps} props - Component props.
+ * @param {Function} props.onThemeChange - Callback to change theme.
+ * @returns {JSX.Element} Header component.
  */
 export default function Header({ onThemeChange }: HeaderProps) {
   const theme = useTheme();
@@ -22,14 +25,13 @@ export default function Header({ onThemeChange }: HeaderProps) {
 
   /**
    * Handles user logout.
-   * @returns {Promise<void>}
    */
-  const handleLogout = async () => {
-    await logout();
-  };
+  const handleLogout = useCallback(() => {
+    logout().catch(console.error);
+  }, []);
 
   return (
-    <header
+    <Page.Header
       style={{
         position: 'fixed',
         top: 0,
@@ -65,9 +67,7 @@ export default function Header({ onThemeChange }: HeaderProps) {
           <Button
             type='default'
             icon={<LogOut />}
-            onClick={() => {
-              void handleLogout();
-            }}
+            onClick={handleLogout}
             auto
             scale={0.6}
             aria-label='Logout'
@@ -76,34 +76,8 @@ export default function Header({ onThemeChange }: HeaderProps) {
             onPointerLeaveCapture={() => undefined}
           />
         )}
-        <Button
-          icon={<Globe />}
-          onClick={() => {
-            window.open('https://balov.dev', '_blank', 'noopener,noreferrer');
-          }}
-          type='default'
-          auto
-          scale={0.6}
-          aria-label='Visit website'
-          placeholder='Visit website'
-          onPointerEnterCapture={() => undefined}
-          onPointerLeaveCapture={() => undefined}
-        />
-        <Button
-          icon={<Github />}
-          onClick={() => {
-            window.open('https://github.com/mrbalov/pace', '_blank', 'noopener,noreferrer');
-          }}
-          type='default'
-          auto
-          scale={0.6}
-          aria-label='View source on GitHub'
-          placeholder='View source on GitHub'
-          onPointerEnterCapture={() => undefined}
-          onPointerLeaveCapture={() => undefined}
-        />
         <ThemeSwitcher onThemeChange={onThemeChange} />
       </div>
-    </header>
+    </Page.Header>
   );
 }

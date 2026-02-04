@@ -1,13 +1,17 @@
+import { Page } from '@geist-ui/core';
 import { Router, Route, Switch } from 'wouter';
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 
 import Header from './components/Header';
+import Footer from './components/Footer';
+import Preloader from './components/Preloader';
+import { Theme } from './types';
 
 const HomePageLazy = lazy(() => import('./pages/HomePage'));
 const ActivitiesPageLazy = lazy(() => import('./pages/ActivitiesPage'));
 
 interface AppProps {
-  onThemeChange: (theme: 'light' | 'dark') => void;
+  onThemeChange: (theme: Theme) => void;
 }
 
 /**
@@ -15,12 +19,12 @@ interface AppProps {
  * 
  * @param {AppProps} props - Component props.
  * @param {Function} props.onThemeChange - Callback to change theme.
- * @returns {JSX.Element} App component.
+ * @returns {JSX.Element} Main app component with routing.
  */
 const App = ({ onThemeChange }: AppProps) => (
-  <>
+  <Page>
     <Header onThemeChange={onThemeChange} />
-    <div style={{ paddingTop: '60px' }}>
+    <Suspense fallback={<Preloader />}>
       <Router>
         <Switch>
           <Route path='/' component={HomePageLazy} />
@@ -28,8 +32,9 @@ const App = ({ onThemeChange }: AppProps) => (
           <Route>404 - Page Not Found</Route>
         </Switch>
       </Router>
-    </div>
-  </>
+    </Suspense>
+    <Footer />
+  </Page>
 );
 
 export default App;
