@@ -1,6 +1,6 @@
 import { useAuthStatus } from '../../hooks/useAuthStatus';
+import useRemoveAuthUrlParams from './useRemoveAuthParams';
 import Preloader from '../../components/Preloader';
-import useRemoveAuthUrlParameters from './useRemoveAuthUrlParameters';
 import Deferred from '../../components/Deferred';
 import Guest from './Guest';
 import Member from './Member';
@@ -14,7 +14,7 @@ import Member from './Member';
 const HomePage = (): JSX.Element => {
   const { isAuthenticated, loading } = useAuthStatus();
 
-  useRemoveAuthUrlParameters();
+  useRemoveAuthUrlParams();
 
   return (
     <Deferred ready={!loading} fallback={<Preloader />}>

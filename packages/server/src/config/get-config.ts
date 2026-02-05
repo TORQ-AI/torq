@@ -57,24 +57,20 @@ const getConfig = (): ServerConfig => {
     );
   }
 
-  const redirectUri = process.env.STRAVA_REDIRECT_URI ?? 'http://localhost:3000/strava/auth/callback';
-  const isProduction = process.env.NODE_ENV === 'production';
-
   const config: ServerConfig = {
     hostname: getHostname(),
     strava: {
       clientId,
       clientSecret,
-      redirectUri,
-      scope: process.env.STRAVA_SCOPE ?? 'activity:read',
+      redirectUri: String(process.env.STRAVA_REDIRECT_URI),
+      scope: 'activity:read',
     },
     cookies: {
-      domain: process.env.COOKIE_DOMAIN,
-      secure: process.env.COOKIE_SECURE === 'true' || isProduction,
-      sameSite: (process.env.COOKIE_SAME_SITE as 'strict' | 'lax' | 'none') ?? 'lax',
+      secure: true,
+      sameSite: 'lax',
     },
-    successRedirect: process.env.SUCCESS_REDIRECT ?? '/',
-    errorRedirect: process.env.ERROR_REDIRECT ?? '/',
+    successRedirect: '/',
+    errorRedirect: '/',
   };
 
   return config;

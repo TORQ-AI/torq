@@ -8,6 +8,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 See the [Changelog Manual](https://kb.epam.com/display/VCTXDSE/14.+Frontastic+Development+-+Changelog) for more details.
 
+## [1.5.1] - 2026-02-05
+
+### Refactored OAuth URL Parameter Cleanup Hook
+
+### Fixed
+- OAuth parameter cleanup not executing on first render due to incorrect React state usage in `useRemoveAuthUrlParameters` hook
+
+### Changed
+- Refactored `useRemoveAuthUrlParameters` hook into modular architecture with separate constants, utility function, and hook files for better maintainability
+- Extracted authentication parameters ('code', 'state', 'scope') into dedicated constants file
+- Moved URL manipulation logic from React hook into standalone `removeAuthParams` utility function
+
 ## [1.5.0] - 2026-02-05
 
 ### Comprehensive UI Refactoring and Enhanced Component Architecture

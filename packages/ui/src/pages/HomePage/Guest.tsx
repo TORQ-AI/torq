@@ -15,7 +15,7 @@ const Guest = () => (
     direction='column'
   >
     <Grid xs={24} md={18} lg={12} style={{ textAlign: 'center' }}>
-      <Text h1 style={{ color: '#8b5a8e' }}>
+      <Text h1 style={{ color: '#d8a0c7' }}>
         Welcome to PACE!
       </Text>
     </Grid>
@@ -29,7 +29,7 @@ const Guest = () => (
           lineHeight: '1.7',
         }}
       >
-        <strong>PACE</strong> is a <span style={{ fontWeight: 'bold', color: '#8b5a8e', letterSpacing: '0.3px' }}>Personal Activity Canvas Engine</span>. It helps you create beautiful visualizations of your athletic activities. Connect your Strava account to get started and transform your workout data into stunning images!
+        <strong>PACE</strong> is a <span style={{ fontWeight: 'bold', color: '#d8a0c7', letterSpacing: '0.3px' }}>Personal Activity Canvas Engine</span>. It helps you create beautiful visualizations of your athletic activities. Connect your Strava account to get started and transform your workout data into stunning images!
       </Text>
     </Grid>
     <Grid xs={24} md={18} lg={12} style={{ textAlign: 'center' }}>
