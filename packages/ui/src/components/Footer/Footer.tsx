@@ -1,4 +1,4 @@
-import { Button, Grid, Link, Page, Text, useTheme } from '@geist-ui/core';
+import { Button, Grid, Link, Text, useTheme } from '@geist-ui/core';
 import { Github, Globe } from '@geist-ui/icons';
 
 import { LINKS } from '../../constants';
@@ -11,9 +11,13 @@ const Footer = () => {
   const theme = useTheme();
 
   return (
-    <Page.Footer
+    <footer
       style={{
-        padding: '10px 0',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        width: '100%',
+        padding: '16px 0',
         borderTop: `1px solid ${theme.palette.border}`,
       }}
     >
@@ -126,7 +130,7 @@ const Footer = () => {
           </Link>
         </Grid>
       </Grid.Container>
-    </Page.Footer>
+    </footer>
   );
 };
 

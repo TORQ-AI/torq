@@ -8,7 +8,12 @@ import { authorizeStrava } from '../../api/strava';
  * @returns {JSX.Element} Guest view.
  */
 const Guest = () => (
-  <Grid.Container gap={2} justify='center' alignItems='center' direction='column'>
+  <Grid.Container
+    gap={2}
+    justify='center'
+    alignItems='center'
+    direction='column'
+  >
     <Grid xs={24} md={18} lg={12} style={{ textAlign: 'center' }}>
       <Text h1 style={{ color: '#8b5a8e' }}>
         Welcome to PACE!

@@ -1,27 +1,53 @@
 import { useCallback } from 'react';
-import { Text, Button, useTheme, Page } from '@geist-ui/core';
-import { useLocation } from 'wouter';
+import { Text, Button, useTheme } from '@geist-ui/core';
+import { Link } from 'wouter';
 import { LogOut } from '@geist-ui/icons';
 
 import { logout } from '../../utils/auth';
 import { useAuth } from '../../hooks/useAuth';
 import ThemeSwitcher from '../ThemeSwitcher';
 import ActivityEmoji from '../ActivityEmoji';
+import { Theme } from '../../types';
 
 interface HeaderProps {
   onThemeChange: (theme: 'light' | 'dark') => void;
 }
 
+interface ActionsProps {
+  onThemeChange: (theme: Theme) => void;
+}
+
 /**
- * Application header with navigation and theme switcher.
- * 
- * @param {HeaderProps} props - Component props.
- * @param {Function} props.onThemeChange - Callback to change theme.
- * @returns {JSX.Element} Header component.
+ * Logo component linking to home page.
+ * @returns {JSX.Element} Logo component.
  */
-export default function Header({ onThemeChange }: HeaderProps) {
-  const theme = useTheme();
-  const [location, setLocation] = useLocation();
+const Logo = () => (
+  <Link href='/' style={{ color: 'inherit' }}>
+    <Text
+      h3
+      style={{
+        margin: 0,
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '8px',
+      }}
+    >
+      <ActivityEmoji />
+      {'\u00A0'}
+      PACE
+    </Text>
+  </Link>
+);
+
+/**
+ * Header actions including logout and theme switcher.
+ * @param {ActionsProps} props - Component props.
+ * @param {Function} props.onThemeChange - Callback to change theme.
+ * @returns {JSX.Element} Actions component.
+ */
+const Actions = ({ onThemeChange }: ActionsProps) => {
   const { isAuthenticated, loading } = useAuth();
 
   /**
@@ -32,58 +58,67 @@ export default function Header({ onThemeChange }: HeaderProps) {
   }, []);
 
   return (
-    <Page.Header
+    <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
+      {!loading && isAuthenticated && (
+        <Button
+          type='default'
+          icon={<LogOut />}
+          onClick={handleLogout}
+          auto
+          scale={0.6}
+          aria-label='Logout'
+          placeholder='Logout'
+          onPointerEnterCapture={() => undefined}
+          onPointerLeaveCapture={() => undefined}
+        />
+      )}
+      <ThemeSwitcher onThemeChange={onThemeChange} />
+    </div>
+  );
+};
+
+/**
+ * Application header with navigation and theme switcher.
+ * @param {HeaderProps} props - Component props.
+ * @param {Function} props.onThemeChange - Callback to change theme.
+ * @returns {JSX.Element} Header component.
+ */
+const Header = ({ onThemeChange }: HeaderProps) => {
+  const theme = useTheme();
+
+  return (
+    <header
       style={{
         position: 'fixed',
         top: 0,
         left: 0,
         right: 0,
         height: '60px',
+        width: '100%',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        padding: '0 1.5rem',
-        borderBottom: `1px solid ${theme.palette.border}`,
+        justifyContent: 'center',
         backgroundColor: theme.palette.background,
+        padding: '0 16px',
+        boxSizing: 'border-box',
         zIndex: 999,
       }}
     >
-      <Text
-        h3
+      <div
         style={{
-          margin: 0,
-          fontWeight: 'bold',
-          cursor: 'pointer',
           display: 'flex',
           alignItems: 'center',
-          gap: '8px',
-        }}
-        onClick={() => {
-          if (location !== '/') {
-            setLocation('/');
-          }
-        }}
-      >
-        <ActivityEmoji />
-        {'\u00A0'}
-        PACE
-      </Text>
-      <div style={{ display: 'flex', alignItems: 'center', gap: '15px' }}>
-        {!loading && isAuthenticated && (
-          <Button
-            type='default'
-            icon={<LogOut />}
-            onClick={handleLogout}
-            auto
-            scale={0.6}
-            aria-label='Logout'
-            placeholder='Logout'
-            onPointerEnterCapture={() => undefined}
-            onPointerLeaveCapture={() => undefined}
-          />
-        )}
-        <ThemeSwitcher onThemeChange={onThemeChange} />
+          justifyContent: 'space-between',
+          width: '100%',
+          height: '100%',
+          maxWidth: '900px',
+          borderBottom: `1px solid ${theme.palette.border}`,
+        }}>
+        <Logo />
+        <Actions onThemeChange={onThemeChange} />
       </div>
-    </Page.Header>
+    </header>
   );
-}
+};
+
+export default Header;

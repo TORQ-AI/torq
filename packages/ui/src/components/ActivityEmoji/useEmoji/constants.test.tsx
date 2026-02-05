@@ -289,9 +289,9 @@ describe('ActivityEmoji Constants', () => {
   });
 
   test('EMOJIS should start with EMOJIS_WO_SKIN_TONES elements', () => {
-    for (let i = 0; i < EMOJIS_WO_SKIN_TONES.length; i++) {
-      expect(EMOJIS[i]).toBe(EMOJIS_WO_SKIN_TONES[i]);
-    }
+    EMOJIS_WO_SKIN_TONES.forEach((emojiWithSkinTone, index) => {
+      expect(EMOJIS[index]).toBe(emojiWithSkinTone);
+    });
   });
 
   test('No emoji in EMOJIS should be undefined', () => {

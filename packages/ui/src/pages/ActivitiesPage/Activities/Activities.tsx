@@ -1,7 +1,5 @@
 import { useCallback, useState } from 'react';
-import { Button, Text, Grid, Note } from '@geist-ui/core';
-import { ArrowLeft } from '@geist-ui/icons';
-import { Link } from 'wouter';
+import { Text, Grid, Note } from '@geist-ui/core';
 
 import { Activity } from '../../../api/strava';
 import { apiRequest } from '../../../api/client';
@@ -121,20 +119,7 @@ const Activities = ({ activities }: ActivitiesProps) => {
   }, [currentActivityId, generateImage]);
 
   return (
-    <Grid.Container gap={2}>
-      <Grid xs={24}>
-        <Link href='/'>
-          <Button
-            auto
-            icon={<ArrowLeft />}
-            placeholder='Back'
-            onPointerEnterCapture={() => undefined}
-            onPointerLeaveCapture={() => undefined}
-          >
-            Back
-          </Button>
-        </Link>
-      </Grid>
+    <Grid.Container gap={2} width='100%' margin={0}>
       <Grid xs={24}>
         <Text h1>Your Last 30 Activities</Text>
       </Grid>

@@ -21,7 +21,7 @@ const ActivitiesList = ({
   generateImage,
 }: ActivitiesListProps) => (
   activities.map((activity) => (
-    <Grid xs={24} sm={12} md={8} lg={6} key={activity.id}>
+    <Grid xs={24} sm={12} md={8} key={activity.id}>
       <Card width='100%' hoverable>
         <Card.Content>
           <Text h4>{activity.name}</Text>

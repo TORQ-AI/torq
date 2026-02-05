@@ -1,4 +1,3 @@
-import { Page } from '@geist-ui/core';
 import { Router, Route, Switch } from 'wouter';
 import { lazy, Suspense } from 'react';
 
@@ -22,19 +21,43 @@ interface AppProps {
  * @returns {JSX.Element} Main app component with routing.
  */
 const App = ({ onThemeChange }: AppProps) => (
-  <Page>
+  <div
+    style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      gap: '32px',
+      minHeight: '100vh',
+      width: '100%',
+      maxWidth: '900px',
+      margin: '0 auto',
+      padding: '0 16px',
+      boxSizing: 'border-box',
+    }}  
+  >
     <Header onThemeChange={onThemeChange} />
-    <Suspense fallback={<Preloader />}>
-      <Router>
-        <Switch>
-          <Route path='/' component={HomePageLazy} />
-          <Route path='/activities' component={ActivitiesPageLazy} />
-          <Route>404 - Page Not Found</Route>
-        </Switch>
-      </Router>
-    </Suspense>
+    <main
+      aria-live='polite'
+      role='main'
+      style={{
+        width: '100%',
+        minHeight: 'calc(100vh - 70px)',
+        margin: '70px 0',
+      }}
+    >
+      <Suspense fallback={<Preloader />}>
+        <Router>
+          <Switch>
+            <Route path='/' component={HomePageLazy} />
+            <Route path='/activities' component={ActivitiesPageLazy} />
+            <Route>404 - Page Not Found</Route>
+          </Switch>
+        </Router>
+      </Suspense>
+    </main>
     <Footer />
-  </Page>
+  </div>
 );
 
 export default App;
