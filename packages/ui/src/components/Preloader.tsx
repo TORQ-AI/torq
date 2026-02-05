@@ -3,21 +3,21 @@ import { Activity as ActivityIcon } from '@geist-ui/icons';
 
 export interface PreloaderProps {
   message?: string;
-  showIcon?: boolean;
-  fullHeight?: boolean;
+  withFullHeight?: boolean;
 }
 
 /**
  * Preloader component with smooth animations and consistent layout.
  * Prevents UI jumping by maintaining consistent dimensions.
  *
- * @param {PreloaderProps} props - Component props
+ * @param {PreloaderProps} props - Component props.
+ * @param {string} [props.message] - Optional message to display below the loader.
+ * @param {boolean} [props.withFullHeight=true] - Whether to use full viewport height.
  * @returns {JSX.Element} Preloader component
  */
 const Preloader = ({ 
-  message = undefined, 
-  showIcon = true,
-  fullHeight = true 
+  message = undefined,
+  withFullHeight = true,
 }: PreloaderProps): JSX.Element => {
   const theme = useTheme();
 
@@ -25,9 +25,9 @@ const Preloader = ({
     <>
       <Grid.Container
         gap={2}
-        justify="center"
+        justify='center'
         style={{ 
-          minHeight: fullHeight ? 'calc(100vh - 60px)' : 'auto',
+          minHeight: withFullHeight ? 'calc(100vh - 60px)' : 'auto',
           alignContent: 'center',
           padding: '2rem',
           opacity: 1,
@@ -40,7 +40,16 @@ const Preloader = ({
           alignItems: 'center',
         }}
       >
-        <Grid xs={24} sm={20} md={16} lg={12} style={{ margin: '0 auto', display: 'flex', justifyContent: 'center' }}>
+        <Grid
+          xs={24}
+          sm={20}
+          md={16}
+          lg={12}
+          style={{
+            margin: '0 auto',
+            display: 'flex',
+            justifyContent: 'center',
+          }}>
           <div
             style={{
               display: 'flex',
@@ -52,19 +61,17 @@ const Preloader = ({
               width: '100%',
             }}
           >
-            {showIcon && (
-              <div
-                style={{
-                  animation: 'preloaderPulse 2s ease-in-out infinite',
-                  opacity: 0.9,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                }}
-              >
-                <ActivityIcon size={56} />
-              </div>
-            )}
+            <div
+              style={{
+                animation: 'preloaderPulse 2s ease-in-out infinite',
+                opacity: 0.9,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <ActivityIcon size={56} />
+            </div>
             <div style={{ 
               display: 'flex', 
               flexDirection: 'column', 
@@ -76,7 +83,7 @@ const Preloader = ({
               <Loading scale={2} />
               {message && (
                 <Text
-                  type="secondary"
+                  type='secondary'
                   style={{
                     fontSize: '0.875rem',
                     animation: 'preloaderFadeIn 0.6s ease-in',
