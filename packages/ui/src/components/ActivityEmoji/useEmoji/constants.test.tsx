@@ -103,4 +103,276 @@ describe('ActivityEmoji Constants', () => {
     // The only valid ones should be the base emojis without skin tones.
     expect(problematicEmojis).toEqual(['🏇', '🤺']);
   });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain running emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🏃');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain biking emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🚴');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain swimming emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🏊');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain climbing emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🧗');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain surfing emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🏄');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain gymnastics emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🤸');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain weightlifting emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🏋️');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain rowing emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🚣');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain basketball emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('⛹️');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain golf emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🏌️');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain handball emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🤾');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain water polo emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🤽');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain mountain biking emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🚵');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should contain yoga emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toContain('🧘');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES should contain light skin tone running emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES).toContain('🏃🏻');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES should contain medium-light skin tone swimming emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES).toContain('🏊🏼');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES should contain medium skin tone biking emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES).toContain('🚴🏽');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES should contain medium-dark skin tone climbing emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES).toContain('🧗🏾');
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES should contain dark skin tone surfing emoji', () => {
+    expect(EMOJIS_WITH_SKIN_TONES).toContain('🏄🏿');
+  });
+
+  test('Each emoji in EMOJIS_WITH_SKIN_TONES_BASE should generate 6 variations', () => {
+    const emojisPerBase = EMOJIS_WITH_SKIN_TONES.length / EMOJIS_WITH_SKIN_TONES_BASE.length;
+    expect(emojisPerBase).toBe(6);
+  });
+
+  test('EMOJIS_WO_SKIN_TONES should contain soccer ball emoji', () => {
+    expect(EMOJIS_WO_SKIN_TONES).toContain('⚽');
+  });
+
+  test('EMOJIS_WO_SKIN_TONES should contain basketball emoji', () => {
+    expect(EMOJIS_WO_SKIN_TONES).toContain('🏀');
+  });
+
+  test('EMOJIS_WO_SKIN_TONES should contain trophy emoji', () => {
+    expect(EMOJIS_WO_SKIN_TONES).toContain('🏆');
+  });
+
+  test('EMOJIS_WO_SKIN_TONES should contain gold medal emoji', () => {
+    expect(EMOJIS_WO_SKIN_TONES).toContain('🥇');
+  });
+
+  test('EMOJIS_WO_SKIN_TONES should not be empty', () => {
+    expect(EMOJIS_WO_SKIN_TONES.length).toBeGreaterThan(0);
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should not be empty', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE.length).toBeGreaterThan(0);
+  });
+
+  test('EMOJI_SKIN_TONES should include empty string for default', () => {
+    expect(EMOJI_SKIN_TONES).toContain('');
+  });
+
+  test('EMOJI_SKIN_TONES should include light skin tone', () => {
+    expect(EMOJI_SKIN_TONES).toContain('🏻');
+  });
+
+  test('EMOJI_SKIN_TONES should include medium-light skin tone', () => {
+    expect(EMOJI_SKIN_TONES).toContain('🏼');
+  });
+
+  test('EMOJI_SKIN_TONES should include medium skin tone', () => {
+    expect(EMOJI_SKIN_TONES).toContain('🏽');
+  });
+
+  test('EMOJI_SKIN_TONES should include medium-dark skin tone', () => {
+    expect(EMOJI_SKIN_TONES).toContain('🏾');
+  });
+
+  test('EMOJI_SKIN_TONES should include dark skin tone', () => {
+    expect(EMOJI_SKIN_TONES).toContain('🏿');
+  });
+
+  test('All emojis with variation selector should be handled correctly', () => {
+    const emojisWithVariationSelector = EMOJIS_WITH_SKIN_TONES_BASE.filter(
+      emoji => emoji.includes('️')
+    );
+    expect(emojisWithVariationSelector.length).toBeGreaterThan(0);
+  });
+
+  test('Weightlifting emoji should have variation selector', () => {
+    expect('🏋️'.includes('️')).toBe(true);
+  });
+
+  test('Basketball emoji should have variation selector', () => {
+    expect('⛹️'.includes('️')).toBe(true);
+  });
+
+  test('Golf emoji should have variation selector', () => {
+    expect('🏌️'.includes('️')).toBe(true);
+  });
+
+  test('Weightlifting with skin tone should be valid grapheme', () => {
+    expect(getIsValidEmojiGraphemeCluster('🏋🏻️')).toBe(true);
+  });
+
+  test('Basketball with skin tone should be valid grapheme', () => {
+    expect(getIsValidEmojiGraphemeCluster('⛹🏻️')).toBe(true);
+  });
+
+  test('Golf with skin tone should be valid grapheme', () => {
+    expect(getIsValidEmojiGraphemeCluster('🏌🏻️')).toBe(true);
+  });
+
+  test('EMOJIS array should not be empty', () => {
+    expect(EMOJIS.length).toBeGreaterThan(0);
+  });
+
+  test('EMOJIS array should be larger than EMOJIS_WO_SKIN_TONES', () => {
+    expect(EMOJIS.length).toBeGreaterThan(EMOJIS_WO_SKIN_TONES.length);
+  });
+
+  test('EMOJIS array should be larger than EMOJIS_WITH_SKIN_TONES', () => {
+    expect(EMOJIS.length).toBeGreaterThan(EMOJIS_WITH_SKIN_TONES.length);
+  });
+
+  test('Every emoji in EMOJIS_WO_SKIN_TONES should be in EMOJIS', () => {
+    for (const emoji of EMOJIS_WO_SKIN_TONES) {
+      expect(EMOJIS).toContain(emoji);
+    }
+  });
+
+  test('Every emoji in EMOJIS_WITH_SKIN_TONES should be in EMOJIS', () => {
+    for (const emoji of EMOJIS_WITH_SKIN_TONES) {
+      expect(EMOJIS).toContain(emoji);
+    }
+  });
+
+  test('EMOJIS should start with EMOJIS_WO_SKIN_TONES elements', () => {
+    for (let i = 0; i < EMOJIS_WO_SKIN_TONES.length; i++) {
+      expect(EMOJIS[i]).toBe(EMOJIS_WO_SKIN_TONES[i]);
+    }
+  });
+
+  test('No emoji in EMOJIS should be undefined', () => {
+    for (const emoji of EMOJIS) {
+      expect(emoji).not.toBeUndefined();
+    }
+  });
+
+  test('No emoji in EMOJIS should be null', () => {
+    for (const emoji of EMOJIS) {
+      expect(emoji).not.toBeNull();
+    }
+  });
+
+  test('No emoji in EMOJIS should be empty string', () => {
+    for (const emoji of EMOJIS) {
+      expect(emoji).not.toBe('');
+    }
+  });
+
+  test('All emojis in EMOJIS should be strings', () => {
+    for (const emoji of EMOJIS) {
+      expect(typeof emoji).toBe('string');
+    }
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES_BASE should have exactly 14 emojis', () => {
+    expect(EMOJIS_WITH_SKIN_TONES_BASE).toHaveLength(14);
+  });
+
+  test('EMOJIS_WITH_SKIN_TONES should have exactly 84 emojis', () => {
+    // 14 base emojis * 6 skin tones = 84
+    expect(EMOJIS_WITH_SKIN_TONES).toHaveLength(84);
+  });
+
+  test('EMOJIS_WO_SKIN_TONES should have at least 20 emojis', () => {
+    expect(EMOJIS_WO_SKIN_TONES.length).toBeGreaterThanOrEqual(20);
+  });
+
+  test('Running emoji with all skin tones should be valid', () => {
+    for (const tone of EMOJI_SKIN_TONES) {
+      const emoji = tone === '' ? '🏃' : '🏃' + tone;
+      expect(getIsValidEmojiGraphemeCluster(emoji)).toBe(true);
+    }
+  });
+
+  test('Swimming emoji with all skin tones should be valid', () => {
+    for (const tone of EMOJI_SKIN_TONES) {
+      const emoji = tone === '' ? '🏊' : '🏊' + tone;
+      expect(getIsValidEmojiGraphemeCluster(emoji)).toBe(true);
+    }
+  });
+
+  test('Yoga emoji with all skin tones should be valid', () => {
+    for (const tone of EMOJI_SKIN_TONES) {
+      const emoji = tone === '' ? '🧘' : '🧘' + tone;
+      expect(getIsValidEmojiGraphemeCluster(emoji)).toBe(true);
+    }
+  });
+
+  test('Fencing emoji from EMOJIS_WO_SKIN_TONES should be valid', () => {
+    expect(getIsValidEmojiGraphemeCluster('🤺')).toBe(true);
+  });
+
+  test('Horse racing emoji from EMOJIS_WO_SKIN_TONES should be valid', () => {
+    expect(getIsValidEmojiGraphemeCluster('🏇')).toBe(true);
+  });
+
+  test('Soccer ball emoji from EMOJIS_WO_SKIN_TONES should be valid', () => {
+    expect(getIsValidEmojiGraphemeCluster('⚽')).toBe(true);
+  });
+
+  test('Trophy emoji from EMOJIS_WO_SKIN_TONES should be valid', () => {
+    expect(getIsValidEmojiGraphemeCluster('🏆')).toBe(true);
+  });
+
+  test('EMOJI_ANIMATION_TIMEOUT_HALF should be less than EMOJI_ANIMATION_TIMEOUT', () => {
+    expect(EMOJI_ANIMATION_TIMEOUT_HALF).toBeLessThan(EMOJI_ANIMATION_TIMEOUT);
+  });
+
+  test('EMOJI_ANIMATION_TIMEOUT should be a multiple of 1000', () => {
+    expect(EMOJI_ANIMATION_TIMEOUT % 1000).toBe(0);
+  });
 });

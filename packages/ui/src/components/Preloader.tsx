@@ -27,7 +27,7 @@ const Preloader = ({
         gap={2}
         justify='center'
         style={{ 
-          minHeight: withFullHeight ? 'calc(100vh - 60px)' : 'auto',
+          // minHeight: withFullHeight ? 'calc(100vh - 60px)' : 'auto',
           alignContent: 'center',
           padding: '2rem',
           opacity: 1,
