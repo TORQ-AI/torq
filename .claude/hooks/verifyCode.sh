@@ -10,16 +10,15 @@ if [ -z "$IS_CODE_FILE" ]; then
 elif [ ! -f "$CHANGED_FILE_PATH" ]; then
   exit 0
 else
-  # Use bunx to ensure we use project-local eslint
+  # Use bunx to ensure we use project-local eslint.
   bunx eslint "$CHANGED_FILE_PATH" --fix 2>/dev/null || true
-  bunx eslint "$CHANGED_FILE_PATH" || true
   
   # Find and run corresponding test file if it exists.
-  # For file.ts, look for file.test.ts or file.test.tsx.
+  # For `file.ts`, look for `file.test.ts` or `file.test.tsx`.
   CHANGED_DIR=$(dirname "$CHANGED_FILE_PATH")
   CHANGED_NAME=$(basename "$CHANGED_FILE_PATH" | sed 's/\.[^.]*$//')
   
-  # Check for .test.ts or .test.tsx in same directory.
+  # Check for `*.test.ts` or `*.test.tsx` in the same directory.
   TEST_FILE_TS="$CHANGED_DIR/$CHANGED_NAME.test.ts"
   TEST_FILE_TSX="$CHANGED_DIR/$CHANGED_NAME.test.tsx"
   
@@ -30,5 +29,6 @@ else
   fi
 fi
 
-# Always exit 0 - errors are reported via stdout, not exit codes
+# Always exit 0.
+# Errors are reported via stdout, not exit codes.
 exit 0
