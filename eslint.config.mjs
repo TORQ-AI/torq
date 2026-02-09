@@ -1,6 +1,7 @@
 import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 import jsdocPlugin from 'eslint-plugin-jsdoc';
+import prettierConfig from 'eslint-config-prettier';
 
 export default tseslint.config(
   eslint.configs.recommended,
@@ -39,7 +40,7 @@ export default tseslint.config(
       'prefer-const': 'error',
       'no-var': 'error',
       'no-inner-declarations': 'error',
-      // 'max-len': ['error', { code: 80 }],
+      'max-len': ['error', { code: 100 }],
 
       // TypeScript specific rules
       '@typescript-eslint/explicit-function-return-type': 'off',
@@ -123,4 +124,5 @@ export default tseslint.config(
       'actions-runner/**',
     ],
   },
+  prettierConfig,
 );

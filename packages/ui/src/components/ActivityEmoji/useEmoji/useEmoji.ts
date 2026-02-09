@@ -18,8 +18,8 @@ interface Output {
 const useEmoji = (): Output => {
   const [activeEmojiIndex, setActiveEmojiIndex] = useState<number>(0);
   const [isAnimating, setIsAnimating] = useState<boolean>(false);
-  const intervalIdRef = useRef<NodeJS.Timeout | null>(null);
-  const timeoutIdRef = useRef<NodeJS.Timeout | null>(null);
+  const intervalIdRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const timeoutIdRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     intervalIdRef.current = setInterval(() => {
