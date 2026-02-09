@@ -1,10 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import {
-  EMOJI_ANIMATION_TIMEOUT,
-  EMOJI_ANIMATION_TIMEOUT_HALF,
-  EMOJIS,
-} from './constants';
+import { EMOJI_ANIMATION_TIMEOUT, EMOJI_ANIMATION_TIMEOUT_HALF, EMOJIS } from './constants';
 
 interface Output {
   emoji: string;
@@ -25,15 +21,11 @@ const useEmoji = (): Output => {
     intervalIdRef.current = setInterval(() => {
       setIsAnimating(true);
       timeoutIdRef.current = setTimeout(() => {
-        setActiveEmojiIndex(
-          (prevIndex: number) => {
-            const nextIndex: number = Math.floor(Math.random() * EMOJIS.length);
+        setActiveEmojiIndex((prevIndex: number) => {
+          const nextIndex: number = Math.floor(Math.random() * EMOJIS.length);
 
-            return nextIndex === prevIndex
-              ? ((nextIndex + 1) % EMOJIS.length)
-              : nextIndex;
-          },
-        );
+          return nextIndex === prevIndex ? (nextIndex + 1) % EMOJIS.length : nextIndex;
+        });
         setIsAnimating(false);
       }, EMOJI_ANIMATION_TIMEOUT_HALF);
     }, EMOJI_ANIMATION_TIMEOUT);
