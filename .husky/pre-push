@@ -1,7 +1,5 @@
 #!/usr/bin/env sh
 
-# Run linting
 bun run lint
-
-# Check formatting
 bun run format:check
+bun run test
