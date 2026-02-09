@@ -8,6 +8,7 @@
   "main": "dist/index.js",
   "license": "MIT",
   "scripts": {
+    "prepare": "husky",
     "clean": "rm -rf dist",
     "test": "bun test packages",
     "lint": "eslint packages",
@@ -50,6 +51,7 @@
     "eslint": "^9.15.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-jsdoc": "^48.10.0",
+    "husky": "^9.1.7",
     "prettier": "^3.8.1",
     "typescript": "^5.9.3",
     "typescript-eslint": "^8.15.0"
