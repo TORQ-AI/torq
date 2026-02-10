@@ -27,4 +27,4 @@
 **Run linter after code changes** - `bun run lint` from root
 **Always pause for human approval after generating tests** — do not proceed until approved
 
-Default to using Bun instead of Node.js.
+Default to using Bun and TypeScript instead of Node.js and JavaScript.
