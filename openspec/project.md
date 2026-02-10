@@ -197,6 +197,7 @@ PACE (Personal Activity Canvas Engine) is an AI-powered Strava activity image ge
 
 #### Test File Rules
 
+- Wrap every test suit with `describe('entity-name', () => {...});` block.
 - Arrange test case type as `type Case = [...]` at the test file root.
 - Use `test.each<Case>([...])(...)` test style.
 - Provide a code-agnostic and business-user-friendly test case name.
