@@ -8,6 +8,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 See the [Changelog Manual](https://kb.epam.com/display/VCTXDSE/14.+Frontastic+Development+-+Changelog) for more details.
 
+## [1.7.0] - 2026-02-09
+
+### [28 Introduced Test-Driven Development (TDD) Enforcement and Agentic Workflow](https://github.com/mrbalov/pace/issues/28)
+
+### Added
+- TDD skill documentation with comprehensive guidelines for test-first development approach
+- TDD enforcement hooks that require test files to exist before implementation files are created
+- Session line budget tracking (1000 lines of code per session) with counter reset on new sessions or clear commands
+- Line budget verification hook (`tddLineBudget.sh`) that tracks accumulated code changes and provides feedback
+- Session initialization hook (`initSession.sh`) that displays TDD workflow reminders and current line usage
+- Prettier formatting check (`format` and `format:check` npm scripts) for code consistency validation
+- GitHub Actions workflow job for Prettier format checking in CI/CD pipeline
+- Enhanced CI/CD workflow with descriptive job names identifying the tool used (Bun Test Runner, ESLint, Prettier)
+
+### Changed
+- Updated Claude Code settings to integrate TDD enforcement hooks with Pre-tool-use triggers on Edit and Write operations
+- Modified startup hook from simple skip-acknowledgments message to session initialization with TDD reminders
+- GitHub Actions workflow now includes explicit formatting validation step before build steps
+- Enhanced `.gitignore` to properly exclude session tracking files and temporary data
+
 ## [1.6.1] - 2026-02-09
 
 ### [28 Added Prettier Code Formatting to Development Workflow](https://github.com/mrbalov/pace/issues/28)
