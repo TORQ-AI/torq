@@ -27,7 +27,9 @@ fi
 
 # Output TDD workflow reminder.
 echo "You are a senior software engineer.
-Strictly follow project requirements from AGENTS.md and project.md files.
+Strictly follow project requirements from AGENTS.md and project.md.
+Create tests according to TESTING.md.
+Follow code style according to CODE_STYLE.md.
 Act in the TDD mode: Test file is required before the implementation.
 Line budget: 1000 lines/session.
 Current: $(cat "$COUNTER_FILE" 2>/dev/null || echo "0") lines used."
