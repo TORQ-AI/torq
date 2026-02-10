@@ -22,15 +22,12 @@
 let input, filePath;
 try {
   const stdinData = require('fs').readFileSync(0, 'utf8');
+
   input = JSON.parse(stdinData);
   filePath = input.tool_input?.file_path;
   
-  // Debug logging to stderr (won't interfere with stdout JSON)
-  console.error(`TDD Hook Debug: filePath=${filePath}`);
-  
-  // Validate we have a file path
+  // Validate we have a file path.
   if (!filePath) {
-    console.error('TDD Hook: No file_path found in input, allowing by default');
     process.stdout.write(
       JSON.stringify({
         hookSpecificOutput: {
@@ -42,8 +39,7 @@ try {
     process.exit(0);
   }
 } catch (error) {
-  // If we can't parse input, allow by default
-  console.error(`TDD Hook Error: ${error.message}`);
+  // If we can't parse input, allow by default.
   process.stdout.write(
     JSON.stringify({
       hookSpecificOutput: {
@@ -149,9 +145,7 @@ function isNewFile(path) {
  * ```
  */
 function main() {
-  try {
-    console.error(`TDD Hook: Processing ${filePath}, isImplementationFile=${isImplementationFile(filePath)}`);
-    
+  try {    
     if (!isImplementationFile(filePath)) {
       // Allow non-implementation files.
       process.stdout.write(
@@ -167,9 +161,7 @@ function main() {
 
     const testFilePath = getTestFilePath(filePath);
     const testFileExists = fileExists(testFilePath);
-    
-    console.error(`TDD Hook: testFilePath=${testFilePath}, testFileExists=${testFileExists}, isNewFile=${isNewFile(filePath)}`);
-    
+        
     if (isNewFile(filePath) && !testFileExists) {
       // Strict enforcement: new implementation files require test files first.
       process.stdout.write(
@@ -208,7 +200,6 @@ function main() {
       process.exit(0);
     }
   } catch (error) {
-    console.error(`TDD Hook Main Error: ${error.message}`);
     // On any error, allow by default
     process.stdout.write(
       JSON.stringify({
