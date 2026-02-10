@@ -1,6 +1,6 @@
 ---
 name: tdd
-description: TODO
+description: Enforces Test-Driven Development with automated hooks for test-first coding, line budget tracking, and quality validation. Use when the TDD is requested.
 ---
 
 # TDD Skill
