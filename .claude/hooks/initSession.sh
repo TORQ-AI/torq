@@ -4,8 +4,8 @@
 # Resets line count and outputs a TDD reminder.
 
 # Debug logging
-# exec 2>"$CLAUDE_PROJECT_DIR/tmp/claude-hook-debug.log"
-# set -x
+exec 2>"$CLAUDE_PROJECT_DIR/tmp/claude-hook-debug.log"
+set -x
 
 # Ensure tmp directory exists
 mkdir -p "$CLAUDE_PROJECT_DIR/tmp"
