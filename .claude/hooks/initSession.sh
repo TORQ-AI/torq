@@ -4,8 +4,11 @@
 # Resets line count and outputs a TDD reminder.
 
 # Debug logging
-exec 2>/tmp/claude-hook-debug.log
-set -x
+# exec 2>"$CLAUDE_PROJECT_DIR/tmp/claude-hook-debug.log"
+# set -x
+
+# Ensure tmp directory exists
+mkdir -p "$CLAUDE_PROJECT_DIR/tmp"
 
 # Read hook input from stdin.
 INPUT=$(cat)
@@ -19,7 +22,7 @@ if [ "$SESSION_ID" = "null" ] || [ -z "$SESSION_ID" ]; then
 fi
 
 # Initialize line counter file.
-COUNTER_FILE="/tmp/claude-session-$SESSION_ID-lines"
+COUNTER_FILE="$CLAUDE_PROJECT_DIR/tmp/claude-session-$SESSION_ID-lines"
 
 # Reset counter to 0 on new session or clear.
 if [ "$SOURCE" = "clear" ] || [ ! -f "$COUNTER_FILE" ]; then

@@ -15,8 +15,11 @@ if [ "$SESSION_ID" = "null" ] || [ -z "$SESSION_ID" ]; then
   exit 0
 fi
 
+# Ensure tmp directory exists
+mkdir -p "$CLAUDE_PROJECT_DIR/tmp"
+
 # Session line tracking.
-COUNTER_FILE="/tmp/claude-session-$SESSION_ID-lines"
+COUNTER_FILE="$CLAUDE_PROJECT_DIR/tmp/claude-session-$SESSION_ID-lines"
 CURRENT_LINES=$(cat "$COUNTER_FILE" 2>/dev/null || echo "0")
 
 # Count lines added/modified and update session counter.
