@@ -52,6 +52,22 @@ describe('classify-mood', () => {
       },
       'focused',
     ],
+    [
+      'commute tag selects routine mood',
+      {
+        intensity: 'medium',
+        tags: ['commute'],
+      },
+      'routine',
+    ],
+    [
+      'with kid tag selects playful mood',
+      {
+        intensity: 'medium',
+        tags: ['with kid'],
+      },
+      'playful',
+    ],
   ])('%#. %s', (_name, signals, expected) => {
     const result = classifyMood(signals);
 

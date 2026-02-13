@@ -26,25 +26,23 @@ import {
  * @returns {string} Assembled prompt text (max 600 characters).
  */
 const assemblePrompt = (signals: StravaActivitySignals): string => {
-  const qualityKeywords = QUALITY_KEYWORDS[signals.style];
-  const humanQuality = HUMAN_QUALITY_BY_STYLE[signals.style];
+  const { core, derived } = signals;
+  const qualityKeywords = QUALITY_KEYWORDS[derived.style];
+  const humanQuality = HUMAN_QUALITY_BY_STYLE[derived.style];
   const prompt = [
     qualityKeywords,
-    `${signals.style} style`,
-    `${signals.subject}${humanQuality}`,
-    `${signals.mood} mood`,
-    `${signals.atmosphere} atmosphere`,
-    signals.environment,
-    signals.terrain,
-    ...signals.brands ?? [],
-    ...signals.semanticContext ?? [],
+    `${derived.style} style`,
+    `${derived.subject}${humanQuality}`,
+    `${derived.mood} mood`,
+    `${derived.atmosphere} atmosphere`,
+    derived.environment,
+    derived.terrain,
+    ...core.brands ?? [],
+    ...core.semanticContext ?? [],
     GENERAL_QUALITY,
   ].join('; ');
 
-  // Truncate if over limit (preserves quality keywords)
-  const promptTruncated = truncatePrompt(prompt, signals);
-
-  return promptTruncated;
+  return truncatePrompt(prompt, signals);
 };
 
 export default assemblePrompt;

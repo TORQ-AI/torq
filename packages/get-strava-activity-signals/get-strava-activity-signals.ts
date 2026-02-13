@@ -45,19 +45,23 @@ const getStravaActivitySignals = (activity: StravaActivity): StravaActivitySigna
     const timeOfDay = extractTimeSignals(activity);
     const tags = extractTagSignals(activity);
     const signals: StravaActivitySignals = {
-      semanticContext: extractSemanticContext(activity),
-      brands: extractBrandSignals(activity),
-      mood: classifyMood({ tags, intensity }),
-      subject: classifySubject(activityType),
-      terrain: classifyTerrain(elevation),
-      environment: classifyEnvironment(activityType),
-      atmosphere: classifyAtmosphere(timeOfDay),
-      style: classifyStyle({ tags, elevation, intensity, activityType }),
-      activityType,
-      intensity,
-      elevation,
-      timeOfDay,
-      tags,
+      core: {
+        semanticContext: extractSemanticContext(activity),
+        brands: extractBrandSignals(activity),
+        activityType,
+        intensity,
+        elevation,
+        timeOfDay,
+        tags,
+      },
+      derived: {
+        mood: classifyMood({ tags, intensity }),
+        subject: classifySubject(activityType),
+        terrain: classifyTerrain(elevation),
+        environment: classifyEnvironment(activityType),
+        atmosphere: classifyAtmosphere(timeOfDay),
+        style: classifyStyle({ tags, elevation, intensity, activityType }),
+      },
     };
     const signalsValidation = validateSignals(signals);
 

@@ -26,13 +26,14 @@ const truncatePrompt = (
   if (prompt.length <= MAX_PROMPT_LENGTH) {
     return prompt;
   } else {
-    const qualityKeywords = QUALITY_KEYWORDS[signals.style];
-    const humanQuality = HUMAN_QUALITY_BY_STYLE[signals.style];
+    const { core, derived } = signals;
+    const qualityKeywords = QUALITY_KEYWORDS[derived.style];
+    const humanQuality = HUMAN_QUALITY_BY_STYLE[derived.style];
     const essentialPrompt = [
       qualityKeywords,
-      `${signals.style} style`,
-      `${signals.subject}${humanQuality}`,
-      `${signals.mood} mood`,
+      `${derived.style} style`,
+      `${derived.subject}${humanQuality}`,
+      `${derived.mood} mood`,
     ].join('; ');
     const essentialLength = essentialPrompt.length + GENERAL_QUALITY.length;
     const remainingLength = MAX_PROMPT_LENGTH - essentialLength;
@@ -41,11 +42,11 @@ const truncatePrompt = (
       return `${essentialPrompt}${GENERAL_QUALITY}`;
     } else {
       const restPrompt = [
-        `${signals.atmosphere} atmosphere`,
-        signals.environment,
-        signals.terrain,
-        ...signals.brands ?? [],
-        ...signals.semanticContext ?? [],
+        `${derived.atmosphere} atmosphere`,
+        derived.environment,
+        derived.terrain,
+        ...core.brands ?? [],
+        ...core.semanticContext ?? [],
       ].join('; ');
       const truncatedRestPrompt =
         restPrompt.length > remainingLength

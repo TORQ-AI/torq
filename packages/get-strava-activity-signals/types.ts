@@ -88,19 +88,23 @@ export type StravaActivitySignalsSubject = typeof CLASSIFICATION_SUBJECTS[number
  * Strava activity signals extracted from the Strava activity data.
  */
 export interface StravaActivitySignals {
-  activityType: string;
-  mood: StravaActivitySignalsMood;
-  style: StravaActivitySignalsStyle;
-  subject: StravaActivitySignalsSubject;
-  terrain: StravaActivitySignalsTerrain;
-  environment: StravaActivitySignalsEnvironment;
-  atmosphere: StravaActivitySignalsAtmosphere;
-  intensity: StravaActivitySignalsIntensity;
-  elevation: StravaActivitySignalsElevation;
-  timeOfDay: StravaActivitySignalsTimeOfDay;
-  tags?: string[];
-  brands?: string[];
-  semanticContext?: string[];
+  core: {
+    activityType: string;
+    intensity: StravaActivitySignalsIntensity;
+    elevation: StravaActivitySignalsElevation;
+    timeOfDay: StravaActivitySignalsTimeOfDay;
+    tags?: string[];
+    brands?: string[];
+    semanticContext?: string[];
+  };
+  derived: {
+    mood: StravaActivitySignalsMood;
+    style: StravaActivitySignalsStyle;
+    subject: StravaActivitySignalsSubject;
+    terrain: StravaActivitySignalsTerrain;
+    environment: StravaActivitySignalsEnvironment;
+    atmosphere: StravaActivitySignalsAtmosphere;
+  };
 }
 
 export interface ValidationResult<T = unknown> {

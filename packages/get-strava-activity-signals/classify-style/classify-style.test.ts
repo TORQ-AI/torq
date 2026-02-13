@@ -52,6 +52,36 @@ describe('classify-style', () => {
       },
       'cartoon',
     ],
+    [
+      'easy tag selects minimal style',
+      {
+        activityType: 'Run',
+        intensity: 'low',
+        elevation: 'flat',
+        tags: ['easy'],
+      },
+      'minimal',
+    ],
+    [
+      'high intensity Ride selects illustrated style',
+      {
+        activityType: 'Ride',
+        intensity: 'high',
+        elevation: 'flat',
+        tags: [],
+      },
+      'illustrated',
+    ],
+    [
+      'high intensity TrailRun selects illustrated style',
+      {
+        activityType: 'TrailRun',
+        intensity: 'high',
+        elevation: 'flat',
+        tags: [],
+      },
+      'illustrated',
+    ],
   ])('%#. %s', (_name, signals, expected) => {
     const result = classifyStyle(signals);
 
