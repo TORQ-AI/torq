@@ -6,6 +6,22 @@ Please, document here only changes visible to the client app.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2026-02-16
+
+### [27 Added Strava Activity Signals View in Image Generation Interface](https://github.com/mrbalov/pace/issues/27)
+
+### Added
+- New `/strava/activity/:id/signals` API endpoint for fetching extracted activity signals
+- Activity signals display component in the image generation drawer showing all extracted signals from the activity
+- React hook `useStravaActivitySignalsData` for fetching and managing signals data state
+- Netlify function handler for the new signals endpoint with proper authentication
+- API client functions for fetching activity signals from the backend
+
+### Changed
+- Enhanced image generation drawer to display extracted activity signals before generating the image
+- Refactored server routing logic to use if-else chain instead of nested ternary operators for better readability
+- Updated image generation drawer to accept activity ID prop for fetching corresponding signals
+
 ## [1.10.1] - 2026-02-16
 
 ### [27 Refactored Image Generation Architecture and Improved Prompt Module Integration](https://github.com/mrbalov/pace/issues/27)
