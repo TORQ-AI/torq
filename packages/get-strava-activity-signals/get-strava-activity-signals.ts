@@ -7,6 +7,12 @@ import extractTimeSignals from './extract-time-of-day-signals';
 import extractTagSignals from './extract-tag-signals';
 import extractSemanticContext from './extract-semantic-context';
 import extractBrandSignals from './extract-brand-signals';
+import classifyMood from './classify-mood';
+import classifyStyle from './classify-style';
+import classifySubject from './classify-subject';
+import classifyTerrain from './classify-terrain';
+import classifyEnvironment from './classify-environment';
+import classifyAtmosphere from './classify-atmosphere';
 
 /**
  * Extracts semantic signals from Strava activity data.
@@ -26,23 +32,42 @@ import extractBrandSignals from './extract-brand-signals';
  * 8. Validates extracted signals
  *
  * @param {StravaActivity} activity - Strava activity data to extract signals from
+ * @param {Function} checkForbiddenContent - Function to check for forbidden content in user-provided text.
  * @returns {StravaActivitySignals} Extracted and validated activity signals
  * @throws {Error} Throws error if activity validation fails
  */
-const getStravaActivitySignals = (activity: StravaActivity): StravaActivitySignals => {
+const getStravaActivitySignals = (
+  activity: StravaActivity,
+  checkForbiddenContent: (input: string) => boolean,
+): StravaActivitySignals => {
   const activityValidation = validateActivity(activity);
 
   if (activityValidation.valid) {
+    const activityType = activity.sport_type ?? activity.type ?? 'Unknown';
+    const intensity = classifyIntensity(activity);
+    const elevation = classifyElevation(activity);
+    const timeOfDay = extractTimeSignals(activity);
+    const tags = extractTagSignals(activity);
     const signals: StravaActivitySignals = {
-      activityType: activity.sport_type ?? activity.type ?? 'Unknown',
-      intensity: classifyIntensity(activity),
-      elevation: classifyElevation(activity),
-      timeOfDay: extractTimeSignals(activity),
-      tags: extractTagSignals(activity),
-      semanticContext: extractSemanticContext(activity),
-      brands: extractBrandSignals(activity),
+      core: {
+        semanticContext: extractSemanticContext(activity, checkForbiddenContent),
+        brands: extractBrandSignals(activity, checkForbiddenContent),
+        activityType,
+        intensity,
+        elevation,
+        timeOfDay,
+        tags,
+      },
+      derived: {
+        mood: classifyMood({ tags, intensity }),
+        subject: classifySubject(activityType),
+        terrain: classifyTerrain(elevation),
+        environment: classifyEnvironment(activityType),
+        atmosphere: classifyAtmosphere(timeOfDay),
+        style: classifyStyle({ tags, elevation, intensity, activityType }),
+      },
     };
-    const signalsValidation = validateSignals(signals);
+    const signalsValidation = validateSignals(signals, checkForbiddenContent);
 
     if (signalsValidation.valid) {
       return signals;

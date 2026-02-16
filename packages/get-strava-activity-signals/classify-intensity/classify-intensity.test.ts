@@ -47,6 +47,20 @@ describe('classify-intensity', () => {
       'low',
     ],
     ['default to medium when no clear indicators', {}, 'medium'],
+    [
+      'high intensity based on high weighted power',
+      {
+        weighted_average_watts: 300,
+      },
+      'high',
+    ],
+    [
+      'low intensity based on low weighted power',
+      {
+        weighted_average_watts: 100,
+      },
+      'low',
+    ],
   ])('%#. %s', (_name, activity, expected) => {
     const result = classifyIntensity(activity);
 

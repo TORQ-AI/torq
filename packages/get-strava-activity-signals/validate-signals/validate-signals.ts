@@ -1,5 +1,3 @@
-import checkForbiddenContent from '@pace/check-forbidden-content';
-
 import { StravaActivitySignals, StravaActivitySignalsValidationResult } from '../types';
 import { ELEVATIONS, INTENSITIES, TIMES_OF_DAY } from '../constants';
 
@@ -17,36 +15,39 @@ import { ELEVATIONS, INTENSITIES, TIMES_OF_DAY } from '../constants';
  * - No forbidden content in semantic context
  *
  * @param {StravaActivitySignals} signals - Activity signals to validate.
+ * @param {Function} checkForbiddenContent - Function to check for forbidden content in the text.
  * @returns {StravaActivitySignalsValidationResult} Validation result with errors and optional sanitized signals.
  */
 const validateActivitySignals = (
   signals: StravaActivitySignals,
+  checkForbiddenContent: (input: string) => boolean,
 ): StravaActivitySignalsValidationResult => {
   const errors: string[] = [];
+  const { core } = signals;
 
   // Validate activity type.
-  if (!signals.activityType || typeof signals.activityType !== 'string') {
+  if (!core.activityType || typeof core.activityType !== 'string') {
     errors.push('Activity type is required and must be a string');
   }
 
   // Validate intensity.
-  if (signals.intensity && !INTENSITIES.includes(signals.intensity)) {
+  if (core.intensity && !INTENSITIES.includes(core.intensity)) {
     errors.push(`Intensity must be one of: ${INTENSITIES.join(', ')}`);
   }
 
   // Validate elevation.
-  if (signals.elevation && !ELEVATIONS.includes(signals.elevation)) {
+  if (core.elevation && !ELEVATIONS.includes(core.elevation)) {
     errors.push(`Elevation must be one of: ${ELEVATIONS.join(', ')}`);
   }
 
   // Validate time of day.
-  if (signals.timeOfDay && !TIMES_OF_DAY.includes(signals.timeOfDay)) {
+  if (core.timeOfDay && !TIMES_OF_DAY.includes(core.timeOfDay)) {
     errors.push(`Time of day must be one of: ${TIMES_OF_DAY.join(', ')}`);
   }
 
   // Validate tags are normalized (array of strings).
-  if (signals.tags) {
-    const invalidTags = signals.tags.filter((tag) => typeof tag !== 'string');
+  if (core.tags) {
+    const invalidTags = core.tags.filter((tag) => typeof tag !== 'string');
 
     if (invalidTags.length > 0) {
       errors.push('All tags must be strings');
@@ -54,8 +55,8 @@ const validateActivitySignals = (
   }
 
   // Check for forbidden content in semantic context.
-  if (signals.semanticContext) {
-    const hasForbiddenContent = signals.semanticContext.some((context) =>
+  if (core.semanticContext) {
+    const hasForbiddenContent = core.semanticContext.some((context) =>
       checkForbiddenContent(context),
     );
 
@@ -65,8 +66,8 @@ const validateActivitySignals = (
   }
 
   // Validate brands.
-  if (signals.brands) {
-    const invalidBrands = signals.brands.filter((brand) => typeof brand !== 'string');
+  if (core.brands) {
+    const invalidBrands = core.brands.filter((brand) => typeof brand !== 'string');
 
     if (invalidBrands.length > 0) {
       errors.push('All brands must be strings');
@@ -78,9 +79,12 @@ const validateActivitySignals = (
     ? undefined
     : {
         ...signals,
-        semanticContext: signals.semanticContext?.filter(
-          (context) => !checkForbiddenContent(context),
-        ),
+        core: {
+          ...core,
+          semanticContext: core.semanticContext?.filter(
+            (context) => !checkForbiddenContent(context),
+          ),
+        },
       };
 
   return {
