@@ -1,13 +1,15 @@
 import { fetchStravaActivity, type StravaApiConfig } from '@pace/strava-api';
 import getStravaActivitySignals from '@pace/get-strava-activity-signals';
+import generateStravaActivityImage from '@pace/generate-strava-activity-image';
 import checkForbiddenContent from '@pace/check-forbidden-content';
+import getStavaActivityImageGenerationPrompt, {
+  STRAVA_ACTIVITY_IMAGE_GENERATION_PROMPT_DEFAULT,
+} from '@pace/get-strava-activity-image-generation-prompt';
 
-import { createActivityImageGenerationPrompt, generateImage } from '@pace/activity-image-generator';
-
+import env from '../../env';
 import { getTokens } from '../../cookies';
 import type { ServerConfig, ServerTokenResult } from '../../types';
 import { ERROR_CODES, ERROR_MESSAGES, STATUS_CODES } from './constants';
-import env from '../../env';
 
 /**
  * Creates StravaApiConfig from server tokens and config.
@@ -126,6 +128,35 @@ const createErrorResponse = (error: Error): Response => {
 };
 
 /**
+ * Generates image for a Strava activity.
+ *
+ * @param {string} provider - Image generation provider.
+ * @param {string} prompt - Prompt for image generation.
+ * @returns {Promise<Response>} Success response with activity, signals, prompt, and image data.
+ * @internal
+ */
+const generateImage = async (
+  provider: 'pollinations',
+  prompt: string,
+) => {
+  if (prompt) {
+    try {
+      return await generateStravaActivityImage({
+        defaultPrompt: STRAVA_ACTIVITY_IMAGE_GENERATION_PROMPT_DEFAULT,
+        providerApiKeys: env.imageGenerationProviderApiKeys,
+        provider,
+        prompt,
+      });
+    } catch (error) {
+      console.error('Image generation failed:', error);
+      return null;
+    }
+  } else {
+    return null;
+  }
+};
+
+/**
  * Fetches activity, extracts signals, generates prompt, generates image and creates success response.
  *
  * @param {string} activityId - Activity ID from URL.
@@ -143,23 +174,10 @@ const processActivityAndCreateResponse = async (
   const activityConfig = createActivityConfig(tokens, config);
   const activity = await fetchStravaActivity(activityId, activityConfig);
   const signals = activity ? getStravaActivitySignals(activity, checkForbiddenContent) : null;
-  const prompt = signals ? createActivityImageGenerationPrompt(signals) : null;
-  const image = await (async () => {
-    if (prompt) {
-      try {
-        return await generateImage({
-          providerApiKeys: env.imageGenerationProviderApiKeys,
-          provider,
-          prompt,
-        });
-      } catch (error) {
-        console.error('Image generation failed:', error);
-        return null;
-      }
-    } else {
-      return null;
-    }
-  })();
+  const prompt = signals ? getStavaActivityImageGenerationPrompt(signals, checkForbiddenContent) : null;
+  const image = prompt
+    ? await generateImage(provider, prompt)
+    : await generateImage(provider, STRAVA_ACTIVITY_IMAGE_GENERATION_PROMPT_DEFAULT);
 
   return new Response(
     JSON.stringify({
@@ -246,12 +264,11 @@ const activityImageGenerator = async (
   } else {
     const activityId = pathParts[activityIdIndex + 1];
     const tokens = getTokens(request);
-    const hasTokens = tokens !== null;
 
-    if (!hasTokens) {
-      return createUnauthorizedResponse();
-    } else {
+    if (tokens) {
       return await handleActivityProcessing(activityId, tokens, config);
+    } else {
+      return createUnauthorizedResponse();
     }
   }
 };

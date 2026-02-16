@@ -18,18 +18,12 @@
         "typescript-eslint": "^8.15.0",
       },
     },
-    "packages/activity-image-generator": {
-      "name": "@pace/activity-image-generator",
-      "version": "0.1.0",
-      "dependencies": {
-        "@pace/check-forbidden-content": "workspace:*",
-      },
-      "devDependencies": {
-        "@pace/get-strava-activity-signals": "workspace:*",
-      },
-    },
     "packages/check-forbidden-content": {
       "name": "@pace/check-forbidden-content",
+    },
+    "packages/generate-strava-activity-image": {
+      "name": "@pace/generate-strava-activity-image",
+      "version": "0.1.0",
     },
     "packages/get-strava-activity-image-generation-prompt": {
       "name": "@pace/get-strava-activity-image-generation-prompt",
@@ -43,8 +37,8 @@
       "dependencies": {
         "@netlify/blobs": "^8.1.0",
         "@netlify/functions": "^2.8.2",
-        "@pace/activity-image-generator": "workspace:*",
         "@pace/check-forbidden-content": "workspace:*",
+        "@pace/generate-strava-activity-image": "workspace:*",
         "@pace/get-strava-activity-signals": "workspace:*",
         "@pace/strava-api": "workspace:*",
       },
@@ -279,9 +273,9 @@
 
     "@oven/bun-windows-x64-baseline": ["@oven/bun-windows-x64-baseline@1.3.6", "", { "os": "win32", "cpu": "x64" }, "sha512-PFUa7JL4lGoyyppeS4zqfuoXXih+gSE0XxhDMrCPVEUev0yhGNd/tbWBvcdpYnUth80owENoGjc8s5Knopv9wA=="],
 
-    "@pace/activity-image-generator": ["@pace/activity-image-generator@workspace:packages/activity-image-generator"],
-
     "@pace/check-forbidden-content": ["@pace/check-forbidden-content@workspace:packages/check-forbidden-content"],
+
+    "@pace/generate-strava-activity-image": ["@pace/generate-strava-activity-image@workspace:packages/generate-strava-activity-image"],
 
     "@pace/get-strava-activity-image-generation-prompt": ["@pace/get-strava-activity-image-generation-prompt@workspace:packages/get-strava-activity-image-generation-prompt"],
 

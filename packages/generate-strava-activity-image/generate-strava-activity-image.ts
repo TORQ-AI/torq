@@ -1,15 +1,18 @@
-import { GenerateImageInput, GenerateImageOutput, ImageGenerationProviderApiKeys } from './types';
-import { CONFIG } from '../constants';
-import { ImageGenerationProviderName, StravaActivityImagePrompt } from '../types';
+import { MAX_PROMPT_LENGTH, MAX_RETRIES } from './constants';
 import { getProvider } from './providers';
-import simplifyPrompt from './simplify-prompt';
-import getFallbackPrompt from './get-fallback-prompt';
+import {
+  ImageGenerationProviderName,
+  GenerateImageInput,
+  GenerateImageOutput,
+  ImageGenerationProviderApiKeys,
+} from './types';
 
 /**
  * Attempts image generation with retry logic.
  *
  * @internal
- * @param {StravaActivityImagePrompt} prompt - Current prompt to use
+ * @param {string} prompt - Image generation prompt.
+ * @param {string} defaultPrompt - Default prompt to use for retries.
  * @param {number} attempt - Current attempt number (0-based)
  * @param {number} maxAttempts - Maximum number of retries allowed
  * @param {ImageGenerationProviderName} [providerName] - Optional provider name
@@ -18,7 +21,8 @@ import getFallbackPrompt from './get-fallback-prompt';
  * @throws {Error} Throws error if all retries fail
  */
 const attemptGeneration = async (
-  prompt: StravaActivityImagePrompt,
+  prompt: string,
+  defaultPrompt: string,
   attempt: number,
   maxAttempts: number,
   providerName?: ImageGenerationProviderName,
@@ -27,14 +31,14 @@ const attemptGeneration = async (
   const provider = getProvider(providerName, providerApiKeys);
 
   try {
-    return await provider(prompt.text);
+    return await provider(prompt);
   } catch (error) {
     if (attempt < maxAttempts) {
       const nextAttempt = attempt + 1;
-      const simplifiedPrompt = simplifyPrompt(prompt, nextAttempt);
 
       return attemptGeneration(
-        simplifiedPrompt,
+        defaultPrompt,
+        defaultPrompt,
         nextAttempt,
         maxAttempts,
         providerName,
@@ -77,40 +81,51 @@ const attemptGeneration = async (
  * console.log('Used fallback:', result.fallback);
  * ```
  */
-const generateImage = async (input: GenerateImageInput): Promise<GenerateImageOutput> => {
-  if (input.prompt.text.length > CONFIG.MAX_PROMPT_LENGTH) {
-    throw new Error(
-      `Prompt text exceeds ${CONFIG.MAX_PROMPT_LENGTH} character limit: ${input.prompt.text.length} characters`,
-    );
-  } else {
-    const attempts = input.attempts ?? 0;
+const generateStravaActivityImage = async ({
+  prompt,
+  defaultPrompt,
+  provider,
+  providerApiKeys,
+  attempts,
+}: GenerateImageInput): Promise<GenerateImageOutput> => {
+  const isAllowedPromptLength = prompt.length <= MAX_PROMPT_LENGTH;
 
+  if (isAllowedPromptLength) {
     try {
       const imageData = await attemptGeneration(
-        input.prompt,
+        prompt,
+        defaultPrompt,
         0,
-        CONFIG.MAX_RETRIES,
-        input.provider,
-        input.providerApiKeys,
+        MAX_RETRIES,
+        provider,
+        providerApiKeys,
       );
 
       return {
         fallback: false,
+        attempts: attempts ?? 0,
         imageData,
-        attempts,
       };
     } catch {
-      const provider = getProvider(input.provider, input.providerApiKeys);
-      const fallbackPrompt = getFallbackPrompt(input.prompt.subject);
-      const fallbackImageData = await provider(fallbackPrompt.text);
+      const run = getProvider(provider, providerApiKeys);
+      const fallbackImageData = await run(defaultPrompt);
 
       return {
         imageData: fallbackImageData,
         fallback: true,
-        attempts: CONFIG.MAX_RETRIES,
+        attempts: MAX_RETRIES,
       };
     }
+  } else {
+    const run = getProvider(provider, providerApiKeys);
+    const fallbackImageData = await run(defaultPrompt);
+
+    return {
+      imageData: fallbackImageData,
+      fallback: true,
+      attempts: MAX_RETRIES,
+    };
   }
 };
 
-export default generateImage;
+export default generateStravaActivityImage;

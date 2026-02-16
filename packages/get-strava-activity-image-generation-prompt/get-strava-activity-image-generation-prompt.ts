@@ -1,7 +1,9 @@
 import { StravaActivitySignals } from './types';
 import validatePrompt from './validate-prompt';
 import assemblePrompt from './assemble-prompt';
-import { DEFAULT_PROMPT } from './constants';
+import {
+  STRAVA_ACTIVITY_IMAGE_GENERATION_PROMPT_DEFAULT,
+} from './constants';
 
 /**
  * Generates image generation prompt from Strava activity signals.
@@ -35,7 +37,7 @@ const getStravaActivityImageGenerationPrompt = (
   } else {
     console.error('Prompt validation failed:', errors);
 
-    return DEFAULT_PROMPT;
+    return STRAVA_ACTIVITY_IMAGE_GENERATION_PROMPT_DEFAULT;
   }
 };
 
