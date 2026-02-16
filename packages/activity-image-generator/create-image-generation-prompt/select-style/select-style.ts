@@ -18,7 +18,8 @@ import { StravaActivitySignals } from '@pace/get-strava-activity-signals';
 const selectStyle = (
   signals: StravaActivitySignals,
 ): 'cartoon' | 'minimal' | 'abstract' | 'illustrated' => {
-  const hasRecoveryTag = signals.core.tags?.includes('recovery') || signals.core.tags?.includes('easy');
+  const hasRecoveryTag =
+    signals.core.tags?.includes('recovery') || signals.core.tags?.includes('easy');
   const isMountainous = signals.core.elevation === 'mountainous';
   const isHighIntensity = signals.core.intensity === 'high';
   const highIntensityActivities = ['Run', 'Ride', 'TrailRun'];
