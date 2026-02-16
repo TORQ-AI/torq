@@ -135,10 +135,7 @@ const createErrorResponse = (error: Error): Response => {
  * @returns {Promise<Response>} Success response with activity, signals, prompt, and image data.
  * @internal
  */
-const generateImage = async (
-  provider: 'pollinations',
-  prompt: string,
-) => {
+const generateImage = async (provider: 'pollinations', prompt: string) => {
   if (prompt) {
     try {
       return await generateStravaActivityImage({
@@ -174,7 +171,9 @@ const processActivityAndCreateResponse = async (
   const activityConfig = createActivityConfig(tokens, config);
   const activity = await fetchStravaActivity(activityId, activityConfig);
   const signals = activity ? getStravaActivitySignals(activity, checkForbiddenContent) : null;
-  const prompt = signals ? getStavaActivityImageGenerationPrompt(signals, checkForbiddenContent) : null;
+  const prompt = signals
+    ? getStavaActivityImageGenerationPrompt(signals, checkForbiddenContent)
+    : null;
   const image = prompt
     ? await generateImage(provider, prompt)
     : await generateImage(provider, STRAVA_ACTIVITY_IMAGE_GENERATION_PROMPT_DEFAULT);

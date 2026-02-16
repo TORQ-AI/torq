@@ -1,9 +1,7 @@
 import { StravaActivitySignals } from './types';
 import validatePrompt from './validate-prompt';
 import assemblePrompt from './assemble-prompt';
-import {
-  STRAVA_ACTIVITY_IMAGE_GENERATION_PROMPT_DEFAULT,
-} from './constants';
+import { STRAVA_ACTIVITY_IMAGE_GENERATION_PROMPT_DEFAULT } from './constants';
 
 /**
  * Generates image generation prompt from Strava activity signals.
