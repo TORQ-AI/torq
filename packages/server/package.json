@@ -14,7 +14,7 @@
     "test": "bun test"
   },
   "dependencies": {
-    "@pace/activity-image-generator": "workspace:*",
+    "@pace/generate-strava-activity-image": "workspace:*",
     "@pace/get-strava-activity-signals": "workspace:*",
     "@pace/check-forbidden-content": "workspace:*",
     "@pace/strava-api": "workspace:*",

@@ -1,4 +1,8 @@
-import { ImageGenerationProviderName, StravaActivityImagePrompt } from '../types';
+/**
+ * Supported image generation providers:
+ * - `pollinations`: Free, unlimited, no authentication.
+ */
+export type ImageGenerationProviderName = 'pollinations';
 
 export interface ImageGenerationProviderApiKeys {
   pollinations?: string;
@@ -8,9 +12,8 @@ export interface ImageGenerationProviderApiKeys {
  * Input for image generation.
  */
 export interface GenerateImageInput {
-  /** Image generation prompt from activity data. */
-  prompt: StravaActivityImagePrompt;
-  /** Number of retry attempts made so far. */
+  prompt: string;
+  defaultPrompt: string;
   attempts?: number;
   provider?: ImageGenerationProviderName;
   providerApiKeys?: ImageGenerationProviderApiKeys;
