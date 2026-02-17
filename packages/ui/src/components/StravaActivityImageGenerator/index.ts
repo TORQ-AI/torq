@@ -1,1 +1,1 @@
-export { default } from './ImageGenerationDrawer';
+export { default } from './StravaActivityImageGenerator';
