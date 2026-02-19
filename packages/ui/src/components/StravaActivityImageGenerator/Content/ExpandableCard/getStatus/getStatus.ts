@@ -1,3 +1,5 @@
+'use client';
+
 import { Status } from '../types';
 import { Input } from './types';
 

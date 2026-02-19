@@ -1,3 +1,5 @@
+'use client';
+
 import { useEffect, useRef, useState } from 'react';
 
 import { EMOJI_ANIMATION_TIMEOUT, EMOJI_ANIMATION_TIMEOUT_HALF, EMOJIS } from './constants';

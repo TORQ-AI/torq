@@ -1,3 +1,5 @@
+'use client';
+
 import { useState, useEffect } from 'react';
 import { apiRequest } from '../api/client';
 import { APIError } from '../api/client';

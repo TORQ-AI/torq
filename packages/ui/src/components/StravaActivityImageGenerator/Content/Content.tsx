@@ -1,4 +1,5 @@
-import { Text, Drawer, Card, Grid } from '@geist-ui/core';
+'use client';
+
 import { StravaActivitySignals } from '@torq/get-strava-activity-signals';
 
 import Prompt from './Prompt';
@@ -18,17 +19,9 @@ interface ContentProps {
 }
 
 /**
- * Image generation content.
+ * Image generation content — Client Component.
+ * Replaced Geist Drawer.Content/Grid/Card with a scrollable div + Tailwind grid.
  * @param {ContentProps} props - Component props.
- * @param {boolean} props.isSignalsLoading - Whether the activity signals are being loaded.
- * @param {boolean} props.isPromptLoading - Whether the image prompt is being generated.
- * @param {boolean} props.isImageLoading - Whether the image is being generated.
- * @param {boolean} props.isSignalsLoaded - Whether the activity signals have been loaded.
- * @param {boolean} props.isPromptLoaded - Whether the image prompt has been generated.
- * @param {boolean} props.isImageLoaded - Whether the image has been generated.
- * @param {StravaActivitySignals | null} [props.signals] - Loaded activity signals.
- * @param {string | null} [props.prompt] - Generated image prompt.
- * @param {string | null} [props.image] - Generated image (base64).
  * @returns {JSX.Element} Image generation content component.
  */
 const Content = ({
@@ -42,40 +35,30 @@ const Content = ({
   prompt,
   image,
 }: ContentProps) => (
-  <Drawer.Content>
-    <Grid.Container gap={2} justify="center">
-      <Grid xs={24}>
-        <Card>
-          <Text small type="warning">
-            The activity image is being generated using an external AI service.{' '}
-            <strong>AI is not a human, so it makes mistakes.</strong> Please make sure the
-            generated image is appropriate before publishing it to your Strava profile.
-          </Text>
-        </Card>
-      </Grid>
-      <Grid xs={24}>
-        <Signals
-          isLoading={isSignalsLoading}
-          isLoaded={isSignalsLoaded}
-          signals={signals}
-        />
-      </Grid>
-      <Grid xs={24}>
-        <Prompt
-          isLoading={isPromptLoading}
-          isLoaded={isPromptLoaded}
-          prompt={prompt}
-        />
-      </Grid>
-      <Grid xs={24}>
-        <Image
-          isLoading={isImageLoading}
-          isLoaded={isImageLoaded}
-          image={image}
-        />
-      </Grid>
-    </Grid.Container>
-  </Drawer.Content>
+  <div className="flex flex-col gap-4 p-6 pt-2">
+    <div className="rounded-lg border bg-amber-50 border-amber-200 dark:bg-amber-950 dark:border-amber-800 p-3">
+      <p className="text-xs text-amber-800 dark:text-amber-300">
+        The activity image is being generated using an external AI service.{' '}
+        <strong>AI is not a human, so it makes mistakes.</strong> Please make sure the generated
+        image is appropriate before publishing it to your Strava profile.
+      </p>
+    </div>
+    <Signals
+      isLoading={isSignalsLoading}
+      isLoaded={isSignalsLoaded}
+      signals={signals}
+    />
+    <Prompt
+      isLoading={isPromptLoading}
+      isLoaded={isPromptLoaded}
+      prompt={prompt}
+    />
+    <Image
+      isLoading={isImageLoading}
+      isLoaded={isImageLoaded}
+      image={image}
+    />
+  </div>
 );
 
 export default Content;

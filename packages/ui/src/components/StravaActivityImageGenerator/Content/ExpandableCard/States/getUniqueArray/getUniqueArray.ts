@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Returns an array of unique strings from the input array.
  * @param {T[]} input - The array of strings to filter for uniqueness.

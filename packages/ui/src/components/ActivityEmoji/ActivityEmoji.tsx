@@ -1,3 +1,5 @@
+'use client';
+
 import useEmoji, { EMOJI_ANIMATION_TIMEOUT_HALF } from './useEmoji';
 
 /**

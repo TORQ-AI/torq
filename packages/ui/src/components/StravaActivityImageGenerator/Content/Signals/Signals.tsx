@@ -1,5 +1,6 @@
+'use client';
+
 import { Fragment, useMemo } from 'react';
-import { Text } from '@geist-ui/core';
 import { StravaActivitySignals } from '@torq/get-strava-activity-signals';
 
 import prettifySignals from './prettifySignals';
@@ -36,13 +37,13 @@ const Signals = ({ isLoading, isLoaded, signals }: SignalsProps) => {
       withExpander
     >
       {prettySignals && (
-        <Text p type="secondary" small>
+        <p className="text-sm text-muted-foreground">
           {prettySignals?.map(([key, value]) => (
             <Fragment key={key}>
               <strong>{key}:</strong> {value};{' '}
             </Fragment>
           ))}
-        </Text>
+        </p>
       )}
     </ExpandableCard>
   );

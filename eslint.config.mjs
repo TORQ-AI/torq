@@ -111,6 +111,7 @@ export default defineConfig([
     ignores: [
       'node_modules/**',
       '**/dist/**',
+      '**/.next/**',
       '*.config.js',
       'actions-runner/**',
       '.claude/**',

@@ -1,5 +1,9 @@
+'use client';
+
 import { useCallback, useState } from 'react';
-import { Card, Divider } from '@geist-ui/core';
+
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 import getStatus from './getStatus';
 import State from './States';
@@ -60,22 +64,19 @@ const ExpandableCard = ({
     }
   }, [withExpander]);
 
+  const minHeightClass = `min-h-[${minHeight}]`;
+
   return (
     <Card
-      style={{
-        position: 'relative',
-        width: '100%',
-        minHeight: minHeight,
-        maxHeight: isExpanded ? '800px' : minHeight,
-        overflow: 'hidden',
-        paddingBottom: withExpander ? '10px' : 0,
-        cursor: withExpander ? 'pointer' : 'default',
-        transition: 'max-height 0.3s ease',
-      }}
+      className={[
+        'relative w-full overflow-hidden transition-[max-height] duration-300 ease-in-out',
+        minHeightClass,
+        isExpanded ? 'max-h-[800px]' : `max-h-[${minHeight}]`,
+        withExpander ? 'pb-[10px] cursor-pointer' : 'cursor-default',
+      ].join(' ')}
       onClick={handleToggleExpand}
-      hoverable
     >
-      <Card.Content>
+      <CardContent className="pt-4">
         <Title status={status}>{title}</Title>
         <State
           status={status}
@@ -83,9 +84,9 @@ const ExpandableCard = ({
           loadingMessage={loadingMessage}
           errorMessage={errorMessage}
         />
-        <Divider marginTop={0} paddingTop={0} />
+        <Separator className="my-2" />
         {children}
-      </Card.Content>
+      </CardContent>
       {withExpander && (
         <Expander
           isExpanded={isExpanded}

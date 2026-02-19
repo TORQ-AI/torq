@@ -1,4 +1,4 @@
-import { Text } from '@geist-ui/core';
+'use client';
 
 import { Status } from '../../types';
 
@@ -65,21 +65,19 @@ const Items = ({
   pendingMessage,
   errorMessage,
 }: ItemsProps) => (
-  <Text p small type="secondary">
+  <p className="text-sm text-muted-foreground">
     {statuses.map((status, index) => (
-      <>
+      <span key={status} className="block">
         <Item
-          key={status}
           index={index + 1}
           status={status}
           loadingMessage={loadingMessage}
           pendingMessage={pendingMessage}
           errorMessage={errorMessage}
         />
-        <br />
-      </>
+      </span>
     ))}
-  </Text>
+  </p>
 );
 
 export default Items;

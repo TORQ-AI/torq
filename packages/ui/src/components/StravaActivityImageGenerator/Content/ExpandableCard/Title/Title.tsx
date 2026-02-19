@@ -1,7 +1,7 @@
-import { Text } from '@geist-ui/core';
+'use client';
 
-import StatusEmoji from '../States/StatusEmoji';
-import StatusText from '../States/StatusText';
+import StatusEmoji from '../StatusEmoji';
+import StatusText from '../StatusText';
 import { Status } from '../types';
 
 interface TitleProps {
@@ -17,13 +17,13 @@ interface TitleProps {
  * @returns {JSX.Element} Title component for the expandable card.
  */
 const Title = ({ status, children }: TitleProps) => (
-  <Text h5 type="secondary">
+  <h5 className="text-sm font-medium text-muted-foreground mb-1">
     <StatusEmoji status={status} />
     {' '}
     {children}
     {' '}
     (<StatusText status={status} />)
-  </Text>
+  </h5>
 );
 
 export default Title;

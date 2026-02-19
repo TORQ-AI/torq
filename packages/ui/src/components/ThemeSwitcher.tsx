@@ -1,45 +1,38 @@
-import { Button } from '@geist-ui/core';
-import { Sun, Moon } from '@geist-ui/icons';
-import { useTheme } from '@geist-ui/core';
-import { useCallback } from 'react';
+'use client';
 
-interface ThemeSwitcherProps {
-  className?: string;
-  onThemeChange: (theme: 'light' | 'dark') => void;
-}
+import { useCallback } from 'react';
+import { Sun, Moon } from 'lucide-react';
+import { useTheme } from 'next-themes';
+
+import { Button } from '@/components/ui/button';
 
 /**
- * Theme switcher button component.
- * @param {ThemeSwitcherProps} root0 - Component props
- * @param {string} root0.className - Optional CSS class name
- * @param {Function} root0.onThemeChange - Callback to change theme
- * @returns {JSX.Element} Theme switcher button
+ * Theme switcher button — Client Component.
+ * Toggles between light and dark mode using next-themes.
+ * @returns {JSX.Element} Theme switcher button.
  */
-export default function ThemeSwitcher({ className, onThemeChange }: ThemeSwitcherProps) {
-  const theme = useTheme();
+const ThemeSwitcher = () => {
+  const { resolvedTheme, setTheme } = useTheme();
 
   /**
    * Toggles between light and dark theme.
    * @returns {void}
    */
   const toggleTheme = useCallback(() => {
-    const newTheme = theme.type === 'dark' ? 'light' : 'dark';
-    onThemeChange(newTheme);
-  }, [theme.type, onThemeChange]);
+    setTheme(resolvedTheme === 'dark' ? 'light' : 'dark');
+  }, [resolvedTheme, setTheme]);
 
   return (
     <Button
-      auto
-      type="default"
-      scale={0.6}
-      icon={theme.type === 'dark' ? <Sun /> : <Moon />}
+      variant="outline"
+      size="icon"
       onClick={toggleTheme}
-      className={className}
-      aria-label={`Switch to ${theme.type === 'dark' ? 'light' : 'dark'} mode`}
-      title={`Switch to ${theme.type === 'dark' ? 'light' : 'dark'} mode`}
-      placeholder="Toggle Theme"
-      onPointerEnterCapture={() => undefined}
-      onPointerLeaveCapture={() => undefined}
-    />
+      aria-label={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+      title={`Switch to ${resolvedTheme === 'dark' ? 'light' : 'dark'} mode`}
+    >
+      {resolvedTheme === 'dark' ? <Sun /> : <Moon />}
+    </Button>
   );
-}
+};
+
+export default ThemeSwitcher;

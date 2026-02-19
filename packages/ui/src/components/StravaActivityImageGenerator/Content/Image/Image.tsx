@@ -1,3 +1,5 @@
+'use client';
+
 import Content from './Content';
 import ExpandableCard from '../ExpandableCard';
 

@@ -1,6 +1,8 @@
-import { Button } from '@geist-ui/core';
-import ChevronDown from '@geist-ui/icons/chevronDown';
-import ChevronUp from '@geist-ui/icons/chevronUp';
+'use client';
+
+import { ChevronDown, ChevronUp } from 'lucide-react';
+
+import { Button } from '../../../../../components/ui/button';
 
 interface ExpanderProps {
   isExpanded: boolean;
@@ -9,7 +11,7 @@ interface ExpanderProps {
 }
 
 /**
- * Expander for the expandable card.
+ * Expander for the expandable card — Client Component.
  * @param {ExpanderProps} props - Expander props.
  * @param {boolean} props.isExpanded - Whether the card is expanded.
  * @param {boolean} props.withButton - Whether to display the toggle button.
@@ -22,33 +24,21 @@ const Expander = ({
   handleToggleExpand,
 }: ExpanderProps) => (
   <div
-    style={{
-      position: 'absolute',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      height: '50px',
-      background: isExpanded
-        ? 'transparent'
-        : 'linear-gradient(to bottom, transparent, rgba(0, 0, 0, 0.75))',
-      display: 'flex',
-      alignItems: 'flex-end',
-      justifyContent: 'center',
-      padding: '4px 0',
-    }}
+    className={[
+      'absolute bottom-0 left-0 right-0 h-[50px] flex items-end justify-center pb-1',
+      isExpanded ? 'bg-transparent' : 'bg-gradient-to-b from-transparent to-background/90',
+    ].join(' ')}
   >
     {withButton && (
       <Button
-        auto
-        ghost
-        scale={0.1}
-        type="default"
-        icon={isExpanded ? <ChevronUp /> : <ChevronDown />}
+        variant="ghost"
+        size="icon"
+        className="h-6 w-6"
         onClick={handleToggleExpand}
-        onPointerEnterCapture={() => undefined}
-        onPointerLeaveCapture={() => undefined}
-        placeholder="Toggle"
-      />
+        aria-label={isExpanded ? 'Collapse' : 'Expand'}
+      >
+        {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
+      </Button>
     )}
   </div>
 );

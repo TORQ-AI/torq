@@ -1,4 +1,4 @@
-import { Text } from '@geist-ui/core';
+'use client';
 
 import ExpandableCard from '../ExpandableCard';
 
@@ -31,9 +31,9 @@ const Prompt = ({
     title="Step 2: Preparing AI image generation prompt for your activity"
     withExpander
   >
-    <Text p type="secondary" small>
+    <p className="text-sm text-muted-foreground">
       {prompt}
-    </Text>
+    </p>
   </ExpandableCard>
 );
 

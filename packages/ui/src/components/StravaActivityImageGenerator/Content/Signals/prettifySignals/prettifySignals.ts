@@ -1,3 +1,5 @@
+'use client';
+
 import { StravaActivitySignals } from '@torq/get-strava-activity-signals';
 
 import { Output } from './types';

@@ -1,3 +1,5 @@
+'use client';
+
 import { ReactNode, useEffect, useRef, useState } from 'react';
 
 interface DeferredProps {
@@ -11,13 +13,12 @@ const TIMEOUT_DEFAULT = 600;
 
 /**
  * Defers rendering of children.
- *
  * @param {DeferredProps} props - Component props.
  * @param {ReactNode} props.children - Children to render.
  * @param {ReactNode} [props.fallback] - Optional fallback content.
  * @param {boolean} [props.ready] - Whether the content is ready to be shown.
  * @param {number} [props.timeout] - Optional timeout in milliseconds.
- * @returns {JSX.Element | null} Deferred component.
+ * @returns {JSX.Element | null} Deferred children.
  */
 const Deferred = ({
   children,

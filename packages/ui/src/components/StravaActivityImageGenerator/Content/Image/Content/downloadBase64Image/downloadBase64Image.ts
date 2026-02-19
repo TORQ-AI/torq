@@ -1,3 +1,5 @@
+'use client';
+
 /**
  * Downloads the base64 image.
  * Converts base64 data URL to blob and triggers a download.

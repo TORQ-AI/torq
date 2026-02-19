@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback, useEffect, useState } from 'react';
 
 import getInitialTheme from './getInitialTheme';
@@ -22,14 +24,18 @@ const useTheme = (): Output => {
    */
   const handleThemeChange = useCallback((newTheme: Theme) => {
     setTheme(newTheme);
-    localStorage.setItem('theme', newTheme);
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('theme', newTheme);
+    }
   }, []);
 
   /**
    * Sync `data-theme` attribute when theme changes.
    */
   useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-theme', theme);
+    }
   }, [theme]);
 
   return {
