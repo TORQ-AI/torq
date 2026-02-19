@@ -6,6 +6,89 @@ Please, document here only changes visible to the client app.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [2.3.2] - 2026-02-19
+
+### [27 Replaced Card Component with Divider for Cleaner Visual Separation](https://github.com/mrbalov/pace/issues/27)
+
+### Changed
+- Replaced Card wrapper in States component with a plain div element for simpler DOM structure
+- Added Divider component between State and content sections in ExpandableCard for improved visual separation
+- Removed hoverable styling and margin from States container for cleaner appearance
+
+## [2.3.1] - 2026-02-18
+
+### [27 Improved UI Polish for ExpandableCard Components](https://github.com/mrbalov/pace/issues/27)
+
+### Changed
+- Reordered UI layout to display Signals component before Image component for improved user flow
+- Removed visual divider from ExpandableCard components for cleaner appearance
+- Reduced default minimum height from 100px to 60px in ExpandableCard for more compact display
+- Enhanced States component with Card styling, hover effects, and improved interaction feedback
+- Updated Expander padding from bottom-only to vertical for better spacing consistency
+- Made States container expandable with single status (previously required multiple statuses)
+
+### Fixed
+- Status array order in States component to maintain chronological sequence
+
+## [2.3.0] - 2026-02-18
+
+### [27 Enhanced UI with Expandable Card Components and Improved Status Indicators](https://github.com/mrbalov/pace/issues/27)
+
+### Added
+- New `ExpandableCard` component system with smooth expand/collapse animations and configurable minimum heights
+- Animated status emoji indicators showing loading (🌀), pending (⏳), error (😵), and success (✅) states
+- Status history tracking with expandable list showing all state transitions during processing
+- Comprehensive test suite for `prettifySignals` utility function with 540+ lines of test coverage
+- Enhanced image download functionality with improved error handling and validation
+
+### Changed
+- Refactored Image, Prompt, and Signals components to use the new ExpandableCard system for consistent UX
+- Renamed `prettify-signals` directory to `prettifySignals` following camelCase naming conventions
+- Improved component organization by extracting image content into separate Content component
+- Updated ESLint configuration to properly ignore all dist directories with `**/dist/**` pattern
+- Enhanced visual feedback with step-by-step progress indicators for the three-phase generation process
+
+### Fixed
+- Empty value filtering in prettifySignals utility to properly handle undefined and empty arrays
+
+## [2.2.1] - 2026-02-17
+
+### [27 Fixed Netlify Adapter Routing for Activity Image Generator](https://github.com/mrbalov/pace/issues/27)
+
+### Fixed
+- Netlify redirect pattern for activity image generator endpoint to correctly handle the `/strava/activities/*/image-generator` path structure
+- Missing route mappings in Netlify adapter for the `activity-image-generator` function to properly normalize request paths
+
+## [2.2.0] - 2026-02-17
+
+### [27 Added Custom Prompt Support for AI Image Generation](https://github.com/mrbalov/pace/issues/27)
+
+### Added
+- Custom prompt support via query parameter for `/strava/activities/:id/image-generator` endpoint
+- Error handling for missing prompt parameter and forbidden content validation
+- Visual loading state indicators with emoji icons in the UI prompt component
+
+### Changed
+- **BREAKING**: Refactored image generation endpoint to accept custom prompts directly instead of fetching activity data, removing authentication requirements
+- Simplified API to generate images from user-provided prompts without requiring Strava activity signals
+- Updated endpoint path from `/activity-image-generator/:id` to `/strava/activities/:id/image-generator` for consistency
+- Modified UI to display pending state while awaiting prompt preparation
+
+### Removed
+- Authentication requirement for image generation endpoint
+- Automatic activity fetching and signal extraction from the image generation flow
+- Dependency on Strava API credentials for basic image generation
+
+## [2.1.0] - 2026-02-17
+
+### [27 Added Public API Endpoint for AI Image Generation Prompts](https://github.com/mrbalov/pace/issues/27)
+
+### Added
+- New `/strava/activities/*/image-generator/prompt` endpoint for generating AI image prompts from activity signals without authentication
+- Base64-encoded signals support as query parameter for self-contained prompt generation
+- Netlify function handler for the new prompt generation endpoint
+- Signal validation and decoding with proper error responses for invalid inputs
+
 ## [2.0.0] - 2026-02-17
 
 ### [27 Improved Type Safety for Strava API Guardrails Validation](https://github.com/mrbalov/pace/issues/27)
