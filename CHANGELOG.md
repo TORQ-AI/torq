@@ -8,7 +8,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [4.0.0] - 2026-02-20
 
-### [22 UI Architecture Migration: GeistUI → shadcn/ui with Enhanced SSR](https://github.com/mrbalov/pace/issues/22)
+### [22 UI Architecture Migration: Vite → Next.js, GeistUI → shadcn/ui with Enhanced SSR](https://github.com/mrbalov/pace/issues/22)
 
 ### Changed
 - **BREAKING:** Migrated from `@geist-ui/core` and `@geist-ui/icons` to shadcn/ui component system with Tailwind CSS v4
