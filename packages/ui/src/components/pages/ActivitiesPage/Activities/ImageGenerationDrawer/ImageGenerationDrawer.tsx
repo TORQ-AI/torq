@@ -11,7 +11,7 @@ interface ImageGenerationDrawerProps {
 }
 
 /**
- * Image generation drawer — Client Component.
+ * Image generation drawer.
  * Uses shadcn Sheet (Radix Dialog) instead of Geist Drawer.
  * @param {ImageGenerationDrawerProps} props Component props.
  * @param {string | null} [props.activityId] ID of the activity.
@@ -22,12 +22,10 @@ const ImageGenerationDrawer = ({
   activityId,
   onClose,
 }: ImageGenerationDrawerProps) => (
-  <Sheet open={Boolean(activityId)} onOpenChange={(open) => {
-    if (!open) onClose();
-  }}>
-    <SheetContent side="right" className="w-full sm:max-w-[500px] p-0 overflow-y-auto">
+  <Sheet open={Boolean(activityId)} onOpenChange={onClose}>
+    <SheetContent side="right" className="w-full p-0 overflow-y-auto">
       <StravaActivityImageGenerator
-        activityId={activityId ?? undefined}
+        activityId={activityId}
         Header={({ isLoading, isLoaded }) => (
           <Title
             isLoading={isLoading}

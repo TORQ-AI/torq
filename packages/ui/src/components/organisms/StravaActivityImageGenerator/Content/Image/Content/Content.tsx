@@ -11,7 +11,7 @@ interface ContentProps {
 }
 
 /**
- * Image generation content — Client Component.
+ * Image generation content.
  * Displays the generated image and a download button.
  * @param {ContentProps} props - Component props.
  * @param {string | null} [props.image] - Generated image data URL (base64).

@@ -1,11 +1,12 @@
 'use client';
 
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { Status } from '../types';
 import getUniqueArray from './getUniqueArray';
 import Items from './Items';
 import Expander from '../Expander';
+import { cn } from '@/lib/utils';
 
 interface StatesProps {
   status: Status;
@@ -34,6 +35,20 @@ const States = ({
 }: StatesProps) => {
   const [statuses, setStatuses] = useState<Status[]>([]);
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
+  const hasStatuses = statuses.length > 0;
+  const rootClassList = cn(
+    'relative w-full overflow-hidden',
+    'transition-[max-height] duration-300 ease-in-out',
+    `min-h-[${minHeight}] max-h-[${minHeight}]`,
+    {
+      'cursor-pointer': hasStatuses,
+      'cursor-default': !hasStatuses,
+    },
+  );
+  const style = useMemo(() => ({
+    minHeight: minHeight,
+    maxHeight: isExpanded ? '500px' : minHeight,
+  }), [minHeight, isExpanded]);
 
   const handleToggleExpand = useCallback((event: React.MouseEvent) => {
     event.stopPropagation();
@@ -50,15 +65,8 @@ const States = ({
 
   return (
     <div
-      style={{
-        position: 'relative',
-        width: '100%',
-        minHeight: minHeight,
-        maxHeight: isExpanded ? '500px' : minHeight,
-        overflow: 'hidden',
-        transition: 'max-height 0.3s ease',
-        cursor: statuses.length > 0 ? 'pointer' : 'default',
-      }}
+      style={style}
+      className={rootClassList}
       onClick={handleToggleExpand}
     >
       <Items

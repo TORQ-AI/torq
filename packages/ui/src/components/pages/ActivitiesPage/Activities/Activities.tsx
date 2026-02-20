@@ -13,7 +13,7 @@ interface ActivitiesProps {
 }
 
 /**
- * Activities list view — Client Component.
+ * Activities list view.
  * @param {ActivitiesProps} props - Component props.
  * @param {StravaActivity[]} props.activities - List of activities to display.
  * @returns {JSX.Element} Activities list view.

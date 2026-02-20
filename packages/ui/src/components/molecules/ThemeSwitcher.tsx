@@ -7,7 +7,7 @@ import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 
 /**
- * Theme switcher button — Client Component.
+ * Theme switcher button.
  * Toggles between light and dark mode using next-themes.
  * @returns {JSX.Element} Theme switcher button.
  */

@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useState } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
@@ -9,6 +9,7 @@ import getStatus from './getStatus';
 import State from './States';
 import Title from './Title';
 import Expander from './Expander';
+import { cn } from '@/lib/utils';
 
 interface ExpandableCardProps {
   isLoading: boolean;
@@ -52,6 +53,18 @@ const ExpandableCard = ({
 }: ExpandableCardProps) => {
   const [isExpanded, setIsExpanded] = useState<boolean>(false);
   const status = getStatus({ hasContent, isLoading, isLoaded });
+  const rootClassList = cn(
+    'relative w-full overflow-hidden',
+    'transition-[max-height] duration-300 ease-in-out',
+    `min-h-[${minHeight}] max-h-[${minHeight}]`,
+    {
+      'pb-[10px] cursor-pointer': withExpander,
+      'cursor-default': !withExpander
+    },
+  );
+  const style = useMemo(() => ({
+    maxHeight: isExpanded ? '800px' : minHeight,
+  }), [isExpanded, minHeight]);
 
   /**
    * Toggles the expanded state of the card.
@@ -64,16 +77,10 @@ const ExpandableCard = ({
     }
   }, [withExpander]);
 
-  const minHeightClass = `min-h-[${minHeight}]`;
-
   return (
     <Card
-      className={[
-        'relative w-full overflow-hidden transition-[max-height] duration-300 ease-in-out',
-        minHeightClass,
-        isExpanded ? 'max-h-[800px]' : `max-h-[${minHeight}]`,
-        withExpander ? 'pb-[10px] cursor-pointer' : 'cursor-default',
-      ].join(' ')}
+      className={rootClassList}
+      style={style}
       onClick={handleToggleExpand}
     >
       <CardContent className="pt-4">

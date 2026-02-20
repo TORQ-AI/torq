@@ -6,7 +6,7 @@ import { authorizeStrava } from '@/api/strava';
 import { Button } from '@/components/ui/button';
 
 /**
- * Guest view — Client Component.
+ * Guest view.
  * Requires 'use client' because authorizeStrava uses window.location.href.
  * @returns {JSX.Element} Guest view.
  */

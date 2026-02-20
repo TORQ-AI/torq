@@ -10,7 +10,7 @@ interface ErrorProps {
 }
 
 /**
- * Error view — Client Component.
+ * Error view.
  * Requires 'use client' because refetchActivities is a callback prop.
  * @param {ErrorProps} props - Component props.
  * @param {string} props.error - Error message to display.

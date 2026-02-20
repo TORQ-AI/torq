@@ -8,8 +8,6 @@ interface ProvidersProps {
 
 /**
  * Thin client boundary providing SSR-safe theme context via next-themes.
- * All layout structure (Header, Footer) is server-rendered in layout.tsx.
- *
  * @param {ProvidersProps} props - Component props.
  * @param {React.ReactNode} props.children - Page content.
  * @returns {JSX.Element} Theme provider wrapper.

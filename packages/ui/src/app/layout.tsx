@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import NextTopLoader from 'nextjs-toploader';
 
 import Header from '@/components/organisms/Header';
 import Footer from '@/components/organisms/Footer';
@@ -34,6 +35,7 @@ const inter = Inter({
 const Layout = ({ children }: RootLayoutProps): JSX.Element => (
   <html lang="en" suppressHydrationWarning className={inter.variable}>
     <body className="font-sans">
+      <NextTopLoader showSpinner={false} />
       <Providers>
         <div className="flex flex-col items-center justify-between gap-8 min-h-screen w-full max-w-[1000px] mx-auto px-4 box-border">
           <Header />
