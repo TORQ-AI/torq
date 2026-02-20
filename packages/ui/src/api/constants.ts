@@ -1,4 +1,5 @@
 export const ENDPOINTS = {
+  STRAVA_LOGOUT: '/strava/logout',
   STRAVA_AUTH_STATUS: '/strava/auth/status',
   STRAVA_AUTH: '/strava/auth',
   STRAVA_ACTIVITIES: '/strava/activities',
