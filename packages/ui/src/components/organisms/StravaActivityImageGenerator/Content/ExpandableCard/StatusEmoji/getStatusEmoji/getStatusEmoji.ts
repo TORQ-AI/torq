@@ -14,7 +14,7 @@ const getStatusEmoji = (status: Status): Output => {
     case 'loading': {
       return {
         emoji: EMOJIS.LOADING,
-        animation: 'spin 1s linear infinite',
+        animationClass: 'animate-spin-status',
       };
     }
     case 'loaded': {
@@ -30,7 +30,7 @@ const getStatusEmoji = (status: Status): Output => {
     case 'pending': {
       return {
         emoji: EMOJIS.PENDING,
-        animation: 'flip 2s ease-in-out infinite',
+        animationClass: 'animate-flip',
       };
     }
     default: {

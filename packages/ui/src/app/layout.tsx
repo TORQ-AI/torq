@@ -26,15 +26,15 @@ const inter = Inter({
  * Root HTML layout. Server component — wraps the app with the layout shell
  * (Header, Footer) and the client-side ThemeProvider. The `suppressHydrationWarning`
  * attribute on `<html>` is required by next-themes to prevent hydration mismatch
- * when applying the theme class.
- *
+ * when applying the theme class. The same attribute on `<body>` prevents hydration
+ * warnings from browser extensions (e.g., Grammarly) that inject attributes.
  * @param {RootLayoutProps} props - Layout props.
  * @param {React.ReactNode} props.children - Page content.
  * @returns {JSX.Element} Root layout.
  */
 const Layout = ({ children }: RootLayoutProps): JSX.Element => (
   <html lang="en" suppressHydrationWarning className={inter.variable}>
-    <body className="font-sans">
+    <body className="font-sans" suppressHydrationWarning>
       <NextTopLoader showSpinner={false} />
       <Providers>
         <div className="flex flex-col items-center justify-between gap-8 min-h-screen w-full max-w-[1000px] mx-auto px-4 box-border">
