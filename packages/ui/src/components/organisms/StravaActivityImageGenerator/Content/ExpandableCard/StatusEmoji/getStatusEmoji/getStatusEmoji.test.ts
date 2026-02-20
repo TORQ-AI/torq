@@ -18,7 +18,7 @@ describe('getStatusEmoji', () => {
       'loading',
       {
         emoji: EMOJIS.LOADING,
-        animation: 'spin 1s linear infinite',
+        animationClass: 'animate-spin-status',
       },
     ],
     [
@@ -40,7 +40,7 @@ describe('getStatusEmoji', () => {
       'pending',
       {
         emoji: EMOJIS.PENDING,
-        animation: 'flip 2s ease-in-out infinite',
+        animationClass: 'animate-flip',
       },
     ],
   ])('%#. %s', (_name, status, expected) => {

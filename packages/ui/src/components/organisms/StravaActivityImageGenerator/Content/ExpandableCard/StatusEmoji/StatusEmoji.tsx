@@ -14,27 +14,13 @@ interface StatusEmojiProps {
  * @returns {JSX.Element | string} Status emoji.
  */
 const StatusEmoji = ({ status }: StatusEmojiProps) => {
-  const { emoji, animation } = getStatusEmoji(status);
+  const { emoji, animationClass } = getStatusEmoji(status);
 
   return (
-    <>
-      <style>
-        {`
-          @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(-360deg); }
-          }
-          @keyframes flip {
-            0%, 100% { transform: rotate(0deg); }
-            50% { transform: rotate(180deg); }
-          }
-        `}
-      </style>
-      <span style={{ display: 'inline-block', animation }}>
-        {emoji}
-      </span>
-    </>
-  )
+    <span className={`inline-block ${animationClass || ''}`}>
+      {emoji}
+    </span>
+  );
 };
 
 export default StatusEmoji;

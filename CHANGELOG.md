@@ -6,6 +6,27 @@ Please, document here only changes visible to the client app.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [5.0.2] - 2026-02-20
+
+### [22 Code Quality Improvements and Component Refactoring](https://github.com/mrbalov/pace/issues/22)
+
+### Changed
+- Refactored Footer component by extracting Copywrite and PoweredBy sub-components for better maintainability
+- Extracted global animations from `globals.css` into dedicated `animations.css` file
+- Converted NotFoundPage to standalone component with proper structure
+- Simplified authentication utilities by extracting logout logic to dedicated API module
+- Converted inline styles to Tailwind CSS classes in ActivityEmoji and StatusEmoji components
+- Improved code consistency with arrow function patterns throughout authentication utilities
+
+### Fixed
+- Added `suppressHydrationWarning` to `<body>` element to prevent hydration warnings from browser extensions (e.g., Grammarly)
+
+### Technical Notes
+- Reduced codebase by ~172 lines through refactoring and consolidation
+- Improved component modularity with dedicated logout API endpoint (`/strava/logout`)
+- Enhanced maintainability by following project conventions for function declarations and JSDoc comments
+- All animations now centralized in single registry file for easier management
+
 ## [5.0.1] - 2026-02-20
 
 ### [22 Fixed Hydration Error and Strava Auth Endpoint](https://github.com/mrbalov/pace/issues/22)

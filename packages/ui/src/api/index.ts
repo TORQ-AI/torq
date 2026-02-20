@@ -1,4 +1,7 @@
 export {
+  logout,
+} from './logout';
+export {
   useStravaActivitySignals,
   fetchStravaActivitySignals,
 } from './stravaActivitySignals';

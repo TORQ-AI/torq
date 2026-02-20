@@ -7,7 +7,6 @@ import { Button } from '@/components/ui/button';
 
 /**
  * Guest view.
- * Requires 'use client' because authorizeStrava uses window.location.href.
  * @returns {JSX.Element} Guest view.
  */
 const Guest = () => (
@@ -17,7 +16,7 @@ const Guest = () => (
     </h1>
     <p className="text-lg font-bold leading-relaxed text-muted-foreground max-w-xl">
       <strong>TORQ</strong> is a{' '}
-      <span className="font-bold text-primary" style={{ letterSpacing: '0.3px' }}>
+      <span className="font-bold text-primary tracking-wider">
         Training Orbit Research Qernel
       </span>
       . It helps you create beautiful visualizations of your athletic activities. Connect your

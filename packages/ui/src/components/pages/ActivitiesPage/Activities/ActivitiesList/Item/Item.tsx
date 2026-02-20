@@ -21,7 +21,7 @@ interface ItemProps {
  * @returns {JSX.Element} Activity list item.
  */
 const Item = ({ activity, onGenerateImage }: ItemProps) => (
-  <div className="w-full sm:w-[calc(50%-8px)] md:w-[calc(33.333%-11px)]">
+  <div className="w-full w-[calc(50%-8px)] md:w-[calc(33.333%-11px)]">
     <Card className="h-full flex flex-col hover:shadow-md transition-shadow">
       <CardContent className="pt-6 flex-1">
         <h4 className="text-base font-semibold mb-1">{activity.name}</h4>

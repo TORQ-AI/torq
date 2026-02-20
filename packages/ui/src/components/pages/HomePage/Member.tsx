@@ -3,7 +3,6 @@ import { Activity } from 'lucide-react';
 
 /**
  * Member view.
- * No hooks or browser APIs — pure presentational content.
  * @returns {JSX.Element} Member view.
  */
 const Member = () => (
